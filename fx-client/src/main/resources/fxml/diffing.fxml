@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" stylesheets="css/daxiongmao.css" 
+            fx:controller="eu.daxiongmao.prv.fx.DiffingController" 
+            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <children>
+
+        <SplitPane dividerPositions="0.5" orientation="VERTICAL"  
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
+
+                <!-- SOURCE container -->
+                <AnchorPane>
+                    <children>
+                        <SplitPane dividerPositions="0.5"
+                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <items>
+                                <!-- Source ORIGINAL (left hand column) -->
+                                <AnchorPane minHeight="160.0" minWidth="100.0" 
+                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <VBox prefHeight="293.0" prefWidth="394.0" 
+                                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <Label styleClass="categoryTitle" text="Original" VBox.vgrow="NEVER" />
+                                                <TextArea fx:id="sourceOriginal" VBox.vgrow="ALWAYS"
+                                                          prefHeight="200.0" prefWidth="374.0" 
+                                                          promptText="original text (left hand column)" wrapText="true">
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" top="10.0" />
+                                                    </VBox.margin>
+                                                </TextArea>
+                                            </children>
+                                            <padding>
+                                                <!-- Should be padding bottom 10, but I added "20px" more to compensate for the button on the right part -->
+                                                <Insets bottom="30.0" left="10.0" right="10.0" top="10.0" />
+                                            </padding>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                                <!-- Source REVISED (right hand column) -->
+                                <AnchorPane minHeight="160.0" minWidth="100.0" 
+                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <VBox prefHeight="293.0" prefWidth="394.0" 
+                                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <Label styleClass="categoryTitle" text="Revision" VBox.vgrow="NEVER" />
+                                                <TextArea fx:id="sourceRevised" VBox.vgrow="ALWAYS"
+                                                          prefHeight="200.0" prefWidth="200.0"
+                                                          promptText="revised text (right hand column)" wrapText="true">
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" top="10.0" />
+                                                    </VBox.margin>
+                                                </TextArea>
+                                                <Button fx:id="applyDiffingButton" 
+                                                        mnemonicParsing="false" text="Diffing" onAction="#applyDiffing"  
+                                                        styleClass="applyButton" VBox.vgrow="NEVER" />
+                                            </children>
+                                            <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </padding>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </AnchorPane>                
+                
+
+                <!-- DIFFING container -->
+                <AnchorPane>
+                    <children>
+                        <SplitPane dividerPositions="0.5"
+                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <items>
+                                <!-- Diffing ORIGINAL -->
+                                <AnchorPane minHeight="160.0" minWidth="100.0" 
+                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <VBox prefHeight="293.0" prefWidth="394.0" 
+                                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <Label styleClass="categoryTitle" text="Diffing original" VBox.vgrow="NEVER" />
+                                                <WebView fx:id="diffingOriginal" VBox.vgrow="ALWAYS"
+                                                          prefHeight="200.0" prefWidth="200.0">
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" top="10.0" />
+                                                    </VBox.margin>
+                                                </WebView>
+                                            </children>                                            
+                                            <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </padding>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                                <!-- Diffing REVISED -->
+                                <AnchorPane minHeight="160.0" minWidth="100.0" 
+                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <VBox prefHeight="293.0" prefWidth="394.0" 
+                                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <Label styleClass="categoryTitle" text="Diffing revised" VBox.vgrow="NEVER" />
+                                                <WebView fx:id="diffingRevised" VBox.vgrow="ALWAYS"
+                                                          prefHeight="200.0" prefWidth="200.0">
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" top="10.0" />
+                                                    </VBox.margin>
+                                                </WebView>
+                                            </children>                                            
+                                            <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </padding>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </AnchorPane>
+                
+            </items>
+        </SplitPane>
+        
+    </children>
+</AnchorPane>
