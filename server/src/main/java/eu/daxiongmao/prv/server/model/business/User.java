@@ -13,6 +13,12 @@ public class User {
 
     private String email;
 
+    private String passwordSalt;
+
+    private String passwordAlgo;
+
+    private String passwordHash;
+
     private List<Vehicle> vehicles;
 
     public User() {

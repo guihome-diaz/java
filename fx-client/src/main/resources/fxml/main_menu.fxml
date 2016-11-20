@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane stylesheets="css/daxiongmao.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="eu.daxiongmao.prv.fx.DiffingController">
+   <children>
+      <Pane id="firstname" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView id="vehicle-icon" fitHeight="128.0" fitWidth="128.0" layoutX="44.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/car-icon.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="128.0" fitWidth="128.0" layoutX="53.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/panda-icon.png" />
+               </image>
+            </ImageView>
+            <Label id="pageTitle" layoutX="202.0" layoutY="58.0" text="Pick an activity">
+               <font>
+                  <Font size="32.0" />
+               </font>
+            </Label>
+            <Label id="client-version" layoutX="661.0" layoutY="539.0" text="Client version" />
+            <Label id="client-build" layoutX="661.0" layoutY="563.0" text="Build nb" />
+            <Label id="vehicle-text" layoutX="44.0" layoutY="340.0" text="Vehicle" />
+            <ImageView fitHeight="40.0" fitWidth="47.0" layoutX="730.0" layoutY="48.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/users-icon.png" />
+               </image>
+            </ImageView>
+            <Label id="username" layoutX="658.0" layoutY="60.0" text="John Doe" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

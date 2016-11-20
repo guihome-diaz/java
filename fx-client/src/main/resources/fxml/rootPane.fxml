@@ -9,8 +9,11 @@
 <?import javafx.scene.text.*?>
 
 <VBox prefHeight="600.0" prefWidth="800.0" 
-      xmlns:fx="http://javafx.com/fxml" stylesheets="css/daxiongmao.css" 
-      fx:controller="eu.daxiongmao.prv.fx.RootPaneController">
+      maxHeight="-1.0" maxWidth="-1.0" 
+      VBox.vgrow="ALWAYS"             
+      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" 
+      stylesheets="css/daxiongmao.css" 
+      fx:controller="eu.daxiongmao.prv.fx.controller.RootPaneController">
   <children>
   
     <!-- MENU bar (must always be displayed) -->
