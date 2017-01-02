@@ -11,10 +11,13 @@ Simple JavaFX8 application that computes both Western and Chinese zodiac from a 
 <code>mvn clean install</code>
 
 * Run the artifact
-Just run <code>AstrologyApp</code>
+<code>java -jar target/astrology/astrology.jar</code>
 
 
-TODO : ensure the compilation artifact can be executed "out-of-the-box"
+## From the IDE
+
+From the IDE you just have to run <code>AstrologyApp</code>
+
 
 
 ## How to deploy it?
