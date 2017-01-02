@@ -69,7 +69,7 @@ public class RootPaneController implements Initializable {
     }
 
     private void setMenuItemIcon(final MenuItem menuItem, final String iconUrl) {
-        final URL url = getClass().getResource(iconUrl);
+        final URL url = RootPaneController.class.getResource(iconUrl);
         final Image picture = new Image(url.toExternalForm());
         final ImageView icon = new ImageView(picture);
         icon.setFitHeight(ICON_SIZE);
