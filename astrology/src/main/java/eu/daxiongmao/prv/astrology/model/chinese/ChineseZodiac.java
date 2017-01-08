@@ -14,7 +14,7 @@ public enum ChineseZodiac {
     RABBIT("兔", "tù", ChineseType.YANG),
     DRAGON("龍 (龙)", "lóng", ChineseType.YANG),
     SNAKE("蛇", "shé", ChineseType.YIN),
-    HORSE("馬（马", "mǎ", ChineseType.YIN),
+    HORSE("馬（马)", "mǎ", ChineseType.YIN),
     GOAT("羊", "yáng", ChineseType.YANG),
     MONKEY("猴", "hóu", ChineseType.YANG),
     ROOSTER("鷄 (鸡)", "jī", ChineseType.YIN),
