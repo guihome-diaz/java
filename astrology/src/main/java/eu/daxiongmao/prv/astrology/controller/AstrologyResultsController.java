@@ -2,13 +2,15 @@ package eu.daxiongmao.prv.astrology.controller;
 
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 import eu.daxiongmao.prv.astrology.AstrologyApp;
 import eu.daxiongmao.prv.astrology.model.chinese.ChineseYear;
+import eu.daxiongmao.prv.astrology.model.ui.SessionDTO;
 import eu.daxiongmao.prv.astrology.model.western.WesternZodiac;
+import eu.daxiongmao.prv.astrology.service.ChineseZodiacService;
+import eu.daxiongmao.prv.astrology.service.WesternZodiacService;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,8 +25,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 public class AstrologyResultsController implements Initializable {
-
-    private static AstrologyResultsController instance = null;
 
     private ResourceBundle bundle;
 
@@ -79,20 +79,6 @@ public class AstrologyResultsController implements Initializable {
 
     public AstrologyResultsController() {
         super();
-        // I suppose this screen always appears after the same set of actions ; it is not bound to any application or previous state.
-        // You must call a particular method to refresh the content
-        AstrologyResultsController.instance = this;
-    }
-
-    public static synchronized AstrologyResultsController getInstance() {
-        if (instance == null) {
-            new AstrologyResultsController();
-        }
-        return AstrologyResultsController.instance;
-    }
-
-    public void onHomepageClick() {
-        AstrologyApp.getInstance().loadPage(AstrologyApp.ASTROLOGY_INPUT);
     }
 
     public void reset() throws URISyntaxException {
@@ -104,15 +90,22 @@ public class AstrologyResultsController implements Initializable {
         setChineseSign(null);
     }
 
-    public void setZodiac(final LocalDate birthDate, final ChineseYear chinese, final WesternZodiac western) throws URISyntaxException {
-        final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("E dd MMM yyyy", AstrologyApp.getInstance().getLang());
-        currentDate.setText(birthDate.format(dateTimeFormat));
+    private void setZodiac() {
+        final ChineseYear chinese = ChineseZodiacService.getChineseBirthYear(SessionDTO.getInstance().getBirthDate());
+        final WesternZodiac western = WesternZodiacService.getWesternZodiac(SessionDTO.getInstance().getBirthDate());
 
-        // WESTERN
-        setWesternSign(western);
+        try {
+            final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("E dd MMM yyyy", SessionDTO.getInstance().getLocale());
+            currentDate.setText(SessionDTO.getInstance().getBirthDate().format(dateTimeFormat));
 
-        // CHINESE
-        setChineseSign(chinese);
+            // WESTERN
+            setWesternSign(western);
+
+            // CHINESE
+            setChineseSign(chinese);
+        } catch (final Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private void setWesternSign(final WesternZodiac sign) {
@@ -277,6 +270,7 @@ public class AstrologyResultsController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        // Java FX bindings
         bundle = resources;
         homepageButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -291,5 +285,8 @@ public class AstrologyResultsController implements Initializable {
                 System.exit(0);
             }
         });
+        // Load values
+        setZodiac();
     }
+
 }

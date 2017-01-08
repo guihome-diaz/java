@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import eu.daxiongmao.prv.astrology.AstrologyApp;
+import eu.daxiongmao.prv.astrology.model.ui.SessionDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,7 +17,6 @@ import javafx.scene.image.ImageView;
 
 public class RootPaneController implements Initializable {
 
-    private ResourceBundle bundle;
     /** The icon will have the following height size (auto width stretch). */
     private static final int ICON_SIZE = 24;
 
@@ -44,23 +44,22 @@ public class RootPaneController implements Initializable {
     }
 
     public void setEnglishLanguage() {
-        AstrologyApp.getInstance().setLang(new Locale("en", "GB"));
+        SessionDTO.getInstance().setLocale(new Locale("en", "GB"));
         AstrologyApp.getInstance().reloadPage();
     }
 
     public void setFrenchLanguage() {
-        AstrologyApp.getInstance().setLang(new Locale("fr", "FR"));
+        SessionDTO.getInstance().setLocale(new Locale("fr", "FR"));
         AstrologyApp.getInstance().reloadPage();
     }
 
     public void setChineseLanguage() {
-        AstrologyApp.getInstance().setLang(new Locale("zh", "CN"));
+        SessionDTO.getInstance().setLocale(new Locale("zh", "CN"));
         AstrologyApp.getInstance().reloadPage();
     }
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        bundle = resources;
         setMenuItemIcon(quitItem, "/img/icons/icon-exit.png");
         setMenuItemIcon(englishItem, "/img/icons/icon-UK.png");
         setMenuItemIcon(frenchItem, "/img/icons/icon-FR.png");
@@ -76,4 +75,5 @@ public class RootPaneController implements Initializable {
         icon.setPreserveRatio(true);
         menuItem.setGraphic(icon);
     }
+
 }

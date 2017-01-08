@@ -7,10 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 import eu.daxiongmao.prv.astrology.AstrologyApp;
-import eu.daxiongmao.prv.astrology.model.chinese.ChineseYear;
-import eu.daxiongmao.prv.astrology.model.western.WesternZodiac;
-import eu.daxiongmao.prv.astrology.service.ChineseZodiacService;
-import eu.daxiongmao.prv.astrology.service.WesternZodiacService;
+import eu.daxiongmao.prv.astrology.model.ui.SessionDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -21,11 +18,6 @@ import javafx.util.StringConverter;
 
 public class AstrologyInputController implements Initializable {
 
-    public AstrologyInputController() {
-        super();
-    }
-
-    private ResourceBundle bundle;
     private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @FXML
@@ -48,9 +40,8 @@ public class AstrologyInputController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
-        bundle = resources;
+        // JavaFX bindings
         birthDateInput.setShowWeekNumbers(true);
-
         final StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
@@ -75,14 +66,20 @@ public class AstrologyInputController implements Initializable {
         birthDateInput.setConverter(converter);
         birthDateInput.setPromptText(DATE_FORMAT.toLowerCase());
         birthDateInput.requestFocus();
+
+        // Load values
+        if (SessionDTO.getInstance().getBirthDate() != null) {
+            birthDateInput.setValue(SessionDTO.getInstance().getBirthDate());
+        }
     }
 
     public void doComputeAstrology() throws URISyntaxException {
-        AstrologyApp.getInstance().loadPage(AstrologyApp.ASTROLOGY_RESULTS);
+        // Update session's values
         final LocalDate birthDate = birthDateInput.getValue();
-        final ChineseYear chinese = ChineseZodiacService.getChineseBirthYear(birthDate);
-        final WesternZodiac western = WesternZodiacService.getWesternZodiac(birthDate);
-        AstrologyResultsController.getInstance().setZodiac(birthDate, chinese, western);
+        SessionDTO.getInstance().setBirthDate(birthDate);
+
+        // Load page
+        AstrologyApp.getInstance().loadPage(AstrologyApp.ASTROLOGY_RESULTS);
     }
 
 }

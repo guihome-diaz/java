@@ -1,11 +1,11 @@
 package eu.daxiongmao.prv.astrology;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.daxiongmao.prv.astrology.model.ui.SessionDTO;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -23,15 +23,13 @@ public class AstrologyApp extends Application {
 
     public static final String ASTROLOGY_INPUT = "fxml/astrologyInput.fxml";
     public static final String ASTROLOGY_RESULTS = "fxml/astrologyResults.fxml";
-    public static final Locale DEFAULT_LANG = new Locale("en", "GB");
 
     private Stage primaryStage;
     private AnchorPane contentPanel;
-    private Locale lang;
 
     @Override
     public void start(final Stage primaryStage) {
-        setInstance(this);
+        instance = this;
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Astrology");
         // this close all stages and exit application when the main stage is closed
@@ -49,7 +47,7 @@ public class AstrologyApp extends Application {
         try {
             // Load root panel from FXML file
             final FXMLLoader loader = new FXMLLoader();
-            loader.setResources(ResourceBundle.getBundle("langs.Astrology", getLang()));
+            loader.setResources(ResourceBundle.getBundle("langs.Astrology", SessionDTO.getInstance().getLocale()));
             loader.setLocation(AstrologyApp.class.getClassLoader().getResource("fxml/rootPane.fxml"));
             final VBox rootPanel = (VBox) loader.load();
 
@@ -76,7 +74,7 @@ public class AstrologyApp extends Application {
         try {
             // Load the FXML file and set into the center of the main layout
             final FXMLLoader loader = new FXMLLoader(AstrologyApp.class.getClassLoader().getResource(fxmlFile));
-            loader.setResources(ResourceBundle.getBundle("langs.Astrology", getLang()));
+            loader.setResources(ResourceBundle.getBundle("langs.Astrology", SessionDTO.getInstance().getLocale()));
             final AnchorPane page = (AnchorPane) loader.load();
             // Clear current content and apply new content
             contentPanel.getChildren().clear();
@@ -100,24 +98,8 @@ public class AstrologyApp extends Application {
         Application.launch(args);
     }
 
-    private static synchronized void setInstance(final AstrologyApp instance) {
-        AstrologyApp.instance = instance;
-    }
-
     public static synchronized AstrologyApp getInstance() {
         return AstrologyApp.instance;
-    }
-
-    /** To set the current locale. */
-    public synchronized void setLang(final Locale lang) {
-        this.lang = lang;
-    }
-
-    public Locale getLang() {
-        if (lang == null) {
-            lang = DEFAULT_LANG;
-        }
-        return lang;
     }
 
     public void reloadPage() {
