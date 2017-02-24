@@ -28,12 +28,8 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     public Docket getApiDocumentation() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(getApiInfo())
-                .useDefaultResponseMessages(false)
-                .select()
-                .apis(RequestHandlerSelectors.any())    // Comment ALL REST web-services
-                .paths(paths())                         // Comment only services available on /api/*
+        return new Docket(DocumentationType.SWAGGER_2).apiInfo(getApiInfo()).useDefaultResponseMessages(false).select().apis(RequestHandlerSelectors.any()) // Comment ALL REST web-services
+                .paths(paths()) // Comment only services available on /api/*
                 .build();
     }
 
@@ -42,9 +38,9 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
     }
 
     private ApiInfo getApiInfo() {
-        Contact apiOwner = new Contact("Guillaume Diaz", "http://daxiongmao.eu/wiki", "guillaume@qin-diaz.com");
-        ApiInfo apiInfo = new ApiInfo("REST documentation", "REST web-service APIs description", getVersion(), "Terms of services", apiOwner, "Copyright 2016 - Daxiongmao.eu # Apache 2.0",
-                "http://choosealicense.com/licenses/apache-2.0/");
+        final Contact apiOwner = new Contact("Guillaume Diaz", "http://daxiongmao.eu/wiki", "guillaume@qin-diaz.com");
+        final ApiInfo apiInfo = new ApiInfo("REST documentation", "REST web-service APIs description", getVersion(), "Terms of services", apiOwner,
+                "Copyright 2016 - Daxiongmao.eu # Apache 2.0", "http://choosealicense.com/licenses/apache-2.0/");
         return apiInfo;
     }
 
@@ -55,15 +51,15 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
                 throw new IOException();
             }
 
-            String version = ServletInitializer.manifest.getValue("Implementation-Version");
-            String build = ServletInitializer.manifest.getValue("Build-Number");
-            String revision = ServletInitializer.manifest.getValue("Svn-Revision");
+            final String version = ServletInitializer.manifest.getValue("Implementation-Version");
+            final String build = ServletInitializer.manifest.getValue("Build-Number");
+            final String revision = ServletInitializer.manifest.getValue("Svn-Revision");
             if (version == null) {
                 throw new IOException();
             }
 
             return String.format("%s (b%s, r%s)", version, build, revision);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             return "NA";
         }
     }

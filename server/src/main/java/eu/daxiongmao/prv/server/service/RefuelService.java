@@ -3,6 +3,8 @@ package eu.daxiongmao.prv.server.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,7 @@ import eu.daxiongmao.prv.server.model.exception.BusinessException;
 import eu.daxiongmao.prv.server.model.exception.ErrorCodes;
 import eu.daxiongmao.prv.server.model.exception.RequestException;
 
+@Transactional
 @Component
 public class RefuelService {
 
@@ -28,7 +31,7 @@ public class RefuelService {
 
     public Refuel create(final Refuel item) throws BusinessException {
         // Get vehicle
-        VehicleDB veh = vehicleRepository.findOne(item.getVehicleId());
+        final VehicleDB veh = vehicleRepository.findOne(item.getVehicleId());
         if (veh == null) {
             throw new BusinessException(ErrorCodes.BUSINESS_ERROR_RELATED_ITEM_NOT_FOUND, "VEHICLE not found");
         }
@@ -58,7 +61,7 @@ public class RefuelService {
 
         // Save new values
         // !! Vehicle management (add / deletion) is NOT managed over here!!
-        RefuelDB itemDbUpdate = mapper.map(item, RefuelDB.class);
+        final RefuelDB itemDbUpdate = mapper.map(item, RefuelDB.class);
         itemDbUpdate.setVehicle(itemDb.getVehicle());
         itemDb = repository.save(itemDbUpdate);
 
@@ -72,7 +75,7 @@ public class RefuelService {
         }
 
         // Ensure it exists
-        RefuelDB itemDb = repository.findOne(id);
+        final RefuelDB itemDb = repository.findOne(id);
         if (itemDb == null) {
             throw new BusinessException(ErrorCodes.BUSINESS_ERROR_ITEM_NOT_FOUND, "Item with given ID does not exists");
         }
@@ -82,16 +85,16 @@ public class RefuelService {
 
     public List<Refuel> findAllByVehicle(final Long vehicleId) throws BusinessException {
         // Get vehicle
-        VehicleDB veh = vehicleRepository.findOne(vehicleId);
+        final VehicleDB veh = vehicleRepository.findOne(vehicleId);
         if (veh == null) {
             throw new BusinessException(ErrorCodes.BUSINESS_ERROR_RELATED_ITEM_NOT_FOUND, "Vehicle not found");
         }
         // Get data
-        List<RefuelDB> dbRefuels = repository.findAllByVehicleOrderByDateAsc(veh);
+        final List<RefuelDB> dbRefuels = repository.findAllByVehicleOrderByDateAsc(veh);
         // Cast data to DTO
-        List<Refuel> refuels = new ArrayList<>();
+        final List<Refuel> refuels = new ArrayList<>();
         if (dbRefuels != null) {
-            for (RefuelDB db : dbRefuels) {
+            for (final RefuelDB db : dbRefuels) {
                 refuels.add(mapper.map(db, Refuel.class));
             }
         }

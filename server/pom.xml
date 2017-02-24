@@ -41,7 +41,7 @@
 		
 		<!-- Framework version -->
 		<swagger.version>2.6.0</swagger.version>
-		<orika.mapper.version>1.4.6</orika.mapper.version>
+        <orika.version>1.4.6</orika.version>
 	</properties>
 	
 
@@ -202,17 +202,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- Spring boot # WEB - mandatory to provide a web-page for Swagger UI -->
+		<!-- Spring boot # WEB - mandatory to provide web-page support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- Spring boot # ACTUATOR - to display information about the current application -->
+        <!-- Application status and settings will be available at '/actuator' -->
+        <!-- http://www.baeldung.com/spring-boot-actuators + http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-endpoints -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!-- Spring boot # Target application for Tomcat -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>
         <!-- Spring boot # Set of utilities to work locally (hot swap) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -220,6 +227,21 @@
             <optional>true</optional>
         </dependency>
 		
+        
+        <!-- ##### JSP ###### -->
+        <!-- JSTL for JSP -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <!-- Need this to compile JSP -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        
 
 		<!-- ###### DATABASE ###### -->
 		<!-- Database H2 -->
@@ -232,12 +254,13 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
-        <!-- Mapper -->
+        <!-- Mapper (ORIKA) -->
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
-            <version>${orika.mapper.version}</version>
+            <version>${orika.version}</version>
         </dependency>
+
 
         <!-- ###### DOCUMENTATION ###### -->
 		<!-- Swagger (REST web-service documentation) -->

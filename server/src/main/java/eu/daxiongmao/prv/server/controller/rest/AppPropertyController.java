@@ -1,4 +1,4 @@
-package eu.daxiongmao.prv.server.controller;
+package eu.daxiongmao.prv.server.controller.rest;
 
 import java.util.List;
 

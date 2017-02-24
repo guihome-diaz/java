@@ -16,6 +16,7 @@ import java.util.Set;
  * You can also consult <a href="https://crackstation.net/hashing-security.htm">CrackStation</a> to see their tutorials.<br>
  * <br>
  * You can run this class as a standalone tool to generate some passwords and salts.
+ * 
  * @author Guillaume Diaz
  * @version 1.0 - May 2015
  * @version 1.1 - November 2016 (add main method)
@@ -26,7 +27,7 @@ public final class PasswordUtils {
     private final static int NB_OF_ITERATIONS = 200;
 
     /**
-     * Name of th hash algorithm to use. <br>
+     * Name of the hash algorithm to use. <br>
      * See <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#MessageDigest">Java
      * message digest</a> for the list of supported algorithms.
      */
@@ -209,7 +210,9 @@ public final class PasswordUtils {
 
     /**
      * To get the hash algorithm name to save in DB.
-     * @param algorithm current algorithm (if any). If 'null' then it will return the default hash algorithm
+     * 
+     * @param algorithm
+     *            current algorithm (if any). If 'null' then it will return the default hash algorithm
      * @return corresponding hash algoritm or default one.
      * @throws NoSuchAlgorithmException
      */
