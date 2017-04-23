@@ -4,6 +4,12 @@ import java.time.LocalDate;
 
 import eu.daxiongmao.prv.astrology.model.western.WesternZodiac;
 
+/**
+ * To compute the Western zodiac based on a given date.
+ *
+ * @author Guillaume Diaz
+ *
+ */
 public class WesternZodiacService {
 
     /**

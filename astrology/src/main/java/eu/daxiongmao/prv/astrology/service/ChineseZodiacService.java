@@ -9,6 +9,12 @@ import eu.daxiongmao.prv.astrology.model.chinese.ChineseElement;
 import eu.daxiongmao.prv.astrology.model.chinese.ChineseYear;
 import eu.daxiongmao.prv.astrology.model.chinese.ChineseZodiac;
 
+/**
+ * To compute the Chinese zodiac based on a given date.
+ * 
+ * @author Guillaume Diaz
+ *
+ */
 public class ChineseZodiacService {
 
     private static final List<ChineseYear> YEARS = new ArrayList<>();
