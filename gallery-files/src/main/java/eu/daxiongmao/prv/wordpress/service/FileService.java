@@ -46,7 +46,7 @@ public class FileService {
         return results;
     }
 
-    public Set<Path> listDirectoriesThatContains(final Path root, final Predicate<Path> predicate) throws IOException {
+    private Set<Path> listDirectoriesThatContains(final Path root, final Predicate<Path> predicate) throws IOException {
         final Set<Path> resultsDirectories = new HashSet<>();
         Files.walk(root)
                 // only keep directories
