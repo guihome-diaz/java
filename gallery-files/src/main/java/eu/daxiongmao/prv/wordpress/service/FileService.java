@@ -102,7 +102,7 @@ public class FileService {
 
     private boolean isFileExtension(final Path file, final List<String> searchExtensions) {
         final String filename = file.toString().toLowerCase();
-        if (filename.contains(".")) {
+        if (Files.isRegularFile(file) && filename.contains(".")) {
             final String fileExtension = filename.substring(filename.lastIndexOf('.'));
             return searchExtensions.contains(fileExtension);
         } else {
@@ -112,7 +112,7 @@ public class FileService {
 
     private boolean isBackupFile(final Path file) {
         final String filename = file.toString().toLowerCase();
-        if (filename.endsWith(IMAGE_BACKUP_ENDING)) {
+        if (Files.isRegularFile(file) && filename.endsWith(IMAGE_BACKUP_ENDING)) {
             return true;
         } else {
             return false;

@@ -5,17 +5,19 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.daxiongmao.prv.wordpress.utils.PathUtils;
+
 /**
  * Representation of a disk directory.
  *
  * @author Guillaume Diaz
  * @version 1.0 - April 2017
  */
-public class DirectoryContent implements Serializable {
+public class DirectoryContent implements Serializable, Comparable<DirectoryContent> {
 
     private static final long serialVersionUID = 20170427L;
 
-    private Path directory;
+    private final Path directory;
 
     private final Set<String> images = new HashSet<>();
 
@@ -84,6 +86,23 @@ public class DirectoryContent implements Serializable {
         getVideos().stream().forEach(item -> log.append(String.format("%n   * Video : %s", item)));
         getBackupFiles().stream().forEach(item -> log.append(String.format("%n   * Backup: %s", item)));
         return log.toString();
+    }
+
+    @Override
+    public int compareTo(final DirectoryContent other) {
+        // args. checks
+        if (other == null) {
+            return 1;
+        } else if (other.directory == directory) {
+            return 0;
+        } else if (other.directory == null && directory != null) {
+            return 1;
+        } else if (other.directory != null && directory == null) {
+            return -1;
+        }
+
+        System.out.println(String.format("%n####New comparison#####%nCurrent: %s%nOther:%s", directory, other.directory));
+        return PathUtils.comparePath(directory, other.directory);
     }
 
 }
