@@ -208,11 +208,14 @@ public class FtpService {
 
                 // Each gallery should be its own directory
                 if (aFile.isDirectory()) {
-                    LOGGER.info("Found new gallery: " + currentFileName);
                     galleries.add(currentFileName);
                 }
             }
         }
+
+        final StringBuilder log = new StringBuilder("\n");
+        galleries.forEach(item -> log.append("   * ").append(item).append("\n"));
+        LOGGER.info(String.format("Found %s galleries: %s", galleries.size(), log.toString()));
         return galleries;
     }
 
@@ -249,10 +252,19 @@ public class FtpService {
 
         // download files
         if (!galleryContent.isEmpty()) {
-            final Path backupDir = Paths.get(localBackupFolder.toString(), dirName);
+            final Path backupDir = Paths.get(localBackupFolder.toString(), "gallery", ftpGalleryName);
             Files.createDirectories(backupDir);
-            galleryContent
-                    .forEach((name, ftpFile) -> downloadThreadPools.submit(() -> downloadFile(dirName + "/" + name, Paths.get(backupDir.toString(), ftpFile.getName()))));
+            LOGGER.info(String.format("Downloading gallery '%s' ... Please wait", ftpGalleryName));
+            galleryContent.forEach((name, ftpFile) -> {
+                // Remove backup extension
+                String backupFilename = ftpFile.getName();
+                if (backupFilename.endsWith(FtpService.IMAGE_BACKUP_ENDING)) {
+                    backupFilename = backupFilename.substring(0, backupFilename.indexOf(FtpService.IMAGE_BACKUP_ENDING));
+                }
+                downloadFile(dirName + "/" + name, Paths.get(backupDir.toString(), backupFilename));
+            });
+            LOGGER.info(String.format("Gallery '%s' has been download! %s files saved to: %s", ftpGalleryName, galleryContent.size(),
+                    Paths.get(localBackupFolder.toString(), "gallery")));
         }
     }
 

@@ -74,12 +74,14 @@ public class FtpServiceTest {
             Assert.assertTrue(Files.exists(backupDirectory));
             Assert.assertNotNull(galleries);
             Assert.assertFalse(galleries.isEmpty());
-            Assert.assertTrue(Files.exists(Paths.get(backupDirectory.toString(), galleries.get(0))));
+            Assert.assertTrue(Files.exists(Paths.get(backupDirectory.toString(), "gallery", galleries.get(0))));
         } catch (final Exception e) {
             LOGGER.error("Failed to download gallery", e);
         } finally {
             // Cleanup test
-            Files.delete(backupDirectory);
+            final FileService fileService = new FileService();
+            fileService.recursiveDelete(backupDirectory);
+            // Files.deleteIfExists(backupDirectory);
         }
 
     }
