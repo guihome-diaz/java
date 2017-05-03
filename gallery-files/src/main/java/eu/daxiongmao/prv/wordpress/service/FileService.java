@@ -32,6 +32,30 @@ public class FileService {
     private static final List<String> VIDEO_EXTENSIONS = Arrays.asList(".mov", ".mp4", ".m4v");
     private static final String IMAGE_BACKUP_ENDING = "_backup";
 
+    /**
+     * <p>
+     * To list directories and their respective content.<br>
+     * (i) This function is based on a Wordpress blog structure. It will search for images and videos that are in:
+     * </p>
+     * <ul>
+     * <li>Gallery plugin's folders</li>
+     * <li>Upload directory</li>
+     * </ul>
+     * <p>
+     * <strong>Important:</strong><br>
+     * This will exclude <code>thumbs</code> and <code>dynamic</code> folders. == it will not scan them for content.
+     * </p>
+     * <p>
+     * <i>Side effects:</i><br>
+     * You might retrieve pictures and movies from other folders, however this was NOT designed for and tested.
+     * </p>
+     *
+     * @param root
+     *            folder to analyze - it will scan the sub-directories
+     * @return list of directories that have images /and/or/ videos | backup + the description of the folders content
+     * @throws IOException
+     *             failed to access the given root
+     */
     public List<DirectoryContent> getDirectories(final Path root) throws IOException {
         final Predicate<Path> predicate = (file -> isVideoFile(file) || isImageFile(file) || isBackupFile(file));
         final Set<Path> directoriesToAnalyse = listDirectoriesThatContains(root, predicate);
@@ -55,14 +79,16 @@ public class FileService {
                     try {
                         // Exclude GALLERY plugin generated content
                         if (directoryName.endsWith(GALLERY_PLUGIN_GENERATED_FOLDER_DYNAMIC) || directoryName.endsWith(GALLERY_PLUGIN_GENERATED_FOLDER_THUMBS)) {
+                            LOGGER.debug("Skipping folder: " + directoryName);
                             return false;
                         }
                         // Only keep directories that contains asked
                         if (Files.list(directory).anyMatch(predicate)) {
+                            LOGGER.debug("New directory with video||image||backup detected: " + directoryName);
                             return true;
                         }
                     } catch (final IOException e) {
-                        System.err.println("Failed to process folder: " + e);
+                        LOGGER.error("Failed to read folder: " + directoryName, e);
                     }
                     return false;
                 }).forEach(directory -> resultsDirectories.add(directory));
