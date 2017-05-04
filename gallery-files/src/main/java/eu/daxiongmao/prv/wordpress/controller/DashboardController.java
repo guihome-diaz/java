@@ -27,10 +27,6 @@ public class DashboardController implements Initializable {
         // Load values
     }
 
-    public void doConfigureApplication() {
-        // TODO
-    }
-
     public void doDownloadFiles() {
         // TODO
     }

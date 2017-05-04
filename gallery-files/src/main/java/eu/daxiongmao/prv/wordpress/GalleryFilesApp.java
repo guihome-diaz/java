@@ -21,6 +21,9 @@ public class GalleryFilesApp extends Application {
 
     private static GalleryFilesApp instance = null;
 
+    public static final String PAGE_SETTINGS = "fxml/settings.fxml";
+    public static final String PAGE_DASHBOARD = "fxml/dashboard.fxml";
+
     private Stage primaryStage;
     private AnchorPane contentPanel;
 
@@ -34,8 +37,8 @@ public class GalleryFilesApp extends Application {
 
         loadRootPanel();
 
-        // FIXME load default page
-        // loadPage();
+        // load dashboard
+        loadPage(PAGE_DASHBOARD);
     }
 
     /**
@@ -103,8 +106,6 @@ public class GalleryFilesApp extends Application {
 
     public void reloadPage() {
         loadRootPanel();
-
-        // FIXME load default page
-        // loadPage();
+        loadPage(PAGE_DASHBOARD);
     }
 }

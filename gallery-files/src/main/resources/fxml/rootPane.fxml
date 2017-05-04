@@ -23,6 +23,7 @@
       <menus>
         <Menu mnemonicParsing="false" text="%menu.file">
           <items>
+            <MenuItem fx:id="configurationItem" mnemonicParsing="false" onAction="#configureApplication" text="%menu.file.configure" />
             <MenuItem fx:id="quitItem" mnemonicParsing="false" onAction="#exitApplication" text="%menu.file.quit" />
           </items>
         </Menu>

@@ -81,13 +81,12 @@ public class AppPropertiesService {
         if (!Files.exists(appConfigFolder)) {
             Files.createDirectories(appConfigFolder);
             LOGGER.info("Previous configuration not found - Creation of the configuration folder: " + appConfigFolder);
-
         }
 
         // Init configuration file
         final Path configFile = appConfigFolder.resolve("gallery-files.properties");
         if (!Files.exists(configFile)) {
-            final Path emptyConfigFile = Paths.get(AppPropertiesService.class.getClassLoader().getResource("/config/gallery-files.properties").toURI());
+            final Path emptyConfigFile = Paths.get(AppPropertiesService.class.getClassLoader().getResource("config/gallery-files.properties").toURI());
             Files.copy(emptyConfigFile, configFile);
             LOGGER.info("Previous configuration not found - Creation of the configuration file with default values: " + configFile);
         }

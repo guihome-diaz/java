@@ -21,6 +21,8 @@ public class RootPaneController implements Initializable {
     private static final int ICON_SIZE = 24;
 
     @FXML
+    MenuItem configurationItem;
+    @FXML
     MenuItem quitItem;
     @FXML
     MenuItem englishItem;
@@ -30,6 +32,10 @@ public class RootPaneController implements Initializable {
     MenuItem chineseItem;
     @FXML
     MenuItem aboutItem;
+
+    public void configureApplication() {
+        GalleryFilesApp.getInstance().loadPage(GalleryFilesApp.PAGE_SETTINGS);
+    }
 
     public void exitApplication() {
         Platform.exit();
@@ -60,6 +66,7 @@ public class RootPaneController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        setMenuItemIcon(configurationItem, "/img/icons/icon-settings.png");
         setMenuItemIcon(quitItem, "/img/icons/icon-exit.png");
         setMenuItemIcon(englishItem, "/img/icons/icon-UK.png");
         setMenuItemIcon(frenchItem, "/img/icons/icon-FR.png");

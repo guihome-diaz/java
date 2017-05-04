@@ -3,9 +3,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.*?> 
+<?import javafx.collections.*?> 
+<?import fxmltableview.*?> 
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -27,9 +29,9 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="50.0" prefWidth="50.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints maxHeight="424.0" minHeight="10.0" prefHeight="220.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="310.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="250.0" minHeight="10.0" prefHeight="250.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="304.0" minHeight="10.0" prefHeight="277.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
@@ -47,7 +49,7 @@
                               <Font name="System Bold" size="28.0" />
                            </font>
                         </Label>
-                        <Label fx:id="secondHeader" text="%application.subtitle">
+                        <Label text="%application.subtitle">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -56,53 +58,46 @@
                   </VBox>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <TableView fx:id="dataTable" prefHeight="254.0" prefWidth="710.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="properties" prefHeight="273.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn editable="false" maxWidth="1.7976931348623157E308" minWidth="350.0" prefWidth="350.0" text="%settings.propertyKey" />
-                            <TableColumn maxWidth="1.7976931348623157E308" minWidth="360.0" prefWidth="350.0" text="%settings.propertyValue" />
+                            <TableColumn fx:id="propKeyColumn"
+                                         maxWidth="1.7976931348623157E308" minWidth="315.0" prefWidth="315.0" 
+                                         text="%settings.propertyKey">
+                                <cellValueFactory>
+                                    <PropertyValueFactory property="propKey" />
+                                </cellValueFactory>
+                            </TableColumn>
+                            <TableColumn fx:id="propValueColumn"
+                                         maxWidth="1.7976931348623157E308" minWidth="315.0" prefWidth="315.0"
+                                         text="%settings.propertyValue">
+                                <cellValueFactory>
+                                    <PropertyValueFactory property="propValue" />
+                                </cellValueFactory>
+                            </TableColumn>
                           </columns>
+                           <VBox.margin>
+                              <Insets bottom="15.0" left="30.0" right="30.0" />
+                           </VBox.margin>
                         </TableView>
-                        <SplitPane dividerPositions="0.5" prefHeight="45.0" prefWidth="710.0" VBox.vgrow="ALWAYS">
-                          <items>
-                            <AnchorPane maxHeight="-Infinity" minHeight="45.0" minWidth="350.0" prefHeight="45.0" prefWidth="350.0" SplitPane.resizableWithParent="false">
+                        <HBox prefHeight="60.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                           <children>
+                              <HBox prefHeight="52.0" prefWidth="350.0" />
+                              <HBox alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="350.0">
                                  <children>
-                                    <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <children>
-                                          <ImageView fitHeight="35.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../img/homepage.png" />
-                                             </image>
-                                          </ImageView>
-                                          <Button fx:id="backButton" mnemonicParsing="false" onAction="#doBack" text="%backToDashboard" />
-                                       </children>
-                                    </HBox>
+                                    <Button fx:id="saveButton" mnemonicParsing="false" onAction="#doSave" text="%settings.save">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#doCancel" text="%settings.cancel">
+                                       <HBox.margin>
+                                          <Insets left="30.0" right="30.0" />
+                                       </HBox.margin>
+                                    </Button>
                                  </children>
-                              </AnchorPane>
-                            <AnchorPane maxHeight="-Infinity" minHeight="45.0" minWidth="350.0" prefHeight="45.0" prefWidth="350.0">
-                                 <children>
-                                    <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <children>
-                                          <Button fx:id="saveButton" mnemonicParsing="false" onAction="#doSave" text="%settings.save">
-                                             <HBox.margin>
-                                                <Insets />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#doCancel" text="%settings.cancel">
-                                             <HBox.margin>
-                                                <Insets left="30.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <Button fx:id="resetButton" mnemonicParsing="false" onAction="#doReset" text="%settings.reset">
-                                             <HBox.margin>
-                                                <Insets left="30.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </AnchorPane>
-                          </items>
-                        </SplitPane>
+                              </HBox>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
