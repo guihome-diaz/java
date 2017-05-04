@@ -43,18 +43,4 @@ public class Property {
     public String getValue() {
         return value.get();
     }
-
-    /**
-     * @return FXML property for the table-view column binding.
-     */
-    public SimpleStringProperty keyProperty() {
-        return key;
-    }
-
-    /**
-     * @return FXML property for the table-view column binding.
-     */
-    public SimpleStringProperty valueProperty() {
-        return value;
-    }
 }
