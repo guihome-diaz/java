@@ -15,6 +15,8 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -48,6 +50,9 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
+        // Java FX bindings
+        bundle = resources;
+
         // Allow table to be edited
         properties.setEditable(true);
 
@@ -73,14 +78,26 @@ public class SettingsController implements Initializable {
     }
 
     public void doSave() {
-        // TODO check if content has changed
-        // TODO save and display confirmation popup
-        LOGGER.info("Saving new properties");
-        // TODO redirect to dashboard
+        final Properties savedConfig = new Properties();
+        propertiesContent.forEach(item -> savedConfig.put(item.getKey(), item.getValue()));
+        try {
+            final boolean configHasBeenUpdated = appPropertiesService.saveProperties(savedConfig, null);
+            if (configHasBeenUpdated) {
+                final Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setHeaderText(bundle.getString("settings.save.popup.success.header"));
+                alert.setContentText(bundle.getString("settings.save.popup.success.message"));
+                alert.showAndWait();
+            }
+        } catch (final IllegalStateException e) {
+            final Alert alert = new Alert(AlertType.ERROR);
+            alert.setHeaderText(bundle.getString("settings.save.popup.error.header"));
+            alert.setContentText(bundle.getString("settings.save.popup.error.message"));
+        }
+
+        GalleryFilesApp.getInstance().loadPage(GalleryFilesApp.PAGE_DASHBOARD);
     }
 
     public void doCancel() {
-        // TODO add popup if content has changed
         GalleryFilesApp.getInstance().loadPage(GalleryFilesApp.PAGE_DASHBOARD);
     }
 

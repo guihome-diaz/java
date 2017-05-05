@@ -1,11 +1,13 @@
 package eu.daxiongmao.prv.wordpress.service;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -92,6 +94,65 @@ public class AppPropertiesService {
         }
 
         return configFile;
+    }
+
+    /**
+     * To save the new properties
+     *
+     * @param newProperties
+     *            new configuration values
+     * @param configPath
+     *            configuration file to update. if NULL it will update the default file.
+     * @return flag. "true" if the file was updated
+     * @throws IllegalStateException
+     *             failed to save configuration file
+     */
+    public boolean saveProperties(final Properties newProperties, final Path configPath) {
+        // Load current properties
+        final Properties existingProps = loadApplicationProperties();
+
+        // check if content has changed
+        boolean hasChanged = false;
+        final Enumeration<?> items = existingProps.propertyNames();
+        while (items.hasMoreElements()) {
+            final String key = (String) items.nextElement();
+            final String value = newProperties.getProperty(key);
+
+            if (value != null && !value.trim().isEmpty()) {
+                if (existingProps.containsKey(key) && !existingProps.get(key).equals(value.trim())) {
+                    LOGGER.debug(String.format("Configuration change - update key: %s = %s", key, value.trim()));
+                    existingProps.setProperty(key, value.trim());
+                    hasChanged = true;
+                }
+            } else if (existingProps.containsKey(key)) {
+                LOGGER.debug(String.format("Configuration change - remove key: %s", key));
+                existingProps.remove(key);
+                hasChanged = true;
+            }
+        }
+
+        // Save changes, if any
+        if (hasChanged) {
+            try {
+                // Get file
+                Path configFile = null;
+                if (configPath == null) {
+                    configFile = getConfigurationFile();
+                } else {
+                    configFile = configPath;
+                }
+                // Load content
+                try (final FileOutputStream fos = new FileOutputStream(configFile.toFile())) {
+                    existingProps.store(fos, null);
+                    LOGGER.info("New configuration has been saved");
+                }
+            } catch (final Exception e) {
+                LOGGER.error("failed to save configration", e);
+                throw new IllegalStateException(e);
+            }
+        }
+
+        return hasChanged;
     }
 
 }
