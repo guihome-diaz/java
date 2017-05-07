@@ -6,18 +6,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
+import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FtpServiceTest {
+public class FtpServiceIntegrationTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FtpServiceTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FtpServiceIntegrationTest.class);
 
-    // @Ignore("You must adjust the test configuration in src/test/resources/app_settings/gallery-files.properties")
+    @Ignore("You must adjust the test configuration in src/test/resources/app_settings/gallery-files.properties")
     @Test
     public void testListWordpressUploadDirectory() throws IOException, URISyntaxException {
         // Load properties file
@@ -44,7 +48,33 @@ public class FtpServiceTest {
         Assert.assertFalse(files.isEmpty());
     }
 
-    // @Ignore("You must adjust the test configuration in src/test/resources/app_settings/gallery-files.properties")
+    @Ignore("You must adjust the test configuration in src/test/resources/app_settings/gallery-files.properties")
+    @Test
+    public void testListWordpressGalleriesAndTheirContent() throws IOException, URISyntaxException {
+        // Load properties file
+        final Path configFile = Paths.get(FileServiceTest.class.getClassLoader().getResource("app_settings/gallery-files.properties").toURI());
+        final AppPropertiesService appPropService = new AppPropertiesService();
+        final Properties properties = appPropService.loadApplicationProperties(configFile);
+
+        // Process properties
+        final String ftpHost = properties.getProperty("ftp.url");
+        final int ftpPort = Integer.parseInt(properties.getProperty("ftp.port"));
+        final String ftpUsername = properties.getProperty("ftp.username");
+        final String ftpPassword = properties.getProperty("ftp.password");
+        final String wordpressRelativePath = properties.getProperty("wordpress.relativePath");
+
+        // Business test case
+        final FtpService ftpService = new FtpService();
+        ftpService.connect(ftpHost, ftpPort, ftpUsername, ftpPassword);
+        final Map<String, FTPFile> files = ftpService.listAllGalleriesAndTheirContent(wordpressRelativePath);
+        ftpService.disconnect();
+
+        // Assertions
+        Assert.assertNotNull(files);
+        Assert.assertFalse(files.isEmpty());
+    }
+
+    @Ignore("You must adjust the test configuration in src/test/resources/app_settings/gallery-files.properties")
     @Test
     public void testDownloadWordpressGalleryFirstDirectory() throws IOException, URISyntaxException {
         // Load properties file
@@ -66,24 +96,23 @@ public class FtpServiceTest {
             // Business test case
             final FtpService ftpService = new FtpService();
             ftpService.connect(ftpHost, ftpPort, ftpUsername, ftpPassword);
-            final List<String> galleries = ftpService.listGalleryDirectories(wordpressRelativePath);
-            ftpService.downloadGalleryContent(wordpressRelativePath, galleries.get(0), backupDirectory);
+            final Set<String> galleries = ftpService.listGalleryDirectories(wordpressRelativePath);
+            // TODO download gallery
+            // ftpService.downloadGalleryContent(wordpressRelativePath, galleries.toArray()[0], backupDirectory);
             ftpService.waitForAllDownloadsThenDisconnect();
 
             // Assertions
             Assert.assertTrue(Files.exists(backupDirectory));
             Assert.assertNotNull(galleries);
             Assert.assertFalse(galleries.isEmpty());
-            Assert.assertTrue(Files.exists(Paths.get(backupDirectory.toString(), "gallery", galleries.get(0))));
+            // Assert.assertTrue(Files.exists(Paths.get(backupDirectory.toString(), "gallery", galleries.toArray()[0])));
         } catch (final Exception e) {
             LOGGER.error("Failed to download gallery", e);
         } finally {
             // Cleanup test
             final FileService fileService = new FileService();
             fileService.recursiveDelete(backupDirectory);
-            // Files.deleteIfExists(backupDirectory);
         }
-
     }
 
 }

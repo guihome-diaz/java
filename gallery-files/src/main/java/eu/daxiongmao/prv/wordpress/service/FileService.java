@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -57,6 +60,33 @@ public class FileService {
                 return FileVisitResult.CONTINUE;
             }
         });
+    }
+
+    /**
+     * To retrieve backup content - if it exists.
+     *
+     * @param ftpGalleryName
+     *            Gallery name to retrieve
+     * @param localBackupFolder
+     *            local folder to analyse. Gallery must be in $folder/gallery/"ftpGalleryName"
+     * @return folder content or empty map
+     * @throws IOException
+     *             failed to access local backup folder. are you sure it exists?
+     */
+    public Map<String, Path> getGalleryContent(final String ftpGalleryName, final Path localBackupFolder) throws IOException {
+        final Map<String, Path> pictures = new ConcurrentHashMap<>();
+
+        // Get files
+        final Path galleryDir = Paths.get(localBackupFolder.toString(), "gallery", ftpGalleryName);
+        if (Files.exists(galleryDir)) {
+            Files.list(galleryDir).forEach((file) -> {
+                if (Files.isRegularFile(file)) {
+                    pictures.put(file.getFileName().toString(), file);
+                }
+            });
+            LOGGER.info(String.format("Previous gallery '%s' found! It already has %s pictures", galleryDir, pictures.size()));
+        }
+        return pictures;
     }
 
     /**

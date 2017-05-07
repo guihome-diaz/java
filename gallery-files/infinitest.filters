@@ -1,0 +1,11 @@
+## Tests that end in ITest:
+.*IntegrationTest
+
+## Inner Classes:
+.*\$.*
+
+## Tests in a certain package:
+#eu\.daxiongmao\.prv\.wordpress\.service\.*
+
+## All tests in this project:
+#.*
