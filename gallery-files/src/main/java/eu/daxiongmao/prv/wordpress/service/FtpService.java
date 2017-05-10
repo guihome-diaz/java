@@ -73,7 +73,12 @@ public class FtpService {
 
             // Set file transfer type to binary
             // This is mandatory if you plan to deal with non-texted document or texted written in Chinese
+            ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            ftpClient.setAutodetectUTF8(true);
+
+            // Increase buffer size to avoid connection hanging
+            ftpClient.setBufferSize(1024 * 1024);
 
             // Connection OK: enter passive mode
             ftpClient.enterLocalPassiveMode();
@@ -242,11 +247,17 @@ public class FtpService {
         });
         final Map<String, FTPFile> galleries = getItemsToProcess(dirToList, handler);
 
-        /** ----- Logging ----- */
+        // order the map
+        final Map<String, FTPFile> sortedContent = new TreeMap<>();
+        sortedContent.putAll(galleries);
+
+        // log
         final StringBuilder log = new StringBuilder("\n");
-        galleries.forEach((key, value) -> log.append("   * ").append(key).append("\n"));
-        LOGGER.info(String.format("Found %s galleries: %s", galleries.size(), log.toString()));
-        return galleries.keySet();
+        sortedContent.forEach((key, value) -> {
+            log.append("   * /home/daxiongm/www/baby/wp-content/gallery/").append(key).append("\n");
+        });
+        LOGGER.info(String.format("Found %s galleries\n%s", sortedContent.size(), log));
+        return sortedContent.keySet();
     }
 
     /**
@@ -272,14 +283,16 @@ public class FtpService {
             }
         });
 
-        // Log and order the map
+        // order the map
         final Map<String, FTPFile> sortedContent = new TreeMap<>();
+        sortedContent.putAll(galleriesContent);
+
+        // log
         final StringBuilder log = new StringBuilder("\n");
-        galleriesContent.forEach((key, value) -> {
+        sortedContent.forEach((key, value) -> {
             log.append("   * ").append(key).append("\n");
-            sortedContent.put(key, value);
         });
-        LOGGER.info(String.format("Found %s files: %s", sortedContent.size(), sortedContent.toString()));
+        LOGGER.info(String.format("Found %s files\n%s", sortedContent.size(), log));
         return sortedContent;
     }
 
@@ -292,8 +305,12 @@ public class FtpService {
                     fileName = fileName.substring(0, fileName.indexOf(FtpService.IMAGE_BACKUP_ENDING));
                 }
                 // keep the high resolution (bigger size)
-                if (!items.containsKey(fileName) || items.get(fileName).getSize() < aFtpFile.getSize()) {
+                if (!items.containsKey(galleryName + "/" + fileName)) {
                     items.put(galleryName + "/" + fileName, aFtpFile);
+                    LOGGER.debug(String.format("  > ADD file: %s", dirName + "/" + aFtpFile.getName()));
+                } else if (items.get(galleryName + "/" + fileName).getSize() < aFtpFile.getSize()) {
+                    items.put(galleryName + "/" + fileName, aFtpFile);
+                    LOGGER.debug(String.format("  > FOUND better quality file: %s", dirName + "/" + aFtpFile.getName()));
                 }
             }
         });
