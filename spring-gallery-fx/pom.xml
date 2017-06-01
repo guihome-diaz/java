@@ -2,10 +2,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.daxiongmao.prv</groupId>
-    <artifactId>gallery-files</artifactId>
+    <artifactId>spring-gallery-fx</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>gallery-files</name>
-    <description>Daxiongmao.eu # Wordpress's Gallery files</description>
+    <description>Daxiongmao.eu # Wordpress's Gallery files # Spring boot + JavaFX + embedded DB</description>
 
     <developers>
         <developer>
@@ -19,13 +19,26 @@
         <url>http://daxiongmao.eu/</url>
     </organization>
 
+    <!-- SPRING BOOT FRAMEWORK -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.2.RELEASE</version>
+    </parent>
+
+    <!-- ############## -->
+    <!-- # PROPERTIES # -->
+    <!-- ############## -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
 
+        <!-- Dependencies -->
+        <springboot-javafx.version>1.3.22</springboot-javafx.version>
+
         <!-- Program entry point -->
-        <exec.mainClass>eu.daxiongmao.prv.wordpress.GalleryFilesApp</exec.mainClass>
+        <exec.mainClass>eu.daxiongmao.wordpress.Main</exec.mainClass>
     </properties>
 
 
@@ -69,13 +82,30 @@
             </resource>
         </resources>
 
-        <plugins>
-
-            <!-- Global settings -->
+        <plugins>            
+            <!-- Include resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+            
+            <!-- Check if some dependencies are vulnerable (public notice) -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>1.3.5.1</version>
+            </plugin>
+            
+            <!-- Compilation settings -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -89,7 +119,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -100,95 +129,43 @@
                 </executions>
             </plugin>
 
-            <!-- JavaFX8 bundling tool -->
-            <!-- In Java8 you don't have to trick the system anymore [like JavaFX2]: maven plugins are stable and working -->
-            <!-- You can customize the output artifact, check out the plugin options on: https://javafx-maven-plugin.github.io/ -->
-            <plugin>
-                <groupId>com.zenjava</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.5.0</version>
-                <configuration>
-                    <mainClass>${exec.mainClass}</mainClass>
-                    <jfxAppOutputDir>${project.build.directory}/${project.name}</jfxAppOutputDir>
-                    <jfxMainAppJarName>${project.build.finalName}.jar</jfxMainAppJarName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>create-jfxjar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <!-- Copy launchers scripts to the application folder -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/${project.name}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/main/launcher</directory>
-                                    <includes>
-                                        <include>*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
 
     <dependencies>
-        <!-- Apache commons NET : to handle common network protocols such as FTP / SFTP -->
+        <!-- Spring boot # core features -->
         <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-            <version>3.6</version>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
-        <!-- Apache commons (utilities set) -->
+    	
+        <!-- Spring boot # JavaFX integration -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
+          <groupId>de.roskenet</groupId>
+          <artifactId>springboot-javafx-support</artifactId>
+          <version>${springboot-javafx.version}</version>
         </dependency>
-
-        <!-- ControlFX - nice dialogs and improved JavaFX UI -->
+        
+        <!-- Spring boot # Set of utilities to work locally (hot swap) -->
         <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>8.40.12</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
         </dependency>
-
-        <!-- Logging -->
+        
+        <!-- Spring boot # ACTUATOR - to display information about the current application -->
+        <!-- Application status and settings will be available at '/actuator' -->
+        <!-- http://www.baeldung.com/spring-boot-actuators + http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready-endpoints -->
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.1.7</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
+        
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

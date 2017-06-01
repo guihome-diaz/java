@@ -1,0 +1,5 @@
+       
+javafx:
+    title: Daxiongmao
+    stage:
+        resizable: true
