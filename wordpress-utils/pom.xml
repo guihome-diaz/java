@@ -18,6 +18,12 @@
         <name>Daxiongmao.eu</name>
         <url>http://daxiongmao.eu/</url>
     </organization>
+    
+    <scm>
+        <connection>https://github.com/guihome-diaz/java.git</connection>
+        <developerConnection>https://github.com/guihome-diaz/java.git</developerConnection>
+        <url>https://github.com/guihome-diaz/java/tree/master/wordpress-utils</url>
+    </scm>
 
     <!-- SPRING BOOT FRAMEWORK -->
     <parent>
@@ -128,7 +134,49 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Generate and upload the javadoc artifact to ease usage by 3rd party -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
+        
+            <!-- ###### QUALITY CHECKS ###### -->
+            <!-- FindBugs -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.4</version>
+            </plugin>
+            <!-- To use online quality tool "Coveralls" # see https://coveralls.io/ -->
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+            </plugin>
+            <!-- SonarQube plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
     </build>
 
@@ -138,6 +186,18 @@
         <dependency>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        
+        <!-- Spring boot # Database features -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        
+        <!-- Embedded database -->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
         </dependency>
     	
         <!-- Spring boot # JavaFX integration -->
@@ -161,6 +221,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        
         
         <!-- Testing -->
         <dependency>
