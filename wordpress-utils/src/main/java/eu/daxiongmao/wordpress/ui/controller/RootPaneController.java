@@ -2,13 +2,10 @@ package eu.daxiongmao.wordpress.ui.controller;
 
 import java.net.URL;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
 import eu.daxiongmao.wordpress.Main;
-import eu.daxiongmao.wordpress.ui.service.SessionService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -27,12 +24,7 @@ import javafx.scene.image.ImageView;
  *
  */
 @FXMLController
-public class RootPaneController {
-
-    private ResourceBundle bundle = ResourceBundle.getBundle("langs.wordpress");
-
-    @Autowired
-    private SessionService sessionService;
+public class RootPaneController extends AbstractFxmlController {
 
     /** The icon will have the following height size (auto width stretch). */
     private static final int ICON_SIZE = 24;
@@ -80,9 +72,9 @@ public class RootPaneController {
 
     public void aboutPopup() {
         final Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("About...");
-        alert.setHeaderText("Wordpress's Gallery plugin files management");
-        alert.setContentText("2017/04 - Daxiongmao.eu [G.Diaz] - Creation");
+        alert.setTitle(getBundle().getString("popup.help.title"));
+        alert.setHeaderText(getBundle().getString("popup.help.header"));
+        alert.setContentText(getBundle().getString("popup.help.content"));
         alert.showAndWait();
     }
 

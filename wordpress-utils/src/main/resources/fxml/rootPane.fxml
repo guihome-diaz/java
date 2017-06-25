@@ -11,7 +11,7 @@
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="600.0" prefWidth="800.0" 
       stylesheets="@../css/daxiongmao.css" 
-      xmlns="http://javafx.com/javafx/8.0.112" 
+      xmlns="http://javafx.com/javafx/8.0.131" 
       xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="eu.daxiongmao.wordpress.ui.controller.RootPaneController">
   <children>
@@ -46,9 +46,9 @@
       
         <!-- This is just a dummy content that should be remove by another screen -->
         <Label alignment="CENTER" 
-               layoutX="155.0" 
-               layoutY="177.0" 
-               text="Dummy content that must be replace by application screen" 
+               layoutX="260.0" 
+               layoutY="220.0" 
+               text="%root.default-text" 
                textAlignment="CENTER" 
                textFill="#9f9f9f" wrapText="false">
         </Label>

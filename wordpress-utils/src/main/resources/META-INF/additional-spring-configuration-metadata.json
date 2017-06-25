@@ -1,0 +1,49 @@
+{
+	"properties": [
+		{
+			"name": "h2.tcp.enabled",
+			"type": "java.lang.Boolean",
+			"description": "To enable / disable TCP connection to the H2 embedded database through external SQL clients such as SQUIRREL-SQL, TOAD, etc."
+		},
+        {
+            "name": "h2.tcp.port",
+            "type": "java.lang.Integer",
+            "description": "TCP port to listen to for external SQL client connections"
+        },
+        {
+            "name": "h2.web.enabled",
+            "type": "java.lang.Boolean",
+            "description": "To enable / disable the embedded web server to manage database (H2 console)"
+        },
+        {
+            "name": "h2.web.port",
+            "type": "java.lang.String",
+            "description": "TCP port for the embedded web server with the H2 console. Users will be able to check the DB content on http://localhost:port"
+        },
+        {
+            "name": "javafx.title",
+            "type": "java.lang.String",
+            "description": "Name of the JavaFX application's window"
+        },
+        {
+            "name": "javafx.stage.resizable",
+            "type": "java.lang.Boolean",
+            "description": "To enable / disable the ability to resize the window"
+        },
+        {
+            "name": "javafx.css",
+            "type": "java.util.List",
+            "description": "List of CSS file(s) to load on  - This must be a comma separated list"
+        },
+        {
+            "name": "javafx.appicons",
+            "type": "java.util.List",
+            "description": "Application icons. This must be a comma separated list that contains files in different sizes. ex: /img/app_icons/wordpress_16x16.png,/img/app_icons/wordpress_32x32.png,/img/app_icons/wordpress_48x48.png,/img/app_icons/wordpress_64x64.png,/img/app_icons/wordpress_128x128.png"
+        },
+        {
+            "name": "javafx.stage.style",
+            "type": "java.lang.String",
+            "description": "To set the application look and feel style, see javafx.stage.StageStyle . It must match an enum value"
+        }
+	]
+}
