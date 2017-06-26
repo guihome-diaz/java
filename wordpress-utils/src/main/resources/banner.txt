@@ -13,8 +13,29 @@
 Version: @version@ (banner URL: http://patorjk.com/software/taag/#p=display&f=Big&t=Daxiongmao%20%7C%20Wordpress)
 --------------------------------------------------------------------------------------------------------------------
 
+# Application monitoring
 This application exposes some Spring Boot Actuators as JMX endpoints. 
     >> use JConsole |or| Java Mission Control (jmc) to access them
+
+
+# Database
+
+username:   sa
+password:   (empty)
+
+## Embedded server
+  - H2 console URL:    http://localhost:8082
+  - Database URL:      jdbc:h2:file:*user.home*/daxiongmao/wordpress-utils/wordpress-utils.db
+(i) Just replace 'user.home' by your own path.
+
+
+## TCP socket
+The application will open and listen on a TCP socket
+
+  - TCP socket:        localhost:9092
+  - Database driver:   H2 embedded
+  - Database URL:      jdbc:h2:tcp://localhost:9092/file:/home/guillaume/daxiongmao/wordpress-utils/wordpress-utils.db
+
 
 
 --------------------------------------------------------------------------------------------------------------------

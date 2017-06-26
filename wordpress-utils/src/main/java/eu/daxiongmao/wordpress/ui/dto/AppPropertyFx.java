@@ -1,5 +1,6 @@
 package eu.daxiongmao.wordpress.ui.dto;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
@@ -11,27 +12,33 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class AppPropertyFx {
 
+    private SimpleIntegerProperty id;
+
     private SimpleStringProperty key;
 
     private SimpleStringProperty value;
 
     private SimpleStringProperty description;
 
-    public AppPropertyFx(final String key, final String value) {
+    public AppPropertyFx(final String key, final String value, final String description) {
+        id = new SimpleIntegerProperty();
         this.key = new SimpleStringProperty(key);
         if (value == null) {
             this.value = new SimpleStringProperty("");
         } else {
             this.value = new SimpleStringProperty(value);
         }
-    }
-
-    public AppPropertyFx(final String key, final String value, final String description) {
-        this(key, value);
         if (description == null) {
             this.description = new SimpleStringProperty("");
         } else {
             this.description = new SimpleStringProperty(description);
+        }
+    }
+
+    public AppPropertyFx(final Integer id, final String key, final String value, final String description) {
+        this(key, value, description);
+        if (id != null) {
+            this.id.set(id);
         }
     }
 
@@ -55,11 +62,19 @@ public class AppPropertyFx {
         return value.get();
     }
 
-    public SimpleStringProperty getDescription() {
-        return description;
+    public String getDescription() {
+        return description.get();
     }
 
     public void setDescription(final String description) {
         this.description.set(description);
+    }
+
+    public Integer getId() {
+        return id.get();
+    }
+
+    public void setId(final Integer id) {
+        this.id.set(id);
     }
 }

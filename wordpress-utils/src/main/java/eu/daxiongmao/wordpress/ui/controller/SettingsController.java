@@ -14,14 +14,12 @@ import eu.daxiongmao.wordpress.server.model.AppProperty;
 import eu.daxiongmao.wordpress.ui.dto.AppPropertyFx;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.TextField;
 
 @FXMLController
 public class SettingsController extends AbstractFxmlController {
@@ -35,6 +33,15 @@ public class SettingsController extends AbstractFxmlController {
     Button cancelButton;
 
     @FXML
+    Button searchButton;
+
+    @FXML
+    Button addButton;
+
+    @FXML
+    TextField searchField;
+
+    @FXML
     TableView<AppPropertyFx> properties;
     @FXML
     TableColumn<AppPropertyFx, String> propKeyColumn;
@@ -42,6 +49,10 @@ public class SettingsController extends AbstractFxmlController {
     TableColumn<AppPropertyFx, String> propValueColumn;
     @FXML
     TableColumn<AppPropertyFx, String> propDescriptionColumn;
+    @FXML
+    TableColumn<AppPropertyFx, Button> propEditColumn;
+    @FXML
+    TableColumn<AppPropertyFx, Button> propDeleteColumn;
 
     final ObservableList<AppPropertyFx> propertiesContent = FXCollections.observableArrayList();
 
@@ -62,41 +73,33 @@ public class SettingsController extends AbstractFxmlController {
     private void setupUi() {
         // Allow table to be edited
         properties.setEditable(true);
+        // Only work on 1 row at a time
+        properties.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         // Setup columns (see http://docs.oracle.com/javafx/2/ui_controls/table-view.htm)
-        // Non editable column
-        propKeyColumn.setCellValueFactory(new PropertyValueFactory<>("key"));
+        // Non editable columns
         propKeyColumn.setEditable(false);
-
-        // Editable column VALUE
-        propValueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
-        propValueColumn.setEditable(true);
-        propValueColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        propValueColumn.setOnEditCommit(new EventHandler<CellEditEvent<AppPropertyFx, String>>() {
-            @Override
-            public void handle(final CellEditEvent<AppPropertyFx, String> t) {
-                t.getTableView().getItems().get(t.getTablePosition().getRow()).setValue(t.getNewValue());
-            }
-        });
-
-        // Editable column DESCRIPTION
-        propDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        propDescriptionColumn.setEditable(true);
-        propDescriptionColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        propDescriptionColumn.setOnEditCommit(new EventHandler<CellEditEvent<AppPropertyFx, String>>() {
-            @Override
-            public void handle(final CellEditEvent<AppPropertyFx, String> t) {
-                t.getTableView().getItems().get(t.getTablePosition().getRow()).setDescription(t.getNewValue());
-            }
-        });
+        propValueColumn.setEditable(false);
+        propDescriptionColumn.setEditable(false);
     }
 
     public void doSave() {
         // FIXME GDZ
+        LOGGER.info("Saving properties");
     }
 
     public void doCancel() {
         // FIXME GDZ
+    }
+
+    public void doSearch() {
+        // FIXME GDZ
+        LOGGER.info("Searching for property: ");
+    }
+
+    public void doAdd() {
+        // FIXME GDZ
+        LOGGER.info("Adding new property");
     }
 
 }

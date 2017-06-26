@@ -6,6 +6,7 @@ import java.util.Locale;
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
 import eu.daxiongmao.wordpress.Main;
+import eu.daxiongmao.wordpress.ui.view.SettingsView;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -101,6 +102,7 @@ public class RootPaneController extends AbstractFxmlController {
 
     public void configureApplication() {
         // TODO
+        Main.showView(SettingsView.class);
     }
 
 }
