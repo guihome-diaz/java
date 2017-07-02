@@ -18,7 +18,7 @@
       <VBox id="mainpage" fx:id="container" maxHeight="-1.0" maxWidth="-1.0" minHeight="580.0" minWidth="800.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
          <children>
             
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+			<VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
                <children>
                   <HBox alignment="CENTER">
                      <children>
@@ -46,35 +46,20 @@
                         <Insets bottom="15.0" top="15.0" />
                      </VBox.margin>
                   </HBox>
-                  <TableView fx:id="properties" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="properties" VBox.vgrow="ALWAYS" editable="false">
                     <columns>
-                      <TableColumn fx:id="propKeyColumn" editable="false" maxWidth="-Infinity" minWidth="220.0" prefWidth="220.0" text="%settings.propertyKey">
-                          <cellValueFactory>
-                              <PropertyValueFactory property="propKey" />
-                          </cellValueFactory>
-                      </TableColumn>
-                      <TableColumn fx:id="propValueColumn" editable="false" maxWidth="-Infinity" minWidth="250.0" prefWidth="250.0" text="%settings.propertyValue">
-                          <cellValueFactory>
-                              <PropertyValueFactory property="propValue" />
-                          </cellValueFactory>
-                      </TableColumn>
-                        <TableColumn fx:id="propDescriptionColumn" editable="false" maxWidth="-Infinity" minWidth="250.0" prefWidth="250.0" sortable="false" text="%settings.propertyDescription">
-                           <cellValueFactory>
-                              <PropertyValueFactory property="propValue" />
-                           </cellValueFactory>
-                        </TableColumn>
-                        <TableColumn fx:id="propEditColumn" editable="false" maxWidth="-Infinity" minWidth="220.0" prefWidth="220.0">
-                           <cellValueFactory>
-                              <PropertyValueFactory property="propKey" />
-                           </cellValueFactory>
-                        </TableColumn>
+                      <TableColumn fx:id="propIdColumn" maxWidth="-Infinity" minWidth="20.0" prefWidth="20.0" text="%settings.propertyId" />
+                      <TableColumn fx:id="propKeyColumn" maxWidth="-Infinity" minWidth="220.0" prefWidth="220.0" text="%settings.propertyKey" />
+                      <TableColumn fx:id="propValueColumn" maxWidth="-Infinity" minWidth="240.0" prefWidth="240.0" text="%settings.propertyValue" />
+                      <TableColumn fx:id="propDescriptionColumn" maxWidth="-Infinity" minWidth="250.0" prefWidth="250.0" sortable="false" text="%settings.propertyDescription" />
+                      <TableColumn fx:id="deleteColumn" maxWidth="-Infinity" minWidth="20.0" prefWidth="20.0" sortable="false" />
                     </columns>
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </TableView>
                   
-                              <HBox prefHeight="60.0" prefWidth="200.0" VBox.vgrow="NEVER">
+				  <HBox prefHeight="60.0" prefWidth="200.0" VBox.vgrow="NEVER">
                      <children>
                         <HBox prefHeight="52.0" prefWidth="350.0" />
                         <HBox alignment="CENTER_RIGHT" prefHeight="60.0" prefWidth="412.0">

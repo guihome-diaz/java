@@ -1,7 +1,12 @@
 package eu.daxiongmao.wordpress.ui.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
@@ -27,6 +32,8 @@ import javafx.scene.image.ImageView;
 @FXMLController
 public class RootPaneController extends AbstractFxmlController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RootPaneController.class);
+    
     /** The icon will have the following height size (auto width stretch). */
     private static final int ICON_SIZE = 24;
 
@@ -43,6 +50,9 @@ public class RootPaneController extends AbstractFxmlController {
     @FXML
     MenuItem aboutItem;
 
+    @Value("${h2.tcp.port}")
+    private int h2consolePort;
+    
     /**
      * To init the screen content once Spring Boot + JavaFX have been loaded.<br>
      * This will be execute BEFORE presenting the screen to the user with a guarantee of non-null values.
@@ -101,7 +111,6 @@ public class RootPaneController extends AbstractFxmlController {
     }
 
     public void configureApplication() {
-        // TODO
         Main.showView(SettingsView.class);
     }
 

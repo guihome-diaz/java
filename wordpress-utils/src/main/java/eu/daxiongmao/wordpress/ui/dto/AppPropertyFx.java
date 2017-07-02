@@ -12,9 +12,9 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class AppPropertyFx {
 
-    private SimpleIntegerProperty id;
+    private final SimpleIntegerProperty id;
 
-    private SimpleStringProperty key;
+    private final SimpleStringProperty key;
 
     private SimpleStringProperty value;
 
@@ -58,12 +58,24 @@ public class AppPropertyFx {
         return key.get();
     }
 
+    public SimpleStringProperty getKeyProperty() {
+        return key;
+    }
+
     public String getValue() {
         return value.get();
     }
 
+    public SimpleStringProperty getValueProperty() {
+        return value;
+    }
+
     public String getDescription() {
         return description.get();
+    }
+
+    public SimpleStringProperty getDescriptionProperty() {
+        return description;
     }
 
     public void setDescription(final String description) {
@@ -72,6 +84,10 @@ public class AppPropertyFx {
 
     public Integer getId() {
         return id.get();
+    }
+
+    public SimpleIntegerProperty getIdProperty() {
+        return id;
     }
 
     public void setId(final Integer id) {

@@ -34,7 +34,7 @@ public @Data class AppProperty implements Serializable {
     @Column(nullable = false, length = 200, name = "KEY", unique = true)
     private String key;
 
-    @Column(nullable = false, length = 255, name = "VALUE", unique = false)
+    @Column(nullable = true, length = 255, name = "VALUE", unique = false)
     private String value;
 
     @Column(nullable = true, length = 2500, name = "DESCRIPTION", unique = false)
@@ -50,4 +50,21 @@ public @Data class AppProperty implements Serializable {
         this.value = value;
         this.description = description;
     }
+    
+    public Integer getValueAsInteger() {
+    	Integer result = null;
+    	if (this.value != null) {
+    		result = Integer.parseInt(this.value);
+    	}
+    	return result;
+    }
+    
+    public Boolean getValueAsBoolean() {
+    	Boolean result = null;
+    	if (this.value != null) {
+    		result = Boolean.parseBoolean(this.value);
+    	}
+    	return result;
+    }
+    
 }
