@@ -1,5 +1,8 @@
 package eu.daxiongmao.wordpress.ui.controller;
 
+import java.net.URL;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,31 +16,34 @@ import eu.daxiongmao.wordpress.server.dao.AppPropertyRepository;
 import eu.daxiongmao.wordpress.server.model.AppProperty;
 import eu.daxiongmao.wordpress.ui.convert.AppPropertyConvertor;
 import eu.daxiongmao.wordpress.ui.dto.AppPropertyFx;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 @FXMLController
 public class SettingsController extends AbstractFxmlController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingsController.class);
 
-    @FXML
-    Button saveButton;
+    private static final int ACTIONS_ICON_SIZE_IN_PIXELS = 16;
 
     @FXML
-    Button cancelButton;
-
+    Button newButton;
+    @FXML
+    Button nextPage, previousPage;
     @FXML
     Button searchButton;
-
-    @FXML
-    Button addButton;
-
     @FXML
     TextField searchField;
 
@@ -70,8 +76,8 @@ public class SettingsController extends AbstractFxmlController {
 
         // Load values from DB
         final Page<AppProperty> props = appPropsRepository.findAll(new PageRequest(pageNumber, nbOfRowsPerRequest));
-        pageNumber++;
-
+        // Button configuration
+        recomputeNextButtonStatus();
         // DB to FX list
         properties.setItems(AppPropertyConvertor.dbPropToFx(props.getContent()));
     }
@@ -87,41 +93,99 @@ public class SettingsController extends AbstractFxmlController {
         propKeyColumn.setCellValueFactory(cellData -> cellData.getValue().getKeyProperty());
         propValueColumn.setCellValueFactory(cellData -> cellData.getValue().getValueProperty());
         propDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().getDescriptionProperty());
+        setupDeleteColumn();
+    }
 
+    private void setupDeleteColumn() {
+        // (1) Delete column will return the current object on click
+        deleteColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
+        // (2) Delete column behavior
         deleteColumn.setCellFactory(deleteCell -> {
             final TableCell<AppPropertyFx, AppPropertyFx> cell = new TableCell<AppPropertyFx, AppPropertyFx>() {
-            };
-            cell.setOnMouseClicked(e -> {
-                if (!cell.isEmpty()) {
-                    final AppProperty entityToDelete = AppPropertyConvertor.fxPropToDb(cell.getItem());
-                    appPropsRepository.delete(entityToDelete);
-                    properties.getItems().remove(cell.getIndex());
+                @Override
+                public void updateItem(final AppPropertyFx item, final boolean empty) {
+                    // Set icon
+                    super.updateItem(item, empty);
+                    if (item != null && item.getKey() != null && item.getId() != null) {
+                        final HBox box= new HBox();
+                        final URL url = getClass().getResource("/img/icons/icon-delete.png");
+                        final Image picture = new Image(url.toExternalForm());
+                        final ImageView icon = new ImageView(picture);
+                        icon.setFitHeight(ACTIONS_ICON_SIZE_IN_PIXELS);
+                        icon.setPreserveRatio(true);
+                        box.getChildren().add(icon);
+                        setGraphic(box);
+                    }
                 }
-            });
+            };
+            // Set action on click
+            cell.setOnMouseClicked(e -> setupDeleteActionAndConfirmDialog(cell));
             return cell;
         });
-
-        // Non editable columns
-        propKeyColumn.setEditable(false);
     }
 
-    public void doSave() {
+    private void setupDeleteActionAndConfirmDialog(final TableCell<AppPropertyFx, AppPropertyFx> cell) {
+        if (!cell.isEmpty()) {
+            final AppProperty entityToDelete = AppPropertyConvertor.fxPropToDb(cell.getItem());
+
+            final Alert confirmPopup = new Alert(AlertType.CONFIRMATION);
+            confirmPopup.setTitle(getBundle().getString("settings.delete.popup.title"));
+            confirmPopup.setHeaderText(getBundle().getString("settings.delete.popup.headerText"));
+            confirmPopup.setContentText(entityToDelete.toHtmlString());
+
+            final Optional<ButtonType> result = confirmPopup.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                appPropsRepository.delete(entityToDelete);
+                properties.getItems().remove(cell.getIndex());
+
+            }
+        }
+    }
+
+    /**
+     * Call this method on delete and add button.
+     */
+    private void recomputeNextButtonStatus() {
+        final Integer nbOfRowsPerRequest = appPropsRepository.findByKey(ApplicationProperties.DB_CONFIG_NB_RESULTS_PER_PAGE.key).getValueAsInteger();
+        final long totalEntries = appPropsRepository.count();
+
+        // Button configuration
+        if (pageNumber == 0) {
+            previousPage.setDisable(true);
+            previousPage.setVisible(false);
+        } else {
+            previousPage.setDisable(false);
+            previousPage.setVisible(true);
+        }
+
+        if ((pageNumber + 1) * nbOfRowsPerRequest > totalEntries) {
+            nextPage.setDisable(true);
+            nextPage.setVisible(false);
+        } else {
+            nextPage.setDisable(false);
+            nextPage.setVisible(true);
+        }
+
+    }
+
+    public void doShowNextPage() {
+        pageNumber++;
+        loadDbValues();
+    }
+
+    public void doShowPreviousPage() {
+        pageNumber--;
+        loadDbValues();
+    }
+
+    public void doAddNewItem() {
         // FIXME GDZ
         LOGGER.info("Saving properties");
-    }
-
-    public void doCancel() {
-        // FIXME GDZ
     }
 
     public void doSearch() {
         // FIXME GDZ
         LOGGER.info("Searching for property: ");
-    }
-
-    public void doAdd() {
-        // FIXME GDZ
-        LOGGER.info("Adding new property");
     }
 
 }

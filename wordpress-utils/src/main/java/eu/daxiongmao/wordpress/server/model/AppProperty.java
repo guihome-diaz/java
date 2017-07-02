@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * This represents an application's property.
@@ -65,6 +66,13 @@ public @Data class AppProperty implements Serializable {
     		result = Boolean.parseBoolean(this.value);
     	}
     	return result;
+    }
+    
+    public String toHtmlString() {
+        StringBuilder log = new StringBuilder();
+        log.append("Key: ").append(key).append("<br>");
+        log.append("Value: ").append(value).append("<br>");
+        return log.toString();
     }
     
 }

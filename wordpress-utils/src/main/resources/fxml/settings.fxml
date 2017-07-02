@@ -6,7 +6,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -46,7 +45,7 @@
                         <Insets bottom="15.0" top="15.0" />
                      </VBox.margin>
                   </HBox>
-                  <TableView fx:id="properties" VBox.vgrow="ALWAYS" editable="false">
+                  <TableView fx:id="properties" editable="false" VBox.vgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="propIdColumn" maxWidth="-Infinity" minWidth="20.0" prefWidth="20.0" text="%settings.propertyId" />
                       <TableColumn fx:id="propKeyColumn" maxWidth="-Infinity" minWidth="220.0" prefWidth="220.0" text="%settings.propertyKey" />
@@ -61,17 +60,24 @@
                   
 				  <HBox prefHeight="60.0" prefWidth="200.0" VBox.vgrow="NEVER">
                      <children>
-                        <HBox prefHeight="52.0" prefWidth="350.0" />
-                        <HBox alignment="CENTER_RIGHT" prefHeight="60.0" prefWidth="412.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="272.0">
                            <children>
-                              <Button fx:id="saveButton" mnemonicParsing="false" onAction="#doSave" text="%settings.save">
+                              <Button fx:id="newButton" mnemonicParsing="false" onAction="#doAddNewItem" text="%settings.new">
                                  <HBox.margin>
-                                    <Insets />
+                                    <Insets left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#doCancel" text="%settings.cancel">
+                           </children></HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="60.0" prefWidth="635.0">
+                           <children>
+                              <Button fx:id="previousPage" mnemonicParsing="false" onAction="#doShowPreviousPage" text="%previousPage">
                                  <HBox.margin>
-                                    <Insets left="30.0" right="30.0" />
+                                    <Insets left="5.0" right="5.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="nextPage" mnemonicParsing="false" onAction="#doShowNextPage" text="%nextPage">
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="5.0" />
                                  </HBox.margin>
                               </Button>
                            </children>
