@@ -47,15 +47,14 @@
                   </HBox>
                   <TableView fx:id="properties" editable="false" VBox.vgrow="ALWAYS">
                     <columns>
-                      <TableColumn fx:id="propIdColumn" maxWidth="-Infinity" minWidth="20.0" prefWidth="20.0" text="%settings.propertyId" />
-                      <TableColumn fx:id="propKeyColumn" maxWidth="-Infinity" minWidth="220.0" prefWidth="220.0" text="%settings.propertyKey" />
-                      <TableColumn fx:id="propValueColumn" maxWidth="-Infinity" minWidth="240.0" prefWidth="240.0" text="%settings.propertyValue" />
-                      <TableColumn fx:id="propDescriptionColumn" maxWidth="-Infinity" minWidth="250.0" prefWidth="250.0" sortable="false" text="%settings.propertyDescription" />
-                      <TableColumn fx:id="deleteColumn" maxWidth="-Infinity" minWidth="20.0" prefWidth="20.0" sortable="false" />
+                      <!-- Size set in the controller class, each column is bound to the table size -->
+                      <TableColumn fx:id="propIdColumn" text="%settings.propertyId" />
+                      <TableColumn fx:id="propKeyColumn" text="%settings.propertyKey" />
+                      <TableColumn fx:id="propValueColumn" text="%settings.propertyValue" />
+                      <TableColumn fx:id="propDescriptionColumn" sortable="false" text="%settings.propertyDescription" />
+                      <TableColumn fx:id="editColumn" sortable="false" />
+                      <TableColumn fx:id="deleteColumn" sortable="false" />
                     </columns>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
                   </TableView>
                   
 				  <HBox prefHeight="60.0" prefWidth="200.0" VBox.vgrow="NEVER">

@@ -1,6 +1,5 @@
 package eu.daxiongmao.wordpress.ui.controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 
@@ -33,7 +32,7 @@ import javafx.scene.image.ImageView;
 public class RootPaneController extends AbstractFxmlController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RootPaneController.class);
-    
+
     /** The icon will have the following height size (auto width stretch). */
     private static final int ICON_SIZE = 24;
 
@@ -52,7 +51,7 @@ public class RootPaneController extends AbstractFxmlController {
 
     @Value("${h2.tcp.port}")
     private int h2consolePort;
-    
+
     /**
      * To init the screen content once Spring Boot + JavaFX have been loaded.<br>
      * This will be execute BEFORE presenting the screen to the user with a guarantee of non-null values.
@@ -78,7 +77,14 @@ public class RootPaneController extends AbstractFxmlController {
     }
 
     public void exitApplication() {
+        LOGGER.info("Closing JavaFX application");
+
+        // orderly shut down FX
         Platform.exit();
+
+        // But: there might still be a daemon thread left over from OkHttp (some async dispatcher)
+        // so assume everything is fine and call System.exit(0)
+        System.exit(0);
     }
 
     public void aboutPopup() {

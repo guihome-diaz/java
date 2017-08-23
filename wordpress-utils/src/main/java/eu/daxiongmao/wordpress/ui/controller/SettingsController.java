@@ -1,6 +1,8 @@
 package eu.daxiongmao.wordpress.ui.controller;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,14 +10,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.StringUtils;
 
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
+import eu.daxiongmao.wordpress.Main;
 import eu.daxiongmao.wordpress.config.ApplicationProperties;
 import eu.daxiongmao.wordpress.server.dao.AppPropertyRepository;
 import eu.daxiongmao.wordpress.server.model.AppProperty;
 import eu.daxiongmao.wordpress.ui.convert.AppPropertyConvertor;
 import eu.daxiongmao.wordpress.ui.dto.AppPropertyFx;
+import eu.daxiongmao.wordpress.ui.session.AppSession;
+import eu.daxiongmao.wordpress.ui.session.ScreenNames;
+import eu.daxiongmao.wordpress.ui.view.SettingEditionView;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -59,6 +66,11 @@ public class SettingsController extends AbstractFxmlController {
     TableColumn<AppPropertyFx, String> propDescriptionColumn;
     @FXML
     TableColumn<AppPropertyFx, AppPropertyFx> deleteColumn;
+    @FXML
+    TableColumn<AppPropertyFx, AppPropertyFx> editColumn;
+
+    @FXML
+    private SettingEditionController propertyEditController;
 
     @Autowired
     private AppPropertyRepository appPropsRepository;
@@ -93,14 +105,36 @@ public class SettingsController extends AbstractFxmlController {
         propKeyColumn.setCellValueFactory(cellData -> cellData.getValue().getKeyProperty());
         propValueColumn.setCellValueFactory(cellData -> cellData.getValue().getValueProperty());
         propDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().getDescriptionProperty());
+
+        // Setup columns size, bind the column to the table (in percentage) so they are always resized
+        properties.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        propIdColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.04));
+        propIdColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.04));
+
+        propKeyColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.3));
+        propKeyColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.3));
+
+        propValueColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.25));
+        propValueColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.25));
+
+        propDescriptionColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.36));
+        propDescriptionColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.36));
+
+        editColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.025));
+        editColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.025));
+
+        deleteColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.025));
+        deleteColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.025));
+
         setupDeleteColumn();
+        setupEditColumn();
     }
 
-    private void setupDeleteColumn() {
-        // (1) Delete column will return the current object on click
-        deleteColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
-        // (2) Delete column behavior
-        deleteColumn.setCellFactory(deleteCell -> {
+    private void setupEditColumn() {
+        // (1) Column will return the current object on click
+        editColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
+        // (2) Column behavior
+        editColumn.setCellFactory(editCell -> {
             final TableCell<AppPropertyFx, AppPropertyFx> cell = new TableCell<AppPropertyFx, AppPropertyFx>() {
                 @Override
                 public void updateItem(final AppPropertyFx item, final boolean empty) {
@@ -108,6 +142,46 @@ public class SettingsController extends AbstractFxmlController {
                     super.updateItem(item, empty);
                     if (item != null && item.getKey() != null && item.getId() != null) {
                         final HBox box= new HBox();
+                        final URL url = getClass().getResource("/img/icons/icon-edit.png");
+                        final Image picture = new Image(url.toExternalForm());
+                        final ImageView icon = new ImageView(picture);
+                        icon.setFitHeight(ACTIONS_ICON_SIZE_IN_PIXELS);
+                        icon.setPreserveRatio(true);
+                        box.getChildren().add(icon);
+                        setGraphic(box);
+                    }
+                }
+            };
+            // Set action on click
+            cell.setOnMouseClicked(e -> setupEditActionAndConfirmDialog(cell));
+            return cell;
+        });
+    }
+
+    private void setupEditActionAndConfirmDialog(final TableCell<AppPropertyFx, AppPropertyFx> cell) {
+        if (!cell.isEmpty()) {
+            // register session values
+            final Map<String, Object> editProperties = new HashMap<>();
+            editProperties.put("item", cell.getItem());
+            AppSession.SCREENS_PROPERTIES.put(ScreenNames.EDIT_PROPERTY.name(), editProperties);
+            // display screen
+            final SettingEditionController controller = applicationContext.getBean(SettingEditionController.class);
+            Main.showView(SettingEditionView.class);
+        }
+    }
+
+    private void setupDeleteColumn() {
+        // (1) Column will return the current object on click
+        deleteColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue()));
+        // (2) Column behavior
+        deleteColumn.setCellFactory(deleteCell -> {
+            final TableCell<AppPropertyFx, AppPropertyFx> cell = new TableCell<AppPropertyFx, AppPropertyFx>() {
+                @Override
+                public void updateItem(final AppPropertyFx item, final boolean empty) {
+                    // Set icon
+                    super.updateItem(item, empty);
+                    if (item != null && item.getKey() != null && item.getId() != null) {
+                        final HBox box = new HBox();
                         final URL url = getClass().getResource("/img/icons/icon-delete.png");
                         final Image picture = new Image(url.toExternalForm());
                         final ImageView icon = new ImageView(picture);
@@ -179,13 +253,25 @@ public class SettingsController extends AbstractFxmlController {
     }
 
     public void doAddNewItem() {
-        // FIXME GDZ
-        LOGGER.info("Saving properties");
+        // register session values
+        final Map<String, Object> newProperties = new HashMap<>();
+        newProperties.put("item", new AppPropertyFx());
+        AppSession.SCREENS_PROPERTIES.put(ScreenNames.EDIT_PROPERTY.name(), newProperties);
+        // display screen
+        final SettingEditionController controller = applicationContext.getBean(SettingEditionController.class);
+        Main.showView(SettingEditionView.class);
     }
 
     public void doSearch() {
-        // FIXME GDZ
-        LOGGER.info("Searching for property: ");
+        final String searchValue = searchField.getText();
+        if (StringUtils.isEmpty(searchValue)) {
+            final Alert popup = new Alert(AlertType.WARNING);
+            popup.setTitle("Warning");
+            popup.setHeaderText(getBundle().getString("settings.search.noValue"));
+        } else {
+            LOGGER.info("Searching for property: " + searchValue);
+            // FIXME GDZ
+        }
     }
 
 }

@@ -22,7 +22,7 @@ public class AppPropertyConvertor {
 
     public static AppProperty fxPropToDb(final AppPropertyFx fxProp) {
         final AppProperty dbProp = new AppProperty(fxProp.getKey(), fxProp.getValue(), fxProp.getDescription());
-        if (fxProp.getId() != null) {
+        if (fxProp.getId() != null && fxProp.getId() > 0) {
             dbProp.setId(fxProp.getId());
         }
         return dbProp;
