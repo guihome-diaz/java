@@ -108,23 +108,23 @@ public class SettingsController extends AbstractFxmlController {
 
         // Setup columns size, bind the column to the table (in percentage) so they are always resized
         properties.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        propIdColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.04));
-        propIdColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.04));
+        propIdColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.03));
+        propIdColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.03));
 
-        propKeyColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.3));
-        propKeyColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.3));
+        propKeyColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.25));
+        propKeyColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.25));
 
         propValueColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.25));
         propValueColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.25));
 
-        propDescriptionColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.36));
-        propDescriptionColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.36));
+        propDescriptionColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.35));
+        propDescriptionColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.35));
 
-        editColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.025));
-        editColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.025));
+        editColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.05));
+        editColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.05));
 
-        deleteColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.025));
-        deleteColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.025));
+        deleteColumn.prefWidthProperty().bind(properties.widthProperty().multiply(0.05));
+        deleteColumn.minWidthProperty().bind(properties.widthProperty().multiply(0.05));
 
         setupDeleteColumn();
         setupEditColumn();
