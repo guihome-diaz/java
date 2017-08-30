@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
 import eu.daxiongmao.wordpress.Main;
+import eu.daxiongmao.wordpress.ui.view.DashboardView;
 import eu.daxiongmao.wordpress.ui.view.SettingsView;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -37,6 +38,8 @@ public class RootPaneController extends AbstractFxmlController {
     private static final int ICON_SIZE = 24;
 
     @FXML
+    MenuItem dashboardItem;
+    @FXML
     MenuItem configurationItem;
     @FXML
     MenuItem quitItem;
@@ -59,12 +62,15 @@ public class RootPaneController extends AbstractFxmlController {
     @FXML
     void initialize() {
         // Set local attributes
+        setMenuItemIcon(dashboardItem, "/img/icons/icon-home.png");
         setMenuItemIcon(configurationItem, "/img/icons/icon-settings.png");
         setMenuItemIcon(quitItem, "/img/icons/icon-exit.png");
         setMenuItemIcon(englishItem, "/img/icons/icon-UK.png");
         setMenuItemIcon(frenchItem, "/img/icons/icon-FR.png");
         setMenuItemIcon(chineseItem, "/img/icons/icon-CN.png");
         setMenuItemIcon(aboutItem, "/img/icons/icon-about.png");
+
+        Main.showDefaultView(DashboardView.class);
     }
 
     private void setMenuItemIcon(final MenuItem menuItem, final String iconUrl) {
@@ -120,4 +126,7 @@ public class RootPaneController extends AbstractFxmlController {
         Main.showView(SettingsView.class);
     }
 
+    public void showDashboard() {
+        Main.showView(DashboardView.class);
+    }
 }
