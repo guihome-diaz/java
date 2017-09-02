@@ -1,6 +1,8 @@
 package eu.daxiongmao.wordpress.ui.controller;
 
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import de.felixroske.jfxsupport.AbstractFxmlController;
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
 import eu.daxiongmao.wordpress.Main;
 import eu.daxiongmao.wordpress.ui.view.DashboardView;
@@ -51,6 +54,10 @@ public class RootPaneController extends AbstractFxmlController {
     MenuItem chineseItem;
     @FXML
     MenuItem aboutItem;
+    @FXML
+    MenuItem databaseItem;
+    @FXML
+    MenuItem logsItem;
 
     @Value("${h2.tcp.port}")
     private int h2consolePort;
@@ -69,8 +76,15 @@ public class RootPaneController extends AbstractFxmlController {
         setMenuItemIcon(frenchItem, "/img/icons/icon-FR.png");
         setMenuItemIcon(chineseItem, "/img/icons/icon-CN.png");
         setMenuItemIcon(aboutItem, "/img/icons/icon-about.png");
+        setMenuItemIcon(databaseItem, "/img/icons/db_icon.png");
+        setMenuItemIcon(logsItem, "/img/icons/log_file_icon.png");
 
-        Main.showDefaultView(DashboardView.class);
+        // Set the default root panel content
+        final Runnable displayDefaultScreen = () -> {
+            Main.showDefaultView(DashboardView.class);
+        };
+        // Ask JavaFX to display the view once system will be ready
+        Platform.runLater(displayDefaultScreen);
     }
 
     private void setMenuItemIcon(final MenuItem menuItem, final String iconUrl) {
@@ -129,4 +143,19 @@ public class RootPaneController extends AbstractFxmlController {
     public void showDashboard() {
         Main.showView(DashboardView.class);
     }
+
+    public void openDatabaseLink() {
+        AbstractJavaFxApplicationSupport.openBrowser("http://localhost:8082");
+    }
+
+    public void openLogFile() {
+        final String home = System.getProperty("user.home");
+        final Path logFile = Paths.get(home, "daxiongmao", "wordpress-utils", "wordpress-utils.log");
+        // Old Java AWT way
+        // DesktopUtils.openFile(logFile.toFile());
+
+        // JavaFX way
+        AbstractJavaFxApplicationSupport.openBrowser(logFile.toFile().toURI().toString());
+    }
+
 }

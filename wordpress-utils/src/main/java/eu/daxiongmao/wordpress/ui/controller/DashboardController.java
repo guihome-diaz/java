@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
+import eu.daxiongmao.wordpress.Main;
+import eu.daxiongmao.wordpress.ui.view.SettingsView;
 import javafx.fxml.FXML;
 
 @FXMLController
@@ -16,13 +18,11 @@ public class DashboardController extends AbstractFxmlController {
 
     @FXML
     void initialize() {
-        // TODO
         LOGGER.info("Dashboard is ready");
     }
 
-    public void doScanFiles() {
-        // TODO
-        LOGGER.info("Scanning files");
+    public void doConfiguration() {
+        Main.showView(SettingsView.class);
     }
 
     public void doDownloadPhotos() {

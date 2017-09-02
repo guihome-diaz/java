@@ -38,6 +38,12 @@
             <MenuItem fx:id="aboutItem" mnemonicParsing="false" onAction="#aboutPopup" text="%menu.help.about" />
           </items>
         </Menu>
+        <Menu mnemonicParsing="false" text="%menu.support">
+          <items>
+            <MenuItem fx:id="databaseItem" mnemonicParsing="false" onAction="#openDatabaseLink" text="%menu.support.database" />
+            <MenuItem fx:id="logsItem" mnemonicParsing="false" onAction="#openLogFile" text="%menu.support.logs" />
+          </items>
+        </Menu>
       </menus>
     </MenuBar>
     
