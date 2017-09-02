@@ -23,10 +23,8 @@ public class AppSession {
      * Use that to exchange information between screens.
      * <ul>
      * <li>main key: screen name</li>
-     * <ul>
      * <li>2nd key: property name</li>
      * <li>Value: related properties [you'll have to cast them before use</li>
-     * </ul>
      * </ul>
      */
     public static final Map<String, Map<String, Object>> SCREENS_PROPERTIES = new HashMap<>();

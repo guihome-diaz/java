@@ -211,11 +211,12 @@
         </dependency>
     	
         <!-- Spring boot # JavaFX integration -->
-        <dependency>
+        <!-- (i) 2017-09-01 | I embedded my fork to avoid conflicts with other MVN releases & to simplify the development process -->
+        <!-- dependency>
           <groupId>de.roskenet</groupId>
           <artifactId>springboot-javafx-support</artifactId>
           <version>${springboot-javafx.version}</version>
-        </dependency>
+        </dependency -->
         
         <!-- Spring boot # Set of utilities to work locally (hot swap) -->
         <dependency>

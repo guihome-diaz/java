@@ -35,6 +35,9 @@ public class H2ServerConfiguration {
      * <li>jdbc:h2:tcp://localhost:9092/file:/home/guillaume/daxiongmao/wordpress-utils/wordpress-utils.db</li>
      * </ul>
      * Default values: username "sa", password empty
+     *
+     * @throws SQLException
+     *             database error # cannot start TCP server
      */
     @Bean
     @ConditionalOnExpression("${h2.tcp.enabled:false}")
@@ -50,6 +53,9 @@ public class H2ServerConfiguration {
      * <li>jdbc:h2:file:/home/guillaume/daxiongmao/wordpress-utils/wordpress-utils.db</li>
      * </ul>
      * Default values: username "sa", password empty
+     * 
+     * @throws SQLException
+     *             database error # cannot start WEB server
      */
     @Bean
     @ConditionalOnExpression("${h2.web.enabled:true}")
