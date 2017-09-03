@@ -149,7 +149,28 @@
                     </execution>
                 </executions>
             </plugin>
-
+			
+			
+			<!-- Spring boot creation of an UBER JAR: the application will be bundle into 1 single executable JAR -->
+			<!-- You'll just have to distribute the jar to all your client for the application to work -->
+			<!-- The output JAR will be "${project.finalName}-spring-boot.jar" -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>spring-boot</classifier>
+							<mainClass>
+								${exec.mainClass}
+							</mainClass>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
         
             <!-- ###### QUALITY CHECKS ###### -->
             <!-- FindBugs -->

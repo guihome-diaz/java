@@ -123,22 +123,29 @@ public enum GUIState {
     }
 
     /**
+     * To know what is the current page on display.<br>
+     * !! This is not the root container but the CONTENT view.
+     *
      * @return Current page the user is currently browsing | displaying.
      */
-    static Class<? extends AbstractFxmlView> getView() {
+    public static Class<? extends AbstractFxmlView> getView() {
         return view;
     }
 
     /**
-     * @return First page to be loaded on application start.
+     * To display the application root page | container
+     *
+     * @return First page to be loaded on application start. It is usually a container or a dashboard
      */
     static Class<? extends AbstractFxmlView> getRootView() {
         return rootView;
     }
 
     /**
+     * To display the application root page | container
+     *
      * @param rootView
-     *            First page to be loaded on application start.
+     *            First page to be loaded on application start. It is usually a container or a dashboard
      */
     static void setRootView(final Class<? extends AbstractFxmlView> rootView) {
         GUIState.rootView = rootView;

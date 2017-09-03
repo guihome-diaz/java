@@ -22,6 +22,7 @@ import eu.daxiongmao.wordpress.ui.convert.AppPropertyConvertor;
 import eu.daxiongmao.wordpress.ui.dto.AppPropertyFx;
 import eu.daxiongmao.wordpress.ui.session.AppSession;
 import eu.daxiongmao.wordpress.ui.session.ScreenNames;
+import eu.daxiongmao.wordpress.ui.view.DashboardView;
 import eu.daxiongmao.wordpress.ui.view.SettingEditionView;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
@@ -44,6 +45,11 @@ public class SettingsController extends AbstractFxmlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingsController.class);
 
     private static final int ACTIONS_ICON_SIZE_IN_PIXELS = 16;
+
+    private static final int ICON_SIZE = 32;
+
+    @FXML
+    ImageView homepageButton;
 
     @FXML
     Button newButton;
@@ -95,6 +101,13 @@ public class SettingsController extends AbstractFxmlController {
     }
 
     private void setupUi() {
+        // Homepage button
+        final URL url = getClass().getResource("/img/icons/icon-home.png");
+        final Image picture = new Image(url.toExternalForm());
+        homepageButton.setImage(picture);
+        homepageButton.setFitHeight(ICON_SIZE);
+        homepageButton.setPreserveRatio(true);
+
         // Allow table to be edited
         properties.setEditable(true);
         // Only work on 1 row at a time
@@ -272,6 +285,10 @@ public class SettingsController extends AbstractFxmlController {
             LOGGER.info("Searching for property: " + searchValue);
             // FIXME GDZ
         }
+    }
+
+    public void showHomepage() {
+        Main.showView(DashboardView.class);
     }
 
 }

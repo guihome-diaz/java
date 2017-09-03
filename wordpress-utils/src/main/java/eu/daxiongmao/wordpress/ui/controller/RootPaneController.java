@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
+import de.felixroske.jfxsupport.GUIState;
 import eu.daxiongmao.wordpress.Main;
 import eu.daxiongmao.wordpress.ui.view.DashboardView;
 import eu.daxiongmao.wordpress.ui.view.SettingsView;
@@ -79,12 +80,15 @@ public class RootPaneController extends AbstractFxmlController {
         setMenuItemIcon(databaseItem, "/img/icons/db_icon.png");
         setMenuItemIcon(logsItem, "/img/icons/log_file_icon.png");
 
-        // Set the default root panel content
-        final Runnable displayDefaultScreen = () -> {
-            Main.showDefaultView(DashboardView.class);
-        };
-        // Ask JavaFX to display the view once system will be ready
-        Platform.runLater(displayDefaultScreen);
+        // APPLICATION STARTUP: Load the default view if there is nothing else on display
+        if (GUIState.getView() == null) {
+            final Runnable displayDefaultScreen = () -> {
+                Main.showDefaultView(DashboardView.class);
+            };
+            // Ask JavaFX to display the view once system will be ready
+            Platform.runLater(displayDefaultScreen);
+        }
+
     }
 
     private void setMenuItemIcon(final MenuItem menuItem, final String iconUrl) {
@@ -152,6 +156,7 @@ public class RootPaneController extends AbstractFxmlController {
         final String home = System.getProperty("user.home");
         final Path logFile = Paths.get(home, "daxiongmao", "wordpress-utils", "wordpress-utils.log");
         // Old Java AWT way
+        // (i) This does NOT work on Linux* and MAC OS platforms ; On Windows it is better than the JavaFX alternative
         // DesktopUtils.openFile(logFile.toFile());
 
         // JavaFX way

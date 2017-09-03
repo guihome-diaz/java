@@ -36,6 +36,7 @@ public class H2ServerConfiguration {
      * </ul>
      * Default values: username "sa", password empty
      *
+     * @return TCP access to the H2 database
      * @throws SQLException
      *             database error # cannot start TCP server
      */
@@ -53,7 +54,8 @@ public class H2ServerConfiguration {
      * <li>jdbc:h2:file:/home/guillaume/daxiongmao/wordpress-utils/wordpress-utils.db</li>
      * </ul>
      * Default values: username "sa", password empty
-     * 
+     *
+     * @return Web access to the H2 database
      * @throws SQLException
      *             database error # cannot start WEB server
      */
