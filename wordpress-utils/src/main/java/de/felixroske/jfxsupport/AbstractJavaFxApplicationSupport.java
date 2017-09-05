@@ -1,9 +1,11 @@
 package de.felixroske.jfxsupport;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,8 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static List<Image> icons = new ArrayList<>();
 
     private final BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
+
+    private static final Deque<Class<? extends AbstractFxmlView>> history = new ConcurrentLinkedDeque<>();
 
     public static Stage getStage() {
         return GUIState.getStage();
@@ -174,33 +178,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
      * @param newView
      *            the new view
      */
-    public static void showDefaultView(final Class<? extends AbstractFxmlView> newView) {
-        final AbstractFxmlView view = applicationContext.getBean(newView);
-        final Parent viewContent = view.getView();
-
-        if (GUIState.getScene() != null && !(GUIState.getRootView().equals(newView)) && GUIState.getContentPaneToUpdate() != null
-                && view.getFxmlPanel() != null) {
-            // Application startup - first view
-            // Clear current content and apply new content
-            GUIState.getContentPaneToUpdate().getChildren().clear();
-            GUIState.getContentPaneToUpdate().getChildren().add((AnchorPane) view.getFxmlPanel());
-
-            // Save reference to the current view
-            GUIState.setView(newView);
-        }
-
-        GUIState.getStage().setScene(GUIState.getScene());
-        applyEnvPropsToView();
-        GUIState.getStage().getIcons().addAll(icons);
-        GUIState.getStage().show();
-    }
-
-    /**
-     * Show view.
-     *
-     * @param newView
-     *            the new view
-     */
     public static void showView(final Class<? extends AbstractFxmlView> newView) {
         final AbstractFxmlView view = applicationContext.getBean(newView);
         final Parent viewContent = view.getView();
@@ -221,11 +198,15 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
                     // Save reference to the current view
                     GUIState.setView(newView);
+                    // Register new view to history
+                    history.addFirst(newView);
                 } else {
                     // Replace all the screen
                     GUIState.getScene().setRoot(viewContent);
                     // Save reference to the current view
                     GUIState.setView(newView);
+                    // Register new view to history
+                    history.addFirst(newView);
                 }
             }
         }
@@ -258,6 +239,33 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         if (GUIState.getView() != null) {
             showView(GUIState.getView());
         }
+    }
+
+    /**
+     * To display the previous page, if available
+     */
+    public static void showPreviousPage() {
+        Class<? extends AbstractFxmlView> previous = null;
+        do {
+            final Class<? extends AbstractFxmlView> firstItemOnList = history.removeFirst();
+            if (!firstItemOnList.equals(GUIState.getView())) {
+                previous = firstItemOnList;
+            }
+        } while (previous == null && !history.isEmpty());
+
+        // show previous
+        if (previous != null) {
+            showView(previous);
+        }
+    }
+
+    /**
+     * To check if history is available
+     *
+     * @return boolean, "true" if some history if available
+     */
+    public static boolean hasHistory() {
+        return !history.isEmpty() && history.size() >= 1;
     }
 
     /**

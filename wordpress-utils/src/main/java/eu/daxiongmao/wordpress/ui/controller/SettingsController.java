@@ -22,7 +22,6 @@ import eu.daxiongmao.wordpress.ui.convert.AppPropertyConvertor;
 import eu.daxiongmao.wordpress.ui.dto.AppPropertyFx;
 import eu.daxiongmao.wordpress.ui.session.AppSession;
 import eu.daxiongmao.wordpress.ui.session.ScreenNames;
-import eu.daxiongmao.wordpress.ui.view.DashboardView;
 import eu.daxiongmao.wordpress.ui.view.SettingEditionView;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
@@ -35,6 +34,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -49,7 +49,7 @@ public class SettingsController extends AbstractFxmlController {
     private static final int ICON_SIZE = 32;
 
     @FXML
-    ImageView homepageButton;
+    ImageView previousButton;
 
     @FXML
     Button newButton;
@@ -102,11 +102,14 @@ public class SettingsController extends AbstractFxmlController {
 
     private void setupUi() {
         // Homepage button
-        final URL url = getClass().getResource("/img/icons/icon-home.png");
+        final URL url = getClass().getResource("/img/icons/icon-back-button.png");
         final Image picture = new Image(url.toExternalForm());
-        homepageButton.setImage(picture);
-        homepageButton.setFitHeight(ICON_SIZE);
-        homepageButton.setPreserveRatio(true);
+        previousButton.setImage(picture);
+        previousButton.setFitHeight(ICON_SIZE);
+        previousButton.setPreserveRatio(true);
+        final Tooltip homePageTooltip = new Tooltip("Go back");
+        Tooltip.install(previousButton, homePageTooltip);
+        previousButton.setVisible(Main.hasHistory());
 
         // Allow table to be edited
         properties.setEditable(true);
@@ -287,8 +290,8 @@ public class SettingsController extends AbstractFxmlController {
         }
     }
 
-    public void showHomepage() {
-        Main.showView(DashboardView.class);
+    public void showPrevious() {
+        Main.showPreviousPage();
     }
 
 }

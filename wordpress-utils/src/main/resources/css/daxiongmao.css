@@ -16,7 +16,6 @@
 
 }
 #mainpage .background {
-	-fx-background-image: url("../img/astrology_wallpaper.jpg");
     -fx-background-repeat: stretch;   
     -fx-background-size: 800 600;
     -fx-background-position: center center;

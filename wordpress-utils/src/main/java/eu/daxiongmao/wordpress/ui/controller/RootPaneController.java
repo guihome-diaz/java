@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
-import de.felixroske.jfxsupport.GUIState;
 import eu.daxiongmao.wordpress.Main;
 import eu.daxiongmao.wordpress.ui.view.DashboardView;
 import eu.daxiongmao.wordpress.ui.view.SettingsView;
@@ -81,9 +80,10 @@ public class RootPaneController extends AbstractFxmlController {
         setMenuItemIcon(logsItem, "/img/icons/log_file_icon.png");
 
         // APPLICATION STARTUP: Load the default view if there is nothing else on display
-        if (GUIState.getView() == null) {
+        if (!Main.hasHistory()) {
             final Runnable displayDefaultScreen = () -> {
-                Main.showDefaultView(DashboardView.class);
+                LOGGER.info("Loading default content");
+                Main.showView(DashboardView.class);
             };
             // Ask JavaFX to display the view once system will be ready
             Platform.runLater(displayDefaultScreen);

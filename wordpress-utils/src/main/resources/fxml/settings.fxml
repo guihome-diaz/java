@@ -21,14 +21,14 @@
             
 			<VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
                <children>
-                  <HBox alignment="CENTER">
+                  <HBox alignment="CENTER" minHeight="64.0" prefHeight="64.0" prefWidth="688.0">
                      <children>
-                        <ImageView fx:id="homepageButton" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#showHomepage" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="previousButton" fitHeight="64.0" fitWidth="120.0" onMouseClicked="#showPrevious" pickOnBounds="true" preserveRatio="true">
                            <viewport>
                               <Rectangle2D />
                            </viewport>
                         </ImageView>
-                        <Label alignment="CENTER" contentDisplay="CENTER" minWidth="750.0" prefWidth="750.0" text="%settings.pageTitle" textAlignment="CENTER">
+                        <Label alignment="CENTER" contentDisplay="CENTER" minWidth="593.0" prefHeight="30.0" prefWidth="707.0" text="%settings.pageTitle" textAlignment="CENTER">
                            <font>
                               <Font size="24.0" />
                            </font>
