@@ -64,7 +64,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
     private String fxmlRoot;
 
     /**
-     * Instantiates a new abstract fxml view.
+     * Instantiates a new abstract FXML view.
      */
     public AbstractFxmlView() {
         LOGGER.debug("AbstractFxmlView construction");
@@ -114,20 +114,11 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
         return applicationContext.getBean(type);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.springframework.context.ApplicationContextAware#setApplicationContext
-     * (org.springframework.context.ApplicationContext)
-     */
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-
         if (this.applicationContext != null) {
             return;
         }
-
         this.applicationContext = applicationContext;
     }
 
@@ -205,9 +196,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      * @return the root view as determined from {@link FXMLLoader}.
      */
     public Parent getView() {
-
         ensureFxmlLoaderInitialized();
-
         final Parent parent = fxmlLoader.getRoot();
         addCSSIfAvailable(parent);
         return parent;
@@ -234,12 +223,10 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *         children available from this view.
      */
     public Node getViewWithoutRootContainer() {
-
         final ObservableList<Node> children = getView().getChildrenUnmodifiable();
         if (children.isEmpty()) {
             return null;
         }
-
         return children.listIterator().next();
     }
 
@@ -250,20 +237,18 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *            the parent
      */
     void addCSSIfAvailable(final Parent parent) {
-
         // Read global css when available:
         final List<String> list = PropertyReaderHelper.get(applicationContext.getEnvironment(), "javafx.css");
         if (!list.isEmpty()) {
             list.forEach(css -> parent.getStylesheets().add(getClass().getResource(css).toExternalForm()));
         }
-
         addCSSFromAnnotation(parent, annotation);
 
+        // Apply CSS
         final URL uri = getClass().getResource(getStyleSheetName());
         if (uri == null) {
             return;
         }
-
         final String uriToCss = uri.toExternalForm();
         parent.getStylesheets().add(uriToCss);
     }
@@ -310,9 +295,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *         AirhacksView the AirhacksPresenter)
      */
     public Object getPresenter() {
-
         ensureFxmlLoaderInitialized();
-
         return presenterProperty.get();
     }
 
@@ -325,7 +308,6 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *            listener for the presenter construction
      */
     public void getPresenter(final Consumer<Object> presenterConsumer) {
-
         presenterProperty.addListener((final ObservableValue<? extends Object> o, final Object oldValue, final Object newValue) -> {
             presenterConsumer.accept(newValue);
         });
@@ -377,11 +359,9 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      * @return the string
      */
     private static String stripEnding(final String clazz) {
-
         if (!clazz.endsWith("view")) {
             return clazz;
         }
-
         return clazz.substring(0, clazz.lastIndexOf("view"));
     }
 
@@ -392,7 +372,6 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *         e.g. The name for the AirhacksView is going to be
      *         <PATH>/airhacks.fxml.
      */
-
     final String getFxmlPath() {
         final String fxmlPath = fxmlRoot + getConventionalName(".fxml");
         LOGGER.debug("Determined fxmlPath: " + fxmlPath);

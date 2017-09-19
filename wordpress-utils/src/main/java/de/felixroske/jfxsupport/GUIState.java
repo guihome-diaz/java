@@ -2,6 +2,7 @@ package de.felixroske.jfxsupport;
 
 import java.util.Locale;
 
+import eu.daxiongmao.wordpress.ui.controller.RootPaneController;
 import javafx.application.HostServices;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -18,11 +19,10 @@ import javafx.stage.Stage;
 public enum GUIState {
 
     INSTANCE;
+
     private static Scene scene;
 
     private static Stage stage;
-
-    private static String title;
 
     private static HostServices hostServices;
 
@@ -34,9 +34,9 @@ public enum GUIState {
     private static AnchorPane contentPaneToUpdate;
 
     /**
-     * First page to be loaded on application start.
+     * Container view (= root view)
      */
-    private static Class<? extends AbstractFxmlView> rootView;
+    private static Class<? extends AbstractFxmlView> containerView;
 
     /**
      * Current page the user is currently browsing | displaying.
@@ -48,10 +48,6 @@ public enum GUIState {
      * If NULL then pages will appear using JVM's default locale.
      */
     private static Locale locale;
-
-    public static String getTitle() {
-        return title;
-    }
 
     static Scene getScene() {
         return scene;
@@ -67,10 +63,6 @@ public enum GUIState {
 
     static void setStage(final Stage stage) {
         GUIState.stage = stage;
-    }
-
-    static void setTitle(final String title) {
-        GUIState.title = title;
     }
 
     public static HostServices getHostServices() {
@@ -124,7 +116,7 @@ public enum GUIState {
 
     /**
      * To know what is the current page on display.<br>
-     * !! This is not the root container but the CONTENT view.
+     * This is CONTENT view.
      *
      * @return Current page the user is currently browsing | displaying.
      */
@@ -133,22 +125,27 @@ public enum GUIState {
     }
 
     /**
-     * To display the application root page | container
+     * To set the current page title
      *
-     * @return First page to be loaded on application start. It is usually a container or a dashboard
+     * @param pageTitle
+     *            page title
      */
-    static Class<? extends AbstractFxmlView> getRootView() {
-        return rootView;
+    public static void setContainerTitle(final String pageTitle) {
+        try {
+            final RootPaneController rootController = AbstractJavaFxApplicationSupport.applicationContext.getBean(RootPaneController.class);
+            rootController.setTitle(pageTitle);
+        } catch (final Exception e) {
+            System.err.println("Root controller wasn't found");
+            // Do nothing: no bean detected!
+        }
     }
 
-    /**
-     * To display the application root page | container
-     *
-     * @param rootView
-     *            First page to be loaded on application start. It is usually a container or a dashboard
-     */
-    static void setRootView(final Class<? extends AbstractFxmlView> rootView) {
-        GUIState.rootView = rootView;
+    static void setContainerView(final Class<? extends AbstractFxmlView> containerView) {
+        GUIState.containerView = containerView;
+    }
+
+    static Class<? extends AbstractFxmlView> getContainerView() {
+        return containerView;
     }
 
 }

@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
+import de.felixroske.jfxsupport.GUIState;
 import eu.daxiongmao.wordpress.Main;
 import eu.daxiongmao.wordpress.config.ApplicationProperties;
 import eu.daxiongmao.wordpress.server.dao.AppPropertyRepository;
@@ -34,7 +35,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -47,9 +47,6 @@ public class SettingsController extends AbstractFxmlController {
     private static final int ACTIONS_ICON_SIZE_IN_PIXELS = 16;
 
     private static final int ICON_SIZE = 32;
-
-    @FXML
-    ImageView previousButton;
 
     @FXML
     Button newButton;
@@ -87,6 +84,9 @@ public class SettingsController extends AbstractFxmlController {
     void initialize() {
         setupUi();
         loadDbValues();
+        // Set page title
+        // TODO set title using resource bundle (i18n)
+        GUIState.setContainerTitle("Settings");
     }
 
     private void loadDbValues() {
@@ -101,16 +101,6 @@ public class SettingsController extends AbstractFxmlController {
     }
 
     private void setupUi() {
-        // Homepage button
-        final URL url = getClass().getResource("/img/icons/icon-back-button.png");
-        final Image picture = new Image(url.toExternalForm());
-        previousButton.setImage(picture);
-        previousButton.setFitHeight(ICON_SIZE);
-        previousButton.setPreserveRatio(true);
-        final Tooltip homePageTooltip = new Tooltip("Go back");
-        Tooltip.install(previousButton, homePageTooltip);
-        previousButton.setVisible(Main.hasHistory());
-
         // Allow table to be edited
         properties.setEditable(true);
         // Only work on 1 row at a time

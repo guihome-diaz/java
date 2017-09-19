@@ -5,8 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
-import eu.daxiongmao.wordpress.Main;
-import eu.daxiongmao.wordpress.ui.view.SettingsView;
+import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 
 @FXMLController
@@ -18,11 +17,9 @@ public class DashboardController extends AbstractFxmlController {
 
     @FXML
     void initialize() {
-        LOGGER.info("Dashboard is ready");
-    }
-
-    public void doConfiguration() {
-        Main.showView(SettingsView.class);
+        // Set page title
+        // TODO set title using resource bundle (i18n)
+        GUIState.setContainerTitle("Dashboard");
     }
 
     public void doDownloadPhotos() {

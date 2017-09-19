@@ -238,7 +238,7 @@
           <artifactId>springboot-javafx-support</artifactId>
           <version>${springboot-javafx.version}</version>
         </dependency -->
-        
+                
         <!-- Spring boot # Set of utilities to work locally (hot swap) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

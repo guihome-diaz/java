@@ -39,7 +39,8 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     private static Class<? extends AbstractFxmlView> savedInitialView;
 
-    private static ConfigurableApplicationContext applicationContext;
+    /** Spring application context. */
+    static ConfigurableApplicationContext applicationContext;
 
     /** The splash screen. */
     private static SplashScreen splashScreen;
@@ -62,11 +63,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         return GUIState.getHostServices();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javafx.application.Application#init()
-     */
     @Override
     public void init() throws Exception {
         CompletableFuture.supplyAsync(() -> {
@@ -87,23 +83,17 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         }).thenAccept(this::launchApplicationView);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javafx.application.Application#start(javafx.stage.Stage)
-     */
     @Override
     public void start(final Stage stage) throws Exception {
         GUIState.setStage(stage);
         GUIState.setHostServices(this.getHostServices());
         final Stage splashStage = new Stage(StageStyle.UNDECORATED);
+
         // this close stage and all scenes ; then exit application
         splashStage.setOnCloseRequest(windowEvent -> {
             LOGGER.info("Closing JavaFX application");
-
             // orderly shut down FX
             Platform.exit();
-
             // But: there might still be a daemon thread left over from OkHttp (some async dispatcher)
             // so assume everything is fine and call System.exit(0)
             System.exit(0);
@@ -115,6 +105,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
             splashStage.show();
         }
 
+        // Load the initial view
         final Runnable showMainAndCloseSplash = () -> {
             showInitialView();
             if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
@@ -133,7 +124,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
                 });
             }
         }
-
     }
 
     /**
@@ -146,13 +136,11 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         } else {
             GUIState.getStage().initStyle(StageStyle.DECORATED);
         }
-        // stage.hide();
+
         GUIState.getStage().setOnCloseRequest(windowEvent -> {
             LOGGER.info("Closing JavaFX application");
-
             // orderly shut down FX
             Platform.exit();
-
             // But: there might still be a daemon thread left over from OkHttp (some async dispatcher)
             // so assume everything is fine and call System.exit(0)
             System.exit(0);
@@ -184,10 +172,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
         if (GUIState.getScene() == null) {
             // Application startup!
-            GUIState.setRootView(newView);
+            GUIState.setContainerView(newView);
             setupRootView(view, viewContent);
         } else {
-            if (GUIState.getRootView().equals(newView)) {
+            if (GUIState.getContainerView().equals(newView)) {
                 // UI Reload
                 setupRootView(view, viewContent);
             } else {
@@ -234,7 +222,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
      * This is useful if you want to load a new language and stay on the same screen.
      */
     public static void reloadView() {
-        showView(GUIState.getRootView());
+        showView(GUIState.getContainerView());
         // View can be NULL in the early development stage ; or if there is no default view set
         if (GUIState.getView() != null) {
             showView(GUIState.getView());
@@ -293,18 +281,13 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.stage.resizable", Boolean.class, GUIState.getStage()::setResizable);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javafx.application.Application#stop()
-     */
     @Override
     public void stop() throws Exception {
         super.stop();
         if (applicationContext != null) {
             applicationContext.close();
-        } // else: someone did it already
-        // FIXME close H2 + actuators + Java FX as well
+        }
+        // else: someone did it already
     }
 
     /**
@@ -372,7 +355,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
      * @param appClass
      *            the app class
      * @param view
-     *            the root view (container |or| first page)
+     *            the root view (container with menu)
      * @param splashScreen
      *            the splash screen
      * @param displayLanguage

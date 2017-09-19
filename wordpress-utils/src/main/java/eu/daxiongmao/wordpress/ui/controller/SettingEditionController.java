@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.felixroske.jfxsupport.AbstractFxmlController;
 import de.felixroske.jfxsupport.FXMLController;
+import de.felixroske.jfxsupport.GUIState;
 import eu.daxiongmao.wordpress.Main;
 import eu.daxiongmao.wordpress.server.dao.AppPropertyRepository;
 import eu.daxiongmao.wordpress.server.model.AppProperty;
@@ -26,6 +27,7 @@ import javafx.scene.control.TextField;
 public class SettingEditionController extends AbstractFxmlController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingEditionController.class);
+
     @FXML
     private TextField propId;
     @FXML
@@ -49,6 +51,10 @@ public class SettingEditionController extends AbstractFxmlController {
         propKey.textProperty().bindBidirectional(propModel.getKeyProperty());
         propValue.textProperty().bindBidirectional(propModel.getValueProperty());
         propDescription.textProperty().bindBidirectional(propModel.getDescriptionProperty());
+
+        // Set page title
+        // TODO set title using resource bundle (i18n)
+        GUIState.setContainerTitle("Create / Edit setting");
     }
 
     private void setPropModel(final AppPropertyFx propModel) {

@@ -19,6 +19,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,24 +44,43 @@ public class RootPaneController extends AbstractFxmlController {
     /** The icon will have the following height size (auto width stretch). */
     private static final int ICON_SIZE = 24;
 
+    private static final int BUTTON_ICON_SIZE = 18;
+
+    // Navigation buttons
     @FXML
-    MenuItem dashboardItem;
+    Button navigationLeftButton;
     @FXML
-    MenuItem configurationItem;
+    Button navigationRightButton;
     @FXML
-    MenuItem quitItem;
+    Button navigationHomeButton;
+
+    // Languages options
+    @FXML
+    MenuButton languageSelectionButton;
     @FXML
     MenuItem englishItem;
     @FXML
     MenuItem frenchItem;
     @FXML
     MenuItem chineseItem;
+
+    // Title
     @FXML
-    MenuItem aboutItem;
+    Label title;
+
+    // To access configuration page
+    @FXML
+    MenuButton configurationButton;
+    @FXML
+    MenuItem settingsItem;
     @FXML
     MenuItem databaseItem;
     @FXML
     MenuItem logsItem;
+
+    // About
+    @FXML
+    Button aboutButton;
 
     @Value("${h2.tcp.port}")
     private int h2consolePort;
@@ -68,16 +91,9 @@ public class RootPaneController extends AbstractFxmlController {
      */
     @FXML
     void initialize() {
-        // Set local attributes
-        setMenuItemIcon(dashboardItem, "/img/icons/icon-home.png");
-        setMenuItemIcon(configurationItem, "/img/icons/icon-settings.png");
-        setMenuItemIcon(quitItem, "/img/icons/icon-exit.png");
-        setMenuItemIcon(englishItem, "/img/icons/icon-UK.png");
-        setMenuItemIcon(frenchItem, "/img/icons/icon-FR.png");
-        setMenuItemIcon(chineseItem, "/img/icons/icon-CN.png");
-        setMenuItemIcon(aboutItem, "/img/icons/icon-about.png");
-        setMenuItemIcon(databaseItem, "/img/icons/db_icon.png");
-        setMenuItemIcon(logsItem, "/img/icons/log_file_icon.png");
+        // Compute Navigation bar
+        computeMenuItems();
+        computeButtons();
 
         // APPLICATION STARTUP: Load the default view if there is nothing else on display
         if (!Main.hasHistory()) {
@@ -88,7 +104,42 @@ public class RootPaneController extends AbstractFxmlController {
             // Ask JavaFX to display the view once system will be ready
             Platform.runLater(displayDefaultScreen);
         }
+    }
 
+    /**
+     * To compute each menu action and icon
+     */
+    private void computeMenuItems() {
+        // Languages
+        setMenuItemIcon(englishItem, "/img/icons/icon-UK.png");
+        setMenuItemIcon(frenchItem, "/img/icons/icon-FR.png");
+        setMenuItemIcon(chineseItem, "/img/icons/icon-CN.png");
+
+        // DevTools
+        setMenuItemIcon(settingsItem, "/img/icons/properties-128x128.png");
+        setMenuItemIcon(databaseItem, "/img/icons/db_icon.png");
+        setMenuItemIcon(logsItem, "/img/icons/log_file_icon.png");
+    }
+
+    /**
+     * To compute the buttons icons and menu composition
+     */
+    private void computeButtons() {
+        setButtonIcon(navigationLeftButton, "/img/icons/Arrow-left-128x128.png");
+        setButtonIcon(navigationRightButton, "/img/icons/Arrow-right-128x128.png");
+        setButtonIcon(navigationHomeButton, "/img/icons/homepage-128x128.png");
+        setButtonIcon(languageSelectionButton, "/img/icons/translate-128x128.png");
+        setButtonIcon(configurationButton, "/img/icons/control-panel-128x128.png");
+        setButtonIcon(aboutButton, "/img/icons/info-128x128.png");
+    }
+
+    private void setButtonIcon(final ButtonBase button, final String iconUrl) {
+        final URL url = getClass().getResource(iconUrl);
+        final Image picture = new Image(url.toExternalForm());
+        final ImageView icon = new ImageView(picture);
+        icon.setFitHeight(BUTTON_ICON_SIZE);
+        icon.setPreserveRatio(true);
+        button.setGraphic(icon);
     }
 
     private void setMenuItemIcon(final MenuItem menuItem, final String iconUrl) {
@@ -102,7 +153,6 @@ public class RootPaneController extends AbstractFxmlController {
 
     public void exitApplication() {
         LOGGER.info("Closing JavaFX application");
-
         // orderly shut down FX
         Platform.exit();
 
@@ -111,6 +161,9 @@ public class RootPaneController extends AbstractFxmlController {
         System.exit(0);
     }
 
+    /**
+     * To display information about the current application
+     */
     public void aboutPopup() {
         final Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(getBundle().getString("popup.help.title"));
@@ -119,6 +172,9 @@ public class RootPaneController extends AbstractFxmlController {
         alert.showAndWait();
     }
 
+    /**
+     * To set the current language to ENGLISH
+     */
     public void setEnglishLanguage() {
         // set global lang
         Main.setLanguage(new Locale("en", "GB"));
@@ -126,6 +182,9 @@ public class RootPaneController extends AbstractFxmlController {
         Main.reloadView();
     }
 
+    /**
+     * To set the current language to FRENCH
+     */
     public void setFrenchLanguage() {
         // set global lang
         Main.setLanguage(new Locale("fr", "FR"));
@@ -133,6 +192,9 @@ public class RootPaneController extends AbstractFxmlController {
         Main.reloadView();
     }
 
+    /**
+     * To set the current language to CHINESE
+     */
     public void setChineseLanguage() {
         // set global lang
         Main.setLanguage(new Locale("zh", "CN"));
@@ -140,18 +202,23 @@ public class RootPaneController extends AbstractFxmlController {
         Main.reloadView();
     }
 
-    public void configureApplication() {
+    /**
+     * To display the application's settings.
+     */
+    public void openSettingsPage() {
         Main.showView(SettingsView.class);
     }
 
-    public void showDashboard() {
-        Main.showView(DashboardView.class);
-    }
-
+    /**
+     * To open a new webpage to consult the embedded database.
+     */
     public void openDatabaseLink() {
         AbstractJavaFxApplicationSupport.openBrowser("http://localhost:8082");
     }
 
+    /**
+     * To open a new webpage to consult the application logs.
+     */
     public void openLogFile() {
         final String home = System.getProperty("user.home");
         final Path logFile = Paths.get(home, "daxiongmao", "wordpress-utils", "wordpress-utils.log");
@@ -163,4 +230,34 @@ public class RootPaneController extends AbstractFxmlController {
         AbstractJavaFxApplicationSupport.openBrowser(logFile.toFile().toURI().toString());
     }
 
+    /**
+     * Action for the {@link #navigationLeftButton} button click
+     */
+    public void viewPreviousPage() {
+        // TODO
+    }
+
+    /**
+     * Action for the {@link #navigationRightButton} button click
+     */
+    public void viewNextPage() {
+        // TODO
+    }
+
+    /**
+     * Action for the {@link #navigationHomeButton} button click
+     */
+    public void viewHomePage() {
+        Main.showView(DashboardView.class);
+    }
+
+    /**
+     * To set the current page title
+     *
+     * @param pageTitle
+     *            page title
+     */
+    public void setTitle(final String pageTitle) {
+        title.setText(pageTitle);
+    }
 }

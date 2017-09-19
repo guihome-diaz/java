@@ -1,63 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="600.0" prefWidth="800.0" 
-      stylesheets="@../css/daxiongmao.css" 
-      xmlns="http://javafx.com/javafx/8.0.131" 
-      xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="eu.daxiongmao.wordpress.ui.controller.RootPaneController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@../css/daxiongmao.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.daxiongmao.wordpress.ui.controller.RootPaneController">
   <children>
-  
-    <!-- MENU bar (must always be displayed) -->
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="%menu.file">
-          <items>
-            <MenuItem fx:id="dashboardItem" mnemonicParsing="false" onAction="#showDashboard" text="%menu.file.dashboard" />
-            <MenuItem fx:id="configurationItem" mnemonicParsing="false" onAction="#configureApplication" text="%menu.file.configure" />
-            <MenuItem fx:id="quitItem" mnemonicParsing="false" onAction="#exitApplication" text="%menu.file.quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%menu.languages">
-          <items>
-            <MenuItem fx:id="englishItem" mnemonicParsing="false" onAction="#setEnglishLanguage" text="%menu.languages.english" />
-            <MenuItem fx:id="frenchItem" mnemonicParsing="false" onAction="#setFrenchLanguage" text="%menu.languages.french" />
-            <MenuItem fx:id="chineseItem" mnemonicParsing="false" onAction="#setChineseLanguage" text="%menu.languages.chinese" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%menu.help">
-          <items>
-            <MenuItem fx:id="aboutItem" mnemonicParsing="false" onAction="#aboutPopup" text="%menu.help.about" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%menu.support">
-          <items>
-            <MenuItem fx:id="databaseItem" mnemonicParsing="false" onAction="#openDatabaseLink" text="%menu.support.database" />
-            <MenuItem fx:id="logsItem" mnemonicParsing="false" onAction="#openLogFile" text="%menu.support.logs" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
+      <!-- Navigation bar (will always be displayed) -->
+      <HBox prefHeight="38.0" spacing="10.0" VBox.vgrow="NEVER">
+         <children>
+            <Button fx:id="navigationLeftButton" mnemonicParsing="false" onAction="#viewPreviousPage" prefHeight="22.0" prefWidth="22.0" />
+            <Button fx:id="navigationRightButton" mnemonicParsing="false" onAction="#viewNextPage" prefHeight="22.0" prefWidth="22.0" />
+            <Button fx:id="navigationHomeButton" mnemonicParsing="false" onAction="#viewHomePage" prefHeight="22.0" prefWidth="22.0" />
+            <Label fx:id="title" alignment="CENTER" prefHeight="26.0" prefWidth="531.0" />
+            <MenuButton fx:id="languageSelectionButton" mnemonicParsing="false" prefHeight="22.0" prefWidth="30.0">
+                <items>
+		            <MenuItem fx:id="englishItem" mnemonicParsing="false" onAction="#setEnglishLanguage" text="%menu.languages.english" />
+		            <MenuItem fx:id="frenchItem" mnemonicParsing="false" onAction="#setFrenchLanguage" text="%menu.languages.french" />
+		            <MenuItem fx:id="chineseItem" mnemonicParsing="false" onAction="#setChineseLanguage" text="%menu.languages.chinese" />
+                </items>
+            </MenuButton>
+            <MenuButton fx:id="configurationButton" mnemonicParsing="false" prefHeight="22.0" prefWidth="30.0">
+                <items>
+                    <MenuItem fx:id="settingsItem" mnemonicParsing="false" onAction="#openSettingsPage" text="%menu.file.configure" />
+		            <MenuItem fx:id="databaseItem" mnemonicParsing="false" onAction="#openDatabaseLink" text="%menu.support.database" />
+		            <MenuItem fx:id="logsItem" mnemonicParsing="false" onAction="#openLogFile" text="%menu.support.logs" />
+                </items>
+            </MenuButton>
+            <Button fx:id="aboutButton" mnemonicParsing="false" onAction="#aboutPopup" prefHeight="22.0" prefWidth="22.0" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+         </padding>
+      </HBox>
+    
     
     <!-- CONTENT panel (in a Single Page Application this is what needs to change) -->
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="container" VBox.vgrow="ALWAYS">
       <children>
-      
+     
         <!-- This is just a dummy content that should be remove by another screen -->
-        <Label alignment="CENTER" 
-               layoutX="260.0" 
-               layoutY="220.0" 
-               text="%root.default-text" 
-               textAlignment="CENTER" 
-               textFill="#9f9f9f" wrapText="false">
+        <Label alignment="CENTER" layoutX="260.0" layoutY="220.0" text="%root.default-text" textAlignment="CENTER" textFill="#9f9f9f" wrapText="false">
         </Label>
         
       </children>
