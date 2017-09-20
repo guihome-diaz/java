@@ -18,8 +18,7 @@ public class DashboardController extends AbstractFxmlController {
     @FXML
     void initialize() {
         // Set page title
-        // TODO set title using resource bundle (i18n)
-        GUIState.setContainerTitle("Dashboard");
+        GUIState.setContainerTitle("dashboard.title");
     }
 
     public void doDownloadPhotos() {

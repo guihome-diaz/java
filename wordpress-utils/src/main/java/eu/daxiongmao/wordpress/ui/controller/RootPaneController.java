@@ -255,9 +255,17 @@ public class RootPaneController extends AbstractFxmlController {
      * To set the current page title
      *
      * @param pageTitle
-     *            page title
+     *            page title - this must be the key to an I18N string that exists in the languages bundles
      */
     public void setTitle(final String pageTitle) {
-        title.setText(pageTitle);
+        title.setText(getBundle().getString(pageTitle));
+    }
+
+    /**
+     * To recompute the buttons statuses:<br>
+     * this will disable the button of the current page & the history back / next depending on the cases.
+     */
+    public void recomputeButtons() {
+
     }
 }

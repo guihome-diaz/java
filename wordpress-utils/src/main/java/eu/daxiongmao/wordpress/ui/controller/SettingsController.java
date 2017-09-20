@@ -85,8 +85,7 @@ public class SettingsController extends AbstractFxmlController {
         setupUi();
         loadDbValues();
         // Set page title
-        // TODO set title using resource bundle (i18n)
-        GUIState.setContainerTitle("Settings");
+        GUIState.setContainerTitle("settings.pageTitle");
     }
 
     private void loadDbValues() {

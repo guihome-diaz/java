@@ -53,8 +53,7 @@ public class SettingEditionController extends AbstractFxmlController {
         propDescription.textProperty().bindBidirectional(propModel.getDescriptionProperty());
 
         // Set page title
-        // TODO set title using resource bundle (i18n)
-        GUIState.setContainerTitle("Create / Edit setting");
+        GUIState.setContainerTitle("settings.property.editionTitle");
     }
 
     private void setPropModel(final AppPropertyFx propModel) {
