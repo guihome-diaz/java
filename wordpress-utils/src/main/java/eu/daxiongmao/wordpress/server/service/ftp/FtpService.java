@@ -159,7 +159,6 @@ public class FtpService {
         } else {
             dirToList = ftpIterator.currentDir;
         }
-        LOGGER.debug("Reading: " + dirToList);
 
         // Server files
         final FTPFile[] subFiles = ftpClient.listFiles(dirToList);
@@ -167,7 +166,6 @@ public class FtpService {
         if (subFiles != null && subFiles.length > 0) {
             for (final FTPFile aFile : subFiles) {
                 final String currentFileName = aFile.getName();
-                LOGGER.debug("   - Processing: " + currentFileName);
 
                 // skip parent directory and directory itself
                 if (currentFileName.equals(".") || currentFileName.equals("..")) {
@@ -184,7 +182,7 @@ public class FtpService {
                 // File handling
                 if (aFile.isFile() && (ftpIterator.filter == null || ftpIterator.filter.filter(aFile))) {
                     files.add(currentFileName);
-                    ftpIterator.handler.handle(aFile);
+                    ftpIterator.handler.handle(aFile, dirToList);
                 }
             }
         }

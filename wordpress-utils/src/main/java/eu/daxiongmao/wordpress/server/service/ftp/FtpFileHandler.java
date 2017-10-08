@@ -17,7 +17,9 @@ public interface FtpFileHandler {
      *
      * @param file
      *            file to handle
+     * @param directory
+     *            directory of the file. CAREFUL! This is the FTP path == relative directory
      */
-    void handle(FTPFile file);
+    void handle(FTPFile file, String directory);
 
 }

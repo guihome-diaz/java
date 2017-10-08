@@ -79,10 +79,11 @@ public class FtpServiceTest {
         Assert.assertNotNull(fakeFtpServer);
         final FtpService ftpService = new FtpService("localhost", fakeFtpPort, MOCK_FTP_USERNAME, MOCK_FTP_PASSWORD);
         try {
-            final FtpFileHandler loggerHandler = (ftpFile) -> {
-                LOGGER.debug("FTP file: " + ftpFile.getName());
+            final FtpFileHandler loggerHandler = (ftpFile, directory) -> {
+                LOGGER.debug("FTP file: " + directory + "/" + ftpFile.getName());
             };
-            final FtpServiceIterator ftpIterator = new FtpServiceIterator("/", null, 0, 5, loggerHandler, null);
+            final File userFtpRoot = new File(FtpServiceTest.class.getClassLoader().getResource("dataset/www").toURI());
+            final FtpServiceIterator ftpIterator = new FtpServiceIterator(userFtpRoot.toString(), null, 0, 5, loggerHandler, null);
             ftpService.listDirectoryContent(ftpIterator);
         } catch (final Exception e) {
             LOGGER.error("Test failure", e);
