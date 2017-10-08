@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
  * This represents an application's property.
@@ -45,7 +44,7 @@ public @Data class AppProperty implements Serializable {
         this.key = key;
         this.value = value;
     }
-
+    
     public AppProperty(final String key, final String value, final String description) {
         this.key = key;
         this.value = value;
@@ -69,7 +68,7 @@ public @Data class AppProperty implements Serializable {
     }
     
     public String toHtmlString() {
-        StringBuilder log = new StringBuilder();
+        final StringBuilder log = new StringBuilder();
         log.append("Key: ").append(key).append("<br>");
         log.append("Value: ").append(value).append("<br>");
         return log.toString();

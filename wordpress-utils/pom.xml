@@ -213,6 +213,20 @@
             <artifactId>lombok</artifactId>
         </dependency>
     
+        <!-- Apache commons NET : to handle common network protocols such as FTP / SFTP -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.6</version>
+        </dependency>
+
+        <!-- Apache commons (utilities set) -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+        </dependency>
+        
         <!-- Spring boot # core features -->
         <dependency>
           <groupId>org.springframework.boot</groupId>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import eu.daxiongmao.wordpress.config.ApplicationProperties;
 import eu.daxiongmao.wordpress.server.dao.AppPropertyRepository;
 import eu.daxiongmao.wordpress.server.model.AppProperty;
 
@@ -24,17 +25,9 @@ public class WordpressService {
         LOGGER.info("Checking default properties");
 
         // Default properties to add
-        insertIfNotExist(new AppProperty("db.version", "1.0", "Version of the database"));
-        insertIfNotExist(new AppProperty("app.version", "1.0", "Version of the current application"));
-        insertIfNotExist(new AppProperty("db.config.nbResultsPerPage", "15", "To set the number of raw to return per page"));
-        insertIfNotExist(new AppProperty("ftp.hostname", null, "FTP server hostname (ex: ftp.daxiongmao.eu)"));
-        insertIfNotExist(new AppProperty("ftp.port", "21", "FTP server control port (web standard is 21)"));
-        insertIfNotExist(new AppProperty("ftp.username", null, "FTP username"));
-        insertIfNotExist(new AppProperty("ftp.password", null, "FTP password"));
-        insertIfNotExist(
-                new AppProperty("wordpress.root.relativePath", "/www/", "Relative path on the FTP server to the Wordpress root (ex: /www or /www/myBlog)"));
-        insertIfNotExist(
-                new AppProperty("local.backup.folder", null, "Local folder for backup. This is where FTP files will be download (ex: D:\\Backup\\myBlog)"));
+        for (final ApplicationProperties prop : ApplicationProperties.values()) {
+            insertIfNotExist(prop);
+        }
     }
 
     /**
@@ -44,14 +37,14 @@ public class WordpressService {
      *            property to insert
      * @return property has it was insert or retrieve from database or NULL if given property is not valid
      */
-    AppProperty insertIfNotExist(final AppProperty prop) {
+    AppProperty insertIfNotExist(final ApplicationProperties prop) {
         if (prop == null || StringUtils.isEmpty(prop)) {
             return null;
         }
 
-        AppProperty dbProperty = appPropRepository.findByKey(prop.getKey());
+        AppProperty dbProperty = appPropRepository.findByKey(prop.key);
         if (dbProperty == null) {
-            dbProperty = appPropRepository.save(prop);
+            dbProperty = appPropRepository.save(new AppProperty(prop.key, prop.defaultValue, prop.description));
         }
         return dbProperty;
     }
