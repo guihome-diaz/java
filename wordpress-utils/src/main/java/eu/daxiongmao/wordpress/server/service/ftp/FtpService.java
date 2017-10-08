@@ -139,7 +139,9 @@ public class FtpService {
      *
      * @param ftpIterator
      *            FTP iteration parameters.
-     * @return list of files that were handled and processed
+     * @return list of FILES that were handled and processed. Each entry = relative path + / + processed file name.<br>
+     *         /!\ This does NOT include the DIRECTORIES<br>
+     *         It only counts files that match FILTER criteria if provided
      * @throws IOException
      *             some errors occurred
      */
@@ -162,7 +164,6 @@ public class FtpService {
 
         // Server files
         final FTPFile[] subFiles = ftpClient.listFiles(dirToList);
-        files.add(dirToList);
         if (subFiles != null && subFiles.length > 0) {
             for (final FTPFile aFile : subFiles) {
                 final String currentFileName = aFile.getName();
@@ -181,7 +182,7 @@ public class FtpService {
 
                 // File handling
                 if (aFile.isFile() && (ftpIterator.filter == null || ftpIterator.filter.filter(aFile))) {
-                    files.add(currentFileName);
+                    files.add(dirToList + "/" + currentFileName);
                     ftpIterator.handler.handle(aFile, dirToList);
                 }
             }

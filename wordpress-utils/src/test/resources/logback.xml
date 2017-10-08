@@ -6,6 +6,9 @@
     </encoder>
   </appender>
 
+  <logger name="eu.daxiongmao">
+    <level value="DEBUG" />
+  </logger>
   <logger name="org.springframework">
     <level value="INFO" />
   </logger>
