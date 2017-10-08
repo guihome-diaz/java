@@ -262,8 +262,7 @@ public class RootPaneController extends AbstractFxmlController {
     }
 
     /**
-     * To recompute the buttons statuses:<br>
-     * this will disable the button of the current page & the history back / next depending on the cases.
+     * To recompute the buttons statuses: this will disable the button of the current page and the history back / next depending on the cases.
      */
     public void recomputeButtons() {
 

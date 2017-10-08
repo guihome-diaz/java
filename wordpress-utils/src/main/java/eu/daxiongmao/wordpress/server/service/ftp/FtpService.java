@@ -27,10 +27,29 @@ public class FtpService {
     private final ExecutorService downloadThreadPools = Executors.newFixedThreadPool(5);
 
     /**
-     * Default constructor.<br>
-     * This will use <strong>5 download</strong> threads.
+     * Default constructor, for Spring
      */
     public FtpService() {
+    }
+
+    /**
+     * Constructor that will establish a FTP connection on startup.<br>
+     * Use that for the jUnits tests.
+     *
+     * @param host
+     *            URL to FTP host
+     * @param port
+     *            FTP port
+     * @param user
+     *            FTP username
+     * @param pwd
+     *            FTP password
+     */
+    public FtpService(final String host, final int port, final String user, final String pwd) {
+        final boolean connectionOk = connect(host, port, user, pwd);
+        if (!connectionOk) {
+            throw new IllegalArgumentException("Cannot start: failed to connected to FTP server");
+        }
     }
 
     /**
@@ -140,6 +159,7 @@ public class FtpService {
         } else {
             dirToList = ftpIterator.currentDir;
         }
+        LOGGER.debug("Reading: " + dirToList);
 
         // Server files
         final FTPFile[] subFiles = ftpClient.listFiles(dirToList);
@@ -147,6 +167,7 @@ public class FtpService {
         if (subFiles != null && subFiles.length > 0) {
             for (final FTPFile aFile : subFiles) {
                 final String currentFileName = aFile.getName();
+                LOGGER.debug("   - Processing: " + currentFileName);
 
                 // skip parent directory and directory itself
                 if (currentFileName.equals(".") || currentFileName.equals("..")) {
