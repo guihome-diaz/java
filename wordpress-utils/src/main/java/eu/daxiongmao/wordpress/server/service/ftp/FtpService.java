@@ -2,8 +2,9 @@ package eu.daxiongmao.wordpress.server.service.ftp;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,15 +14,20 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+/**
+ * To interact with a FTP server.
+ * @author Guillaume Diaz
+ * @version 1.0, oct. 2017
+ */
+@Component
 public class FtpService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpService.class);
 
     private FTPClient ftpClient;
 
-    private static final List<String> IMAGE_EXTENSIONS = Arrays.asList(".png", ".jpg", ".jpeg", ".gif");
-    private static final List<String> VIDEO_EXTENSIONS = Arrays.asList(".mov", ".mp4", ".m4v");
     private static final String IMAGE_BACKUP_ENDING = "_backup";
 
     private final ExecutorService downloadThreadPools = Executors.newFixedThreadPool(5);
@@ -134,6 +140,53 @@ public class FtpService {
     }
 
     /**
+     * <strong>Movies filter</strong><br>
+     * To filter FTP files and only keep the MOVIES.<br>
+     * The filter is based on the file extension.
+     *
+     * @return FTP file filter for MOVIES
+     */
+    public FtpFileFilter getMoviesExtensionsFilter() {
+        final FtpFileFilter fileFilter = (ftpFile) -> {
+            if (!ftpFile.getName().contains(".")) {
+                return false;
+            }
+
+            final String fileExtension = ftpFile.getName().substring(ftpFile.getName().lastIndexOf(".")).toLowerCase();
+            final Set<String> extensions = new HashSet<>();
+            extensions.add(".mov");
+            extensions.add(".mp4");
+            extensions.add(".m4v");
+            return extensions.contains(fileExtension);
+        };
+        return fileFilter;
+    }
+
+    /**
+     * <strong>Photos filter</strong><br>
+     * To filter FTP files and only keep the PHOTOS.<br>
+     * The filter is based on the file extension.
+     *
+     * @return FTP file filter for PHOTOS
+     */
+    public FtpFileFilter getPhotosExtensionsFilter() {
+        final FtpFileFilter fileFilter = (ftpFile) -> {
+            if (!ftpFile.getName().contains(".")) {
+                return false;
+            }
+
+            final String fileExtension = ftpFile.getName().substring(ftpFile.getName().lastIndexOf(".")).toLowerCase();
+            final Set<String> extensions = new HashSet<>();
+            extensions.add(".png");
+            extensions.add(".jpg");
+            extensions.add(".jpeg");
+            extensions.add(".gif");
+            return extensions.contains(fileExtension);
+        };
+        return fileFilter;
+    }
+
+    /**
      * To list the content of a remote directory and its sub-folders.<br>
      * !! This is recursive !!
      *
@@ -145,7 +198,7 @@ public class FtpService {
      * @throws IOException
      *             some errors occurred
      */
-    List<String> listDirectoryContent(final FtpServiceIterator ftpIterator) throws IOException {
+    public List<String> listDirectoryContent(final FtpServiceIterator ftpIterator) throws IOException {
         final List<String> files = new ArrayList<>();
 
         // Build remote path
