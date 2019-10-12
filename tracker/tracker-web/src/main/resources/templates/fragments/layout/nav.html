@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--/* Top bar */-->
+<!--/*                                                    LOGO + TITLE                                                     */-->
+<!--/* Menu collapse |                                                                  | Language | Full screen | Profile */-->
+<nav th:fragment="navigationMenuFragment" class="header-navbar navbar-expand-lg navbar navbar-with-menu navbar-fixed bg-primary navbar-brand-center">
+    <!--/* Company logo and title */-->
+    <div class="navbar-header d-xl-block d-none">
+        <ul class="nav navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="navbar-brand" href="#">
+                    <div class="brand-logo"></div>
+                    <h2 class="brand-text mb-0" th:text="#{application.nav.main_title}">Tracker</h2>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="navbar-wrapper">
+        <div class="navbar-container content">
+            <div class="navbar-collapse" id="navbar-mobile">
+                <div class="mr-auto float-left bookmark-wrapper d-flex align-items-center">
+                    <!--/* Toggle menu */-->
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item mobile-menu mr-auto"><a class="nav-link nav-menu-main menu-toggle" href="#"><i class="bx bx-menu"></i></a></li>
+                    </ul>
+
+                    <!--/* Some options have been removed from the original template: */-->
+                    <!--/* - no email link */-->
+                    <!--/* - no chat link */-->
+                    <!--/* - no todos link */-->
+                    <!--/* - no calendar link */-->
+                </div>
+
+                <ul class="nav navbar-nav float-right d-flex align-items-center">
+                    <!--/* Languages menu */-->
+                    <li class="dropdown dropdown-language nav-item">
+                        <!--/* Default language: English (UK) */-->
+                        <a class="dropdown-toggle nav-link" id="dropdown-flag" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="flag-icon" th:classappend="${#locale !=null && ! #strings.equals(#locale.getLanguage(), 'en')} ? 'flag-icon-' + ${#locale.getLanguage()} : 'flag-icon-gb'" ></i>
+                            <span class="selected-language d-lg-inline d-none" th:text="${#locale} ? #{'application.nav.language.' + ${#locale.getLanguage()}} : #{application.nav.language.en}">English</span>
+                        </a>
+                        <!--/* Language dropdown */-->
+                        <div class="dropdown-menu" aria-labelledby="dropdown-flag">
+                            <a class="dropdown-item" href="?lang=en" data-language="en"><i class="flag-icon flag-icon-gb mr-50"></i><span th:text="#{application.nav.language.en}">English</span></a>
+                            <a class="dropdown-item" href="?lang=fr" data-language="fr"><i class="flag-icon flag-icon-fr mr-50"></i><span th:text="#{application.nav.language.fr}">French</span></a>
+                            <a class="dropdown-item" href="?lang=de" data-language="de"><i class="flag-icon flag-icon-de mr-50"></i><span th:text="#{application.nav.language.de}">German</span></a>
+                            <a class="dropdown-item" href="?lang=pt" data-language="pt"><i class="flag-icon flag-icon-pt mr-50"></i><span th:text="#{application.nav.language.pt}">Portuguese</span></a>
+                        </div>
+                    </li>
+
+                    <!--/* Fullscreen option */-->
+                    <li class="nav-item d-none d-lg-block">
+                        <a class="nav-link nav-link-expand"><i class="ficon bx bx-fullscreen"></i></a>
+                    </li>
+
+                    <!--/* Some options have been removed from the original template: */-->
+                    <!--/* - no search bar */-->
+                    <!--/* - no notifications */-->
+
+                    <!--/* User profile */-->
+                    <li class="dropdown dropdown-user nav-item">
+                        <!--/* User overview (always appears on page) */-->
+                        <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                            <div class="user-nav d-lg-flex d-none">
+                                <span class="user-name">John Doe</span>
+                                <span class="user-status">online</span>
+                            </div>
+                            <span><img class="round" th:src="@{/app-assets/images/portrait/small/avatar-s-11.jpg}" src="../../static/app-assets/images/portrait/small/avatar-s-11.jpg" alt="avatar" height="40" width="40"></span>
+                        </a>
+
+                        <!--/* User menu (when user click on user avatar) */-->
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#"><i class="bx bx-user mr-50"></i><span th:text="#{application.nav.user.edit_profile}">Edit Profile</span></a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#"><i class="bx bx-power-off mr-50"></i><span th:text="#{application.nav.user.logout}">Logout</span></a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,56 @@
+<!DOCTYPE html><!DOCTYPE html>
+<!--
+LuxTrust ORder Administration (LORA) v2
+-->
+<html class="loading" lang="en" xmlns:th="http://www.thymeleaf.org" data-textdirection="ltr">
+
+<!--/* headers */-->
+<head th:replace="~{fragments/layout/head :: headerFragment}">
+    <title>LORA - Err 404</title>
+</head>
+
+<body class="horizontal-layout horizontal-menu navbar-sticky 1-column   footer-static bg-full-screen-image  blank-page blank-page" data-open="hover" data-menu="horizontal-menu" data-col="1-column">
+
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+
+                <!-- error 404 -->
+                <section class="row flexbox-container">
+                    <div class="col-xl-6 col-md-7 col-9">
+                        <div class="card bg-transparent shadow-none">
+                            <div class="card-content">
+                                <div class="card-body text-center">
+                                    <h1 class="error-title" th:utext="#{error.html.404.title}">Page Not Found :(</h1>
+                                    <p class="pb-3" th:utext="#{error.html.404.description}">
+                                        we couldn't find the page you are looking for
+                                    </p>
+                                    <p>
+                                        <img class="img-fluid" th:src="@{/app-assets/images/pages/404.png}" src="../../static/app-assets/images/pages/404.png" alt="404 error"><br>
+                                        <a th:href="@{/index}" href="/index" class="btn btn-primary round glow mt-3" th:utext="#{error.html.404.button-message}">BACK
+                                            TO
+                                            HOME
+                                        </a>
+                                        <br>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <!--/* Footer content (what is displayed to user) */-->
+    <footer th:replace="~{fragments/layout/footer :: footerFragment}"></footer>
+
+    <!--/* Footer scripts */-->
+    <div th:replace="~{fragments/layout/footer_js :: javascriptFilesFragment}"></div>
+</body>
+
+</html>

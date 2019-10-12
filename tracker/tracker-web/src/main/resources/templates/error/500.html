@@ -1,0 +1,65 @@
+<!DOCTYPE html><!DOCTYPE html>
+<!--
+LuxTrust ORder Administration (LORA) v2
+-->
+<html class="loading" lang="en" xmlns:th="http://www.thymeleaf.org" data-textdirection="ltr">
+
+<!--/* headers */-->
+<head th:replace="~{fragments/layout/head :: headerFragment}">
+    <title>LORA - Err 500</title>
+</head>
+
+
+<body class="horizontal-layout horizontal-menu navbar-sticky 1-column   footer-static bg-full-screen-image  blank-page blank-page" data-open="hover" data-menu="horizontal-menu" data-col="1-column">
+
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+
+                <!-- error 500 -->
+                <section class="row flexbox-container">
+                    <div class="col-xl-6 col-md-7 col-9">
+                        <!-- w-100 for IE specific -->
+                        <div class="card bg-transparent shadow-none">
+                            <div class="card-content">
+                                <div class="card-body text-center">
+                                    <img th:src="@{/app-assets/images/pages/500.png}" src="../static/app-assets/images/pages/500.png" class="img-fluid my-3" alt="branding logo">
+                                    <h1 class="error-title mt-1" th:utext="#{error.html.500.title}">Internal Server Error!</h1>
+                                    <p class="p-2" th:utext="#{error.html.500.description}">
+                                        Restart the browser after clearing the cache and deleting the cookies. <br> Issues triggered by wrong file
+                                        and directory permissions.
+                                    </p>
+                                    <a th:href="@{/index}" href="/index" class="btn btn-primary round glow" th:utext="#{error.html.500.button-message}">
+                                        BACK TO HOME
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!--/* debug information */-->
+                <!--/* TODO disable that before production using spring-profile or environment check */-->
+                <section>
+                    <div th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
+                        <h1 th:text="|${httpStatus} - ${httpStatus.reasonPhrase}|">404</h1>
+                        <p th:utext="${errorMessage}">Error java.lang.NullPointerException</p>
+                        <p th:utext="${stacktrace}">stacktrace</p>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <!--/* Footer content (what is displayed to user) */-->
+    <footer th:replace="~{fragments/layout/footer :: footerFragment}"></footer>
+
+    <!--/* Footer scripts */-->
+    <div th:replace="~{fragments/layout/footer_js :: javascriptFilesFragment}"></div>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerFragment">
+    <!-- Frest-admin template -->
+    <!--/* Page settings */-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <!--/* Font style */-->
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,600%7CIBM+Plex+Sans:300,400,500,600,700" rel="stylesheet">
+    <!--/* Vendor CSS */-->
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/vendors/css/vendors.min.css}" href="../../static/app-assets/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/vendors/css/ui/prism.min.css}" href="../../static/app-assets/vendors/css/ui/prism.min.css">
+    <!--/* Theme CSS */-->
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/css/bootstrap.css}" href="../../static/app-assets/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/css/bootstrap-extended.css}" href="../../static/app-assets/css/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/css/colors.css}" href="../../static/app-assets/css/colors.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/css/components.css}" href="../../static/app-assets/css/components.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/css/themes/dark-layout.css}" href="../../static/app-assets/css/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/css/themes/semi-dark-layout.css}" href="../../static/app-assets/css/themes/semi-dark-layout.css">
+    <!--/* Page CSS */-->
+    <link rel="stylesheet" type="text/css" th:href="@{/app-assets/css/core/menu/menu-types/horizontal-menu.css}" href="../../static/app-assets/css/core/menu/menu-types/horizontal-menu.css">
+
+    <!-- Application specifics -->
+    <!--/* Custom CSS */-->
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}" href="../../static/assets/css/style.css">
+    <!--/* Title and description */-->
+    <title th:text="#{application.header.title}">Tracker</title>
+    <meta name="description" content="Tracker - files manager">
+    <meta name="keywords" content="Tracker">
+    <meta name="author" content="Daxiongmao.eu">
+    <!--/* Favicons */-->
+    <link rel="apple-touch-icon" th:href="@{/assets/images/ico/apple-icon-120.png}" href="../../static/assets/images/ico/apple-icon-120.png">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/assets/images/ico/favicon.ico}" href="../../static/assets/images/ico/favicon.ico">
+</head>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	
+    <groupId>eu.daxiongmao</groupId>
+    <artifactId>tracker</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Tracker :: Root project</name>
+    <url>https://github.com/guihome-diaz/java/tracker</url>
+	<description>Tracker</description>
+    <inceptionYear>2019</inceptionYear>
+    <packaging>pom</packaging>
+
+	<!-- Legal aspects -->
+	<licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        	<distribution>repo</distribution>
+        </license>
+    </licenses>
+	
+	<developers>
+		<!-- main developer -->
+		<developer>
+			<name>Guillaume Diaz</name>
+			<url>http://www.daxiongmao.eu/wiki</url>
+			<email>guillaume@qin-diaz.com</email>
+			<organization>Daxiongmao.eu</organization>
+			<organizationUrl>https://daxiongmao.eu/wiki</organizationUrl>
+			<timezone>UTC+01:00</timezone>
+		</developer>
+	</developers>
+
+	<!-- Source code original location -->
+	<scm>
+		<url>https://github.com/guihome-diaz/java/tracker</url>
+		<connection>scm:git:git@github.com:guihome-diaz/java.git</connection>
+		<developerConnection>scm:git:git@github.com:guihome-diaz/java.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	
+
+	<modules>
+		<!-- Web User interface, in JS (bootstrap + jQuery) -->
+		<module>tracker-web</module>
+		
+		<!-- API consummed by the User Interface -->
+		<module>tracker-api</module>
+		
+		<!-- Backend features and connection to 3rd parties -->
+		<!-- module>tracker-services</module -->
+	</modules>
+	
+
+	<properties>
+		<java.version>11</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<springframework.boot.version>2.1.8.RELEASE</springframework.boot.version>
+	</properties>
+
+    <build>	
+		<!-- ##################### -->
+		<!-- Plugins configuration -->
+		<!-- ##################### -->
+		<pluginManagement>
+			<plugins>
+				<!-- Compilation settings -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
+					<configuration>
+						<release>${java.version}</release>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+
+				<!-- To generate web artifacts -->
+				<plugin>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>3.2.3</version>
+				</plugin>
+				
+				<!-- Generate source artifact to upload along the binaries, this help debug mode -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.1.0</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			
+				<!-- Generate javadoc to ease API browsing -->	
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.1.1</version>
+					<configuration>
+						<sourcepath>src/main/java</sourcepath>
+						<quiet>true</quiet>
+						<failOnWarnings>false</failOnWarnings>
+						<!-- add this to disable checking and ensure it will not failed on Java 8 -->
+						<doclint>none</doclint>
+					</configuration>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				
+				<!--  To generate test coverage reports (for Codacy & Sonarqube) -->
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.4</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				
+				<!-- ==== packaging checks ==== -->
+				<!-- to check if some dependencies are unused or missing -->
+				<!-- usage: "mvn org.apache.maven.plugins:maven-dependency-plugin:analyze-only" -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.1.1</version>
+					<!-- Override some dependencies to work with Java 11 -->
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.shared</groupId>
+							<artifactId>maven-dependency-analyzer</artifactId>
+							<version>1.11.1</version>
+						</dependency>
+					</dependencies>
+					<executions>
+						<execution>
+							<id>analyze</id>
+							<goals>
+								<goal>analyze-only</goal>
+							</goals>
+							<configuration>
+								<failOnWarning>true</failOnWarning>
+								<outputXML>true</outputXML>
+								<ignoreNonCompile>true</ignoreNonCompile>
+								<ignoredDependencies>
+									<!-- tests libraries -->
+									<dependency>org.hamcrest:hamcrest-core</dependency>
+									<!-- Spring galaxy -->
+									<dependency>org.springframework</dependency>
+									<dependency>org.springframework.boot</dependency>
+									<dependency>org.springframework.data</dependency>
+								</ignoredDependencies>
+								<!-- Dependencies that are only used at runtime (= tests do not use it) -->
+								<ignoredUnusedDeclaredDependencies>
+								</ignoredUnusedDeclaredDependencies>
+								<!-- Don't force us to repeat transitive dependencies (DRY principle FTW) -->
+								<ignoredUsedUndeclaredDependencies>
+									<dependency>*</dependency>
+								</ignoredUsedUndeclaredDependencies>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- ==== Security ==== -->
+				<!-- To check for vulnerabilities against the OWASP databases -->
+				<!-- usage: "mvn org.owasp:dependency-check-maven:check" -->
+				<!--   to aggregate all reports at once: "mvn org.owasp:dependency-check-maven:aggregate" -->
+				<plugin>
+					<groupId>org.owasp</groupId>
+					<artifactId>dependency-check-maven</artifactId>
+					<version>5.2.2</version>
+					<configuration>
+						<failOnError>false</failOnError>
+						<formats>HTML,XML,JUNIT,JSON</formats>
+					</configuration>
+				</plugin>
+
+				<!-- Spring boot plugin -->
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${springframework.boot.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>build-info</goal>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		
+		
+		<!-- ############################# -->
+		<!-- Plugins to run on all modules -->
+		<!-- ############################# -->
+		<plugins>
+				<!-- Compilation -->
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+				</plugin>
+				<!-- Publish source code -->
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+				</plugin>
+				<!-- Generate javadoc -->
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+				</plugin>
+				<!-- Dependencies checks -->
+				<plugin>
+					<artifactId>maven-dependency-plugin</artifactId>
+				</plugin>				
+		</plugins>
+		
+    </build>
+
+	<!-- ####################### -->
+	<!-- #    DEPENDENCIES     # -->
+	<!-- ####################### -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- ##### BUSINESS dependencies ##### -->
+
+			<!-- ##### FRAMEWORKS ##### -->
+			<!-- Spring * -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${springframework.boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- ##### Utilities ##### -->
+			<!-- Set of commons utilities -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.9</version>
+			</dependency>
+			
+			<!-- ##### Tests tools ##### -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>5.5.1</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
