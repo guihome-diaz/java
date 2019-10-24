@@ -1,6 +1,12 @@
 # Astrology
 
-Simple JavaFX8 application that computes both Western and Chinese zodiac from a given birth date. 
+Simple JavaFX application that computes both Western and Chinese zodiac from a given birth date. 
+
+## History
+
+* 2016/12: project creation with Java 8 + JavaFX 8 (embedded)
+* 2019/11: upgrade to Java 11 LTS (OpenJDK 11.0.4) + OpenFX 13 (external lib, see https://openjfx.io/)
+ 
 
 ## How to use it?
 
@@ -11,13 +17,15 @@ Simple JavaFX8 application that computes both Western and Chinese zodiac from a 
 <code>mvn clean install</code>
 
 * Run the artifact
+<code>mvn javafx:run</code>
+
+
 <code>java -jar target/astrology/astrology.jar</code>
 
 
 ## From the IDE
 
 From the IDE you just have to run <code>AstrologyApp</code>
-
 
 
 ## How to deploy it?

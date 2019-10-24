@@ -3,9 +3,18 @@
 
     <groupId>eu.daxiongmao.prv</groupId>
     <artifactId>astrology</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>astrology</name>
-    <description>Daxiongmao.eu # astrology</description>
+    <description>Astrology application, to compute occidental and chinese zodiacs astral signs</description>
+
+    <!-- Legal aspects -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
@@ -19,16 +28,29 @@
         <url>http://daxiongmao.eu/</url>
     </organization>
 
+    <!-- Source code original location -->
+    <scm>
+        <url>https://github.com/guihome-diaz/java</url>
+        <connection>scm:git:git@github.com:guihome-diaz/java.git</connection>
+        <developerConnection>scm:git:git@github.com:guihome-diaz/java.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
+        <org.openjfx.version>11.0.2</org.openjfx.version>
 
         <!-- Program entry point -->
         <exec.mainClass>eu.daxiongmao.prv.astrology.AstrologyApp</exec.mainClass>
     </properties>
 
 
+    <!-- ##################################################################### -->
+    <!-- # Build configuration                                               # -->
+    <!-- # java / javaFX versions, project resources, generate sources, etc. # -->
+    <!-- ##################################################################### -->
     <build>
         <!-- Artifact name -->
         <finalName>astrology</finalName>
@@ -37,7 +59,7 @@
             <!-- copy fxml and css resources -->
             <resource>
                 <filtering>false</filtering>
-                <directory>${basedir}/src/main/java</directory>
+                <directory>${project.basedir}/src/main/java</directory>
                 <includes>
                     <include>**/*.fxml</include>
                     <include>**/*.css</include>
@@ -46,21 +68,21 @@
             </resource>
             <resource>
                 <filtering>false</filtering>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
                 <includes>
                     <include>**/*.*</include>
                 </includes>
             </resource>
             <resource>
                 <filtering>false</filtering>
-                <directory>${basedir}/src/main/launcher</directory>
+                <directory>${project.basedir}/src/main/launcher</directory>
                 <includes>
                     <include>**/*.bat</include>
                     <include>**/*.sh</include>
                 </includes>
             </resource>
             <resource>
-                <directory>${basedir}/src/test/java</directory>
+                <directory>${project.basedir}/src/test/java</directory>
                 <includes>
                     <include>**/*.fxml</include>
                     <include>**/*.css</include>
@@ -70,26 +92,56 @@
         </resources>
 
         <plugins>
-
-            <!-- Global settings -->
+            <!-- Compilation settings -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.8.1</version>
                 <configuration>
+                    <release>${java.version}</release>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <!-- advanced build settings, to see more info during compilation -->
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
 
-            <!-- Generate and upload the source artifact to simplify debugging -->
+            <!-- Copy launchers scripts to the application folder -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.name}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/launcher</directory>
+                                    <includes>
+                                        <include>*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate source artifact to upload along the binaries, this help debug mode -->
+            <!-- This is mandatory for publication on Maven Central -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -100,9 +152,24 @@
                 </executions>
             </plugin>
 
-            <!-- JavaFX8 bundling tool -->
+            <!-- JavaFX bundling tool -->
+            <!-- For Java 8 you must use "com.zenjava:javafx-maven-plugin" ; for later version use the plugin "org.openjfx:javafx-maven-plugin" -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.3</version>
+                <configuration>
+                    <!-- Class to execute (either with uberJar, or "mvn javafx:run") -->
+                    <mainClass>${exec.mainClass}</mainClass>
+                    <!-- To generate a JDK and uberJar. Put here the name of your module, as set in "module-info.java" -->
+                    <jlinkImageName>astrology</jlinkImageName>
+                    <launcher>launcher</launcher>
+                </configuration>
+            </plugin>
+
             <!-- In Java8 you don't have to trick the system anymore [like JavaFX2]: maven plugins are stable and working -->
             <!-- You can customize the output artifact, check out the plugin options on: https://javafx-maven-plugin.github.io/ -->
+            <!--
             <plugin>
                 <groupId>com.zenjava</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -122,40 +189,34 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-            <!-- Copy launchers scripts to the application folder -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/${project.name}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/main/launcher</directory>
-                                    <includes>
-                                        <include>*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
+            -->
         </plugins>
     </build>
 
 
     <dependencies>
+        <!-- ### JavaFX ### -->
+        <!-- JavaFX @FXML files -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${org.openjfx.version}</version>
+        </dependency>
+        <!-- JavaFX core and controls -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${org.openjfx.version}</version>
+        </dependency>
+        <!-- To add web support (ex: CSS, HTML) + browsing features -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${org.openjfx.version}</version>
+        </dependency>
+
+
+
         <!-- Logging -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
