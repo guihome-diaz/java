@@ -12,12 +12,12 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane stylesheets="@../css/daxiongmao.css" 
+<AnchorPane stylesheets="@../../../../css/daxiongmao.css"
             AnchorPane.bottomAnchor="0.0" 
             AnchorPane.leftAnchor="0.0" 
             AnchorPane.rightAnchor="0.0" 
             AnchorPane.topAnchor="0.0" 
-            xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" 
+            xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="eu.daxiongmao.prv.astrology.controller.AstrologyResultsController">
    <children>
       <VBox id="mainpage" fx:id="container" 
@@ -55,7 +55,7 @@
                              pickOnBounds="true" preserveRatio="true" 
                              styleClass="homepageButton" HBox.hgrow="NEVER">
                      <image>
-                        <Image url="@../img/homepage.png" />
+                        <Image url="@../../../../img/homepage.png" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="quitButton" 
@@ -63,7 +63,7 @@
                              pickOnBounds="true" preserveRatio="true" 
                              styleClass="quitButton" HBox.hgrow="NEVER">
                      <image>
-                        <Image url="@../img/power.png" />
+                        <Image url="@../../../../img/power.png" />
                      </image>
                   </ImageView>
                </children>

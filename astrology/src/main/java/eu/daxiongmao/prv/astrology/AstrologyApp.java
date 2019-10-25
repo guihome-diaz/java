@@ -15,14 +15,22 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Astrology application start
+ * @author Guillaume Diaz
+ * @version 1.0 - 2016/12 (creation)
+ * @version 2.0 - 2019/11 (migration to OpenJavaFX 13 + Java 11)
+ *                the FXML files must be in /src/main/resources/_package-folder_/*.fxml
+ *                The application must have a "module-info" to work with Java 9+ modules
+ */
 public class AstrologyApp extends Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AstrologyApp.class);
 
     private static AstrologyApp instance = null;
 
-    public static final String ASTROLOGY_INPUT = "fxml/astrologyInput.fxml";
-    public static final String ASTROLOGY_RESULTS = "fxml/astrologyResults.fxml";
+    public static final String ASTROLOGY_INPUT = "astrologyInput.fxml";
+    public static final String ASTROLOGY_RESULTS = "astrologyResults.fxml";
 
     private Stage primaryStage;
     private AnchorPane contentPanel;
@@ -48,8 +56,8 @@ public class AstrologyApp extends Application {
             // Load root panel from FXML file
             final FXMLLoader loader = new FXMLLoader();
             loader.setResources(ResourceBundle.getBundle("langs.Astrology", SessionDTO.getInstance().getLocale()));
-            loader.setLocation(AstrologyApp.class.getClassLoader().getResource("fxml/rootPane.fxml"));
-            final VBox rootPanel = (VBox) loader.load();
+            loader.setLocation(getClass().getResource("rootPane.fxml"));
+            final VBox rootPanel = loader.load();
 
             for (final Node node : rootPanel.getChildren()) {
                 if (node instanceof AnchorPane) {
@@ -73,7 +81,7 @@ public class AstrologyApp extends Application {
     public void loadPage(final String fxmlFile) {
         try {
             // Load the FXML file and set into the center of the main layout
-            final FXMLLoader loader = new FXMLLoader(AstrologyApp.class.getClassLoader().getResource(fxmlFile));
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             loader.setResources(ResourceBundle.getBundle("langs.Astrology", SessionDTO.getInstance().getLocale()));
             final AnchorPane page = (AnchorPane) loader.load();
             // Clear current content and apply new content

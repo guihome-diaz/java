@@ -1,26 +1,60 @@
 # Astrology
 
-Simple JavaFX8 application that computes both Western and Chinese zodiac from a given birth date. 
+Simple JavaFX application that computes both Western and Chinese zodiac from a given birth date. 
 
-## How to use it?
+--------------
+## Change-logs
+
+* 2016/12: project creation with Java 8 + JavaFX 8 (embedded in JDK)
+* 2019/11: 
+  * Upgrade to Java 11 & OpenJFX 11 (not included in the JDK anymore)
+  * Dependencies cleanup
+  * The application uses Java9+ modules
+  * Switching to _jlink_ to generate standalone jar
+--------------
+
+## Project requirements
+
+
+To ***build*** this project you need:
+* **Maven** 3.6 or higher
+* Java **JDK 11** or higher (see https://adoptopenjdk.net/)
+* **OpenJFX 11** or higher (see [OpenJFX documentation](https://openjfx.io/) or [OpenJFX downloads](https://gluonhq.com/products/javafx/))
+
+
+\
+To ***execute*** this project you just need the **_jlink_ folder** and execute the standalone jar.
+
+
+## Build and execute locally
 
 * Clone the repo
 <code>git clone https://github.com/guihome-diaz/java.git</code>
 
 * Build the project
-<code>mvn clean install</code>
+  * <code>cd astrology</code> 
+  * <code>mvn clean install</code>
 
-* Run the artifact
-<code>java -jar target/astrology/astrology.jar</code>
-
-
-## From the IDE
-
-From the IDE you just have to run <code>AstrologyApp</code>
+* Run the artifact <code>mvn javafx:run</code>
 
 
 
-## How to deploy it?
+## Build and execute from an IDE
+From an IDE you just have to run **<code>AstrologyApp</code>**
 
-TODO: check / adjust scripts (.bat and .sh) + <code>$target/astrology</code> folder
- 
+
+
+## Generate and execute standalone jar
+* Generate standalone jar (fat jar): <code>mvn javafx:jlink</code> 
+* Run the application: 
+  * Windows = <code>.\target\astrology-app\bin\astrology.bat</code>
+  * Linux / Mac = <code>./target/astrology-app/bin/astrology</code>
+
+
+
+
+## JavaFX resources
+
+* [Javafx-maven-plugin](https://github.com/openjfx/javafx-maven-plugin) documentation ==> This plugin includes _jlink configuration_ to generate standalone jar and ZIP archive
+* Very good article to start with JavaFX 11 and beyond (ex: JFX multi-threads): [Matthew Gillard - Getting start with JavaFX](https://www.twilio.com/blog/getting-started-with-javafx)
+* Example of a real application OpenJFX 11 with modules: [Santulator](https://github.com/Santulator/Santulator/tree/modular)
