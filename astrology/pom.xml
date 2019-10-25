@@ -74,14 +74,6 @@
                 </includes>
             </resource>
             <resource>
-                <filtering>false</filtering>
-                <directory>${project.basedir}/src/main/launcher</directory>
-                <includes>
-                    <include>**/*.bat</include>
-                    <include>**/*.sh</include>
-                </includes>
-            </resource>
-            <resource>
                 <directory>${project.basedir}/src/test/java</directory>
                 <includes>
                     <include>**/*.fxml</include>
@@ -109,33 +101,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Copy launchers scripts to the application folder -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/${project.name}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/src/main/launcher</directory>
-                                    <includes>
-                                        <include>*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Generate source artifact to upload along the binaries, this help debug mode -->
             <!-- This is mandatory for publication on Maven Central -->
             <plugin>
@@ -152,8 +117,11 @@
                 </executions>
             </plugin>
 
-            <!-- JavaFX bundling tool -->
-            <!-- For Java 8 you must use "com.zenjava:javafx-maven-plugin" ; for later version use the plugin "org.openjfx:javafx-maven-plugin" -->
+            <!-- #### JavaFX 11+ bundling tool #### -->
+            <!-- This plugin includes JLINK (to generate über-jar) + the command-line run options -->
+            <!-- See https://github.com/openjfx/javafx-maven-plugin for complete details -->
+            <!-- To run the application from command line: "mvn clean install && mvn javafx:run" -->
+            <!-- To build a single jar (also called 'fat jar' or 'über-jar'): "mvn clean install && mvn javafx:jlink && ./target/astrology-app/bin/astrology" -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -161,41 +129,28 @@
                 <configuration>
                     <!-- Class to execute (either with uberJar, or "mvn javafx:run") -->
                     <mainClass>${exec.mainClass}</mainClass>
-                    <!-- To generate a JDK and uberJar. Put here the name of your module, as set in "module-info.java" -->
-                    <jlinkImageName>astrology</jlinkImageName>
-                    <launcher>launcher</launcher>
+                    <!-- #### JLINK #### (über-jar settings) -->
+                    <!-- Name of the module. A folder with that name will be generated in ./target/${jlinkImageName} -->
+                    <jlinkImageName>astrology-app</jlinkImageName>
+                    <!-- To create launchers for each environment (Win/Mac/Linux). They will be available as ./target/${jlinkImageName}/bin/${launcher} -->
+                    <launcher>astrology</launcher>
+                    <!-- To remove or not the includes directory in the resulting runtime image. Default: false -->
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <!-- To removes the man directory in the resulting runtime image. -->
+                    <noManPages>true</noManPages>
+                    <!-- To create a ZIP archive of the JDK + application that you can easily distribute -->
+                    <jlinkZipName>astrology-${project.version}</jlinkZipName>
+                    <!-- Compression level of the generated archive. values: 0,1,2 ; default = 0 -->
+                    <compress>2</compress>
                 </configuration>
             </plugin>
-
-            <!-- In Java8 you don't have to trick the system anymore [like JavaFX2]: maven plugins are stable and working -->
-            <!-- You can customize the output artifact, check out the plugin options on: https://javafx-maven-plugin.github.io/ -->
-            <!--
-            <plugin>
-                <groupId>com.zenjava</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.5.0</version>
-                <configuration>
-                    <mainClass>${exec.mainClass}</mainClass>
-                    <jfxAppOutputDir>${project.build.directory}/${project.name}</jfxAppOutputDir>
-                    <jfxMainAppJarName>${project.build.finalName}.jar</jfxMainAppJarName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>create-jfxjar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
     </build>
 
 
     <dependencies>
-        <!-- ### JavaFX ### -->
+        <!-- #### JavaFX #### -->
+        <!-- Add dependencies over here, then update the 'module-info.java' file accordingly' -->
         <!-- JavaFX @FXML files -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -215,16 +170,18 @@
             <version>${org.openjfx.version}</version>
         </dependency>
 
-
-
-        <!-- Logging -->
+        <!-- #### Logging #### -->
+        <!-- This application uses Java9+ modules system and it requires a modular logging dependency, based on modular APIs -->
+        <!-- Only SLF4J 1.8.0+ is modular. Therefore we must use the 1.3.0-ALPHA* releases of LogBack to use logging in modular applications -->
+        <!-- You just have to adjust 'module-info.java' as follow: "requires org.slf4j;" -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.7</version>
+            <version>1.3.0-alpha4</version>
         </dependency>
 
-        <!-- Testing -->
+        <!-- #### Testing #### -->
+        <!-- No need of modules for testing libraries -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
