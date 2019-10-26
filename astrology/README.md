@@ -1,6 +1,7 @@
 # Astrology
 
-Simple JavaFX application that computes both Western and Chinese zodiac from a given birth date. 
+Simple JavaFX application that **computes both Western and Chinese zodiac** from a given birth date. 
+
 
 --------------
 ## Change-logs
@@ -21,10 +22,13 @@ To ***build*** this project you need:
 * Java **JDK 11** or higher (see https://adoptopenjdk.net/)
 * **OpenJFX 11** or higher (see [OpenJFX documentation](https://openjfx.io/) or [OpenJFX downloads](https://gluonhq.com/products/javafx/))
 
+Optional:
+* OpenJFX scene-builder (see [Gluon SceneBuilder](https://gluonhq.com/products/scene-builder/)) >> add this tool in IntelliJ / Eclipse IDE\
+(i) default installation in "<code>ProgramFiles\SceneBuilder</code>"... Feel free to move that folder
+
 
 \
 To ***execute*** this project you just need the **_jlink_ folder** and execute the standalone jar.
-
 
 ## Build and execute locally
 
