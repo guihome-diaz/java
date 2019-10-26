@@ -2,6 +2,11 @@
 
 This application go through wordpress's Gallery plugin to extract all original pictures and restore them in full size.
 
+
+**Warning**:  
+*This is a <u>work-in-progress</u>*
+
+
 --------------
 ## Change-logs
 
@@ -10,7 +15,10 @@ This application go through wordpress's Gallery plugin to extract all original p
   * Upgrade to Java 11 & OpenJFX 11 (not included in the JDK anymore)
   * Dependencies cleanup
   * The application uses Java9+ modules
-  * Switching to _jlink_ to generate standalone jar
+
+You cannot distribute this application because it uses a non-modular dependency (apache commons-net) 
+
+  
 --------------
 
 ## Project requirements
