@@ -133,13 +133,13 @@
                     <!-- Name of the module. A folder with that name will be generated in ./target/${jlinkImageName} -->
                     <jlinkImageName>astrology-app</jlinkImageName>
                     <!-- To create launchers for each environment (Win/Mac/Linux). They will be available as ./target/${jlinkImageName}/bin/${launcher} -->
-                    <launcher>astrology</launcher>
+                    <launcher>${project.build.finalName}</launcher>
                     <!-- To remove or not the includes directory in the resulting runtime image. Default: false -->
                     <noHeaderFiles>true</noHeaderFiles>
                     <!-- To removes the man directory in the resulting runtime image. -->
                     <noManPages>true</noManPages>
                     <!-- To create a ZIP archive of the JDK + application that you can easily distribute -->
-                    <jlinkZipName>astrology-${project.version}</jlinkZipName>
+                    <jlinkZipName>${project.build.finalName}-${project.version}</jlinkZipName>
                     <!-- Compression level of the generated archive. values: 0,1,2 ; default = 0 -->
                     <compress>2</compress>
                 </configuration>

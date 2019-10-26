@@ -21,8 +21,8 @@ public class GalleryFilesApp extends Application {
 
     private static GalleryFilesApp instance = null;
 
-    public static final String PAGE_SETTINGS = "fxml/settings.fxml";
-    public static final String PAGE_DASHBOARD = "fxml/dashboard.fxml";
+    public static final String PAGE_SETTINGS = "settings.fxml";
+    public static final String PAGE_DASHBOARD = "dashboard.fxml";
 
     private Stage primaryStage;
     private AnchorPane contentPanel;
@@ -50,7 +50,7 @@ public class GalleryFilesApp extends Application {
             // Load root panel from FXML file
             final FXMLLoader loader = new FXMLLoader();
             loader.setResources(ResourceBundle.getBundle("langs.GalleryFiles", SessionDTO.getInstance().getLocale()));
-            loader.setLocation(GalleryFilesApp.class.getClassLoader().getResource("fxml/rootPane.fxml"));
+            loader.setLocation(getClass().getResource("rootPane.fxml"));
             final VBox rootPanel = (VBox) loader.load();
 
             for (final Node node : rootPanel.getChildren()) {
@@ -75,7 +75,7 @@ public class GalleryFilesApp extends Application {
     public void loadPage(final String fxmlFile) {
         try {
             // Load the FXML file and set into the center of the main layout
-            final FXMLLoader loader = new FXMLLoader(GalleryFilesApp.class.getClassLoader().getResource(fxmlFile));
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             loader.setResources(ResourceBundle.getBundle("langs.GalleryFiles", SessionDTO.getInstance().getLocale()));
             final AnchorPane page = (AnchorPane) loader.load();
             // Clear current content and apply new content

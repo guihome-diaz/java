@@ -3,9 +3,18 @@
 
     <groupId>eu.daxiongmao.prv</groupId>
     <artifactId>gallery-files</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>gallery-files</name>
     <description>Daxiongmao.eu # Wordpress's Gallery files</description>
+
+    <!-- Legal aspects -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
@@ -22,16 +31,21 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
+        <org.openjfx.version>11.0.2</org.openjfx.version>
 
         <!-- Program entry point -->
         <exec.mainClass>eu.daxiongmao.prv.wordpress.GalleryFilesApp</exec.mainClass>
     </properties>
 
 
+    <!-- ##################################################################### -->
+    <!-- # Build configuration                                               # -->
+    <!-- # java / javaFX versions, project resources, generate sources, etc. # -->
+    <!-- ##################################################################### -->
     <build>
         <!-- Artifact name -->
-        <finalName>gallery-files</finalName>
+        <finalName>galleryFiles</finalName>
 
         <resources>
             <!-- copy fxml and css resources -->
@@ -52,14 +66,6 @@
                 </includes>
             </resource>
             <resource>
-                <filtering>false</filtering>
-                <directory>${basedir}/src/main/launcher</directory>
-                <includes>
-                    <include>**/*.bat</include>
-                    <include>**/*.sh</include>
-                </includes>
-            </resource>
-            <resource>
                 <directory>${basedir}/src/test/java</directory>
                 <includes>
                     <include>**/*.fxml</include>
@@ -71,25 +77,29 @@
 
         <plugins>
 
-            <!-- Global settings -->
+            <!-- Compilation settings -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.8.1</version>
                 <configuration>
+                    <release>${java.version}</release>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <!-- advanced build settings, to see more info during compilation -->
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
 
-            <!-- Generate and upload the source artifact to simplify debugging -->
+            <!-- Generate source artifact to upload along the binaries, this help debug mode -->
+            <!-- This is mandatory for publication on Maven Central -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -100,62 +110,71 @@
                 </executions>
             </plugin>
 
-            <!-- JavaFX8 bundling tool -->
-            <!-- In Java8 you don't have to trick the system anymore [like JavaFX2]: maven plugins are stable and working -->
-            <!-- You can customize the output artifact, check out the plugin options on: https://javafx-maven-plugin.github.io/ -->
+
+            <!-- #### JavaFX 11+ bundling tool #### -->
+            <!-- This plugin includes JLINK (to generate über-jar) + the command-line run options -->
+            <!-- See https://github.com/openjfx/javafx-maven-plugin for complete details -->
+            <!-- To run the application from command line: "mvn clean install && mvn javafx:run" -->
+            <!-- To build a single jar (also called 'fat jar' or 'über-jar'): "mvn clean install && mvn javafx:jlink && ./target/astrology-app/bin/astrology" -->
             <plugin>
-                <groupId>com.zenjava</groupId>
+                <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.5.0</version>
+                <version>0.0.3</version>
                 <configuration>
+                    <!-- Class to execute (either with uberJar, or "mvn javafx:run") -->
                     <mainClass>${exec.mainClass}</mainClass>
-                    <jfxAppOutputDir>${project.build.directory}/${project.name}</jfxAppOutputDir>
-                    <jfxMainAppJarName>${project.build.finalName}.jar</jfxMainAppJarName>
+                    <!-- #### JLINK #### (über-jar settings) -->
+                    <!-- Name of the module. A folder with that name will be generated in ./target/${jlinkImageName} -->
+                    <jlinkImageName>astrology-app</jlinkImageName>
+                    <!-- To create launchers for each environment (Win/Mac/Linux). They will be available as ./target/${jlinkImageName}/bin/${launcher} -->
+                    <launcher>${project.build.finalName}</launcher>
+                    <!-- To remove or not the includes directory in the resulting runtime image. Default: false -->
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <!-- To removes the man directory in the resulting runtime image. -->
+                    <noManPages>true</noManPages>
+                    <!-- To create a ZIP archive of the JDK + application that you can easily distribute -->
+                    <jlinkZipName>${project.build.finalName}-${project.version}</jlinkZipName>
+                    <!-- Compression level of the generated archive. values: 0,1,2 ; default = 0 -->
+                    <compress>2</compress>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>create-jfxjar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
-
-
-            <!-- Copy launchers scripts to the application folder -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/${project.name}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/main/launcher</directory>
-                                    <includes>
-                                        <include>*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
 
     <dependencies>
+        <!-- #### JavaFX #### -->
+        <!-- Add dependencies over here, then update the 'module-info.java' file accordingly' -->
+        <!-- JavaFX @FXML files -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${org.openjfx.version}</version>
+        </dependency>
+        <!-- JavaFX core and controls -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${org.openjfx.version}</version>
+        </dependency>
+        <!-- To add web support (ex: CSS, HTML) + browsing features -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${org.openjfx.version}</version>
+        </dependency>
+
+        <!-- #### Logging #### -->
+        <!-- This application uses Java9+ modules system and it requires a modular logging dependency, based on modular APIs -->
+        <!-- Only SLF4J 1.8.0+ is modular. Therefore we must use the 1.3.0-ALPHA* releases of LogBack to use logging in modular applications -->
+        <!-- You just have to adjust 'module-info.java' as follow: "requires org.slf4j;" -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.0-alpha4</version>
+        </dependency>
+
+        <!-- #### Utilities #### -->
         <!-- Apache commons NET : to handle common network protocols such as FTP / SFTP -->
         <dependency>
             <groupId>commons-net</groupId>
@@ -167,24 +186,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
+            <version>3.9</version>
         </dependency>
 
-        <!-- ControlFX - nice dialogs and improved JavaFX UI -->
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>8.40.12</version>
-        </dependency>
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.1.7</version>
-        </dependency>
-
-        <!-- Testing -->
+        <!-- #### Testing #### -->
+        <!-- No need of modules for testing libraries -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

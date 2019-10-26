@@ -26,7 +26,7 @@ public class FileServiceTest {
 
         Assert.assertNotNull(directories);
         Assert.assertFalse(directories.isEmpty());
-        Assert.assertEquals(7, directories.size());
+        Assert.assertEquals(8, directories.size());
         directories.forEach(item -> LOGGER.info(item.toString()));
     }
 

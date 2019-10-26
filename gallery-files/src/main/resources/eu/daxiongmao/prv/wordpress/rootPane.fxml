@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -12,7 +11,7 @@
       maxWidth="-Infinity" 
       minHeight="600.0" minWidth="800.0" 
       prefHeight="600.0" prefWidth="800.0" 
-      stylesheets="@../css/daxiongmao.css" 
+      stylesheets="@../../../../css/daxiongmao.css"
       xmlns="http://javafx.com/javafx/8.0.111" 
       xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="eu.daxiongmao.prv.wordpress.controller.RootPaneController">

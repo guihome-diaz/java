@@ -32,10 +32,10 @@ public class PathUtils {
             pathStr.replaceAll("\\", "/");
         }
 
-        if (pathStr.startsWith("/")) {
+        if (pathStr.startsWith("/") || pathStr.startsWith("\\")) {
             pathStr = pathStr.substring(1);
         }
-        if (pathStr.endsWith("/")) {
+        if (pathStr.endsWith("/") || pathStr.endsWith("\\")) {
             pathStr = pathStr.substring(0, pathStr.length() - 1);
         }
 
