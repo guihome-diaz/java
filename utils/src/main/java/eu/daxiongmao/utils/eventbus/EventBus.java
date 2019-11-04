@@ -49,7 +49,11 @@ public class EventBus {
     /** Event bus behavior. See {@link EventBusMode}. */
     private static EventBusMode behavior = EventBusMode.CONSUMER_THREAD;
 
-    /** The thread cached pool will create as many threads as need on request and do as much re-use as possible. */
+    /** The thread cached pool will create as many threads as need on request and do as much re-use as possible.<br>
+     * The corePoolSize is actually set to 0, and the maximumPoolSize is set to Integer.MAX_VALUE for this instance.<br>
+     * The keepAliveTime is 60 seconds for this one.<br>
+     * These parameter values mean that the cached thread pool may grow without bounds to accommodate any amount of submitted tasks. But when the threads are not needed anymore, they will be disposed of after 60 seconds of inactivity.<br>
+     * A typical use case is when you have a lot of short-living tasks in your application. */
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 
     /** Private factory design pattern. Prevent instantiation of utility classes. */
