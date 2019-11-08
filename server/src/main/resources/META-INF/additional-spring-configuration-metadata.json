@@ -1,7 +1,0 @@
-{"properties": [
-  {
-    "name": "es.config.file",
-    "type": "java.lang.String",
-    "description": "file path to ElasticSearch configuration (elasticsearch.yml)"
-  }
-]}
