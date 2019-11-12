@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>eu.daxiongmao.prv</groupId>
+    <artifactId>building-flat-tracker</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <!-- Legal aspects -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Guillaume Diaz</name>
+            <email>guillaume@qin-diaz.com</email>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>Daxiongmao.eu</name>
+        <url>http://daxiongmao.eu/</url>
+    </organization>
+
+    <!-- Source code original location -->
+    <scm>
+        <url>https://github.com/guihome-diaz/java</url>
+        <connection>scm:git:git@github.com:guihome-diaz/java.git</connection>
+        <developerConnection>scm:git:git@github.com:guihome-diaz/java.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Frameworks -->
+        <vertx.version>3.8.2</vertx.version>
+        <log4j2.version>2.12.1</log4j2.version>
+        <lombok.version>1.18.10</lombok.version>
+        <junit-jupiter.version>5.5.2</junit-jupiter.version>
+
+
+        <!-- Startup class -->
+        <main.verticle>eu.daxiongmao.prv.construction.ConstructionTracker</main.verticle>
+    </properties>
+
+    <!-- *********************************************************** -->
+    <!-- BOM: Import 3rd parties settings (spring-boot, vertx, etc.) -->
+    <!-- *********************************************************** -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- VertX dependencies and properties -->
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-stack-depchain</artifactId>
+                <version>${vertx.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!-- ##################################################################### -->
+    <!-- # Build configuration                                               # -->
+    <!-- # java / javaFX versions, project resources, generate sources, etc. # -->
+    <!-- ##################################################################### -->
+    <build>
+
+        <plugins>
+
+            <!-- Compilation settings -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Generate source artifact to upload along the binaries, this help debug mode -->
+            <!-- This is mandatory for publication on Maven Central -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            *********************************************************************************************
+            You only need the part below if you want to build your application into a fat executable jar.
+            This is a jar that contains all the dependencies required to run it, so you can just run it with: java -jar
+            *********************************************************************************************
+            -->
+            <!-- Create fat jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>io.vertx.core.Launcher</Main-Class>
+                                        <Main-Verticle>${main.verticle}</Main-Verticle>
+                                    </manifestEntries>
+                                </transformer>
+                                <!-- Include VertX into the fat jar -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
+                                </transformer>
+                            </transformers>
+                            <artifactSet>
+                            </artifactSet>
+                            <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar
+                            </outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Start VertX on fat jar execution -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>run</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>io.vertx.core.Launcher</mainClass>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>${main.verticle}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>run-app</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-jar</argument>
+                                <argument>target/${project.artifactId}-${project.version}-fat.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            *********************************************************************************************
+            End fat jar plugins
+            *********************************************************************************************
+            -->
+
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!-- ************************************************************************************* -->
+        <!-- VertX (https://vertx.io/) event-driven and non blocking framework that supports HTTP2 -->
+        <!-- ************************************************************************************* -->
+        <!-- See official documentation and tutorial: https://vertx.io/docs/guide-for-java-devs/ -->
+        <!-- Core # to handle incoming request on a VertX verticle -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+        </dependency>
+        <!-- While the core library does support the creation of HTTP servers, it does not provide elegant APIs to deal with routing, handling of request payloads, etc. -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web-client</artifactId>
+        </dependency>
+
+        <!-- Logging. Engine: Log4j2 # Logging-API: SLF4J -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+        <!-- To use SLF4J API with Log4j2 backend -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+
+        <!-- Utilities -->
+        <!-- Lombok: reduce boiler plate code -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ******************* -->
+        <!--  Test dependencies -->
+        <!-- ******************* -->
+        <!-- jUnit 5 # core -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- jUnit 5 # support params -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- VertX tests tools -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>
