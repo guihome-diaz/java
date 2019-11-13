@@ -8,8 +8,13 @@ import io.vertx.core.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Main verticle of the application, to handle all client's requests.
+ * @author Guillaume Diaz
+ * @since 2019-11 - project creation
+ */
 @Slf4j
-public class ConstructionTracker extends AbstractVerticle {
+public class ConstructionTrackerVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> promise) throws Exception {
@@ -22,7 +27,7 @@ public class ConstructionTracker extends AbstractVerticle {
                         .putHeader("Content-Type", "plain/text")
                         .end("Hello, welcome on the new application flat construction tracker");
                 // Logging
-                log.info("Handled a request on path {} from {}", req.path(), req.remoteAddress().host());
+                log.info("New processing request has been received on path \"{}\" from \"{}\"", req.path(), req.remoteAddress().host());
             })
             // Configuration
             .listen(11981, asyncResult -> {
