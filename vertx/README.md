@@ -18,6 +18,10 @@ This application is a wiki:
 * It uses VertX
 
 
+## Application architecture
+
+
+
 
 ## How to use it?
 

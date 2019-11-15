@@ -1,15 +1,17 @@
-package eu.daxiongmao.training.vertx.wiki;
+package eu.daxiongmao.training.vertx;
 
+import eu.daxiongmao.training.vertx.wiki.MainVerticle;
+import eu.daxiongmao.training.vertx.wiki.config.HttpServerConfiguration;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.assertj.core.api.Assertions;
 
 /**
  * The following Verticle tests are based on the official VertX jUnit5 examples,
@@ -45,7 +47,7 @@ public class MainVerticleTest {
 
             for (int i = 0; i < 10; i++) {
                 // *** Query verticle
-                webClient.get(MainVerticle.SERVER_PORT, "localhost", "/")
+                webClient.get(HttpServerConfiguration.SERVER_PORT, "localhost", "/")
                         .as(BodyCodec.string())
                         .send(testContext.succeeding(resp -> {
                             testContext.verify(() -> {

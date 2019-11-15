@@ -1,26 +1,22 @@
 package eu.daxiongmao.training.vertx.wiki;
 
+import eu.daxiongmao.training.vertx.wiki.config.HttpServerConfiguration;
+import eu.daxiongmao.training.vertx.wiki.config.JdbcConfiguration;
+import eu.daxiongmao.training.vertx.wiki.config.dto.DbConfigDTO;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Promise;
-import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.BodyHandler;
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
 import io.vertx.core.Future;
-import org.apache.logging.log4j.core.appender.routing.Routes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vertx.core.Promise;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <h2>Main verticle of the application</h2>
- * <p>This is the Verticle that handles application's startup.<br>
- * To start the application, we need to perform a 2-phases initialization:</p>
+ * <p>This is the Verticle that handles <strong>startup</strong> and <strong>declares other verticles</strong>.</p>
+ * <h2>startup</h2>
+ * <p>To start the application, we need to perform a 2-phases initialization:</p>
  * <ul>
  *     <li>First, we need to establish a JDBC database connection, and also make sure that the database schema is in place</li>
  *     <li>Then, we need to start a HTTP server for the web application</li>
- *</ul>
+ * </ul>
  * <p>Each phase can fail (e.g., the HTTP server TCP port is already being used), and they should not run in parallel as the web application code first needs the database access to work.</p>
  * <p>To make our code <i>cleaner</i> we will define 1 method per phase, and adopt a pattern of returning a <code>future</code> object to notify when each of the phases completes, and whether it did so successfully or not. See:</p>
  * <ul>
@@ -30,74 +26,64 @@ import org.slf4j.LoggerFactory;
  * <p>To establish a list of required steps (= startup chain), each step returns a promise that trigger the next call.
  * See main start point: <code>public void start(Promise&lt;Void&gt; promise) { .. }</code>
  * </p>
+ *
+ * <h2>HTTP routing</h2>
+ * <p>The routes are defined for the HTTP server verticle.</p>
+ *
  * @author Guillaume Diaz
  * @since 2019-11 - project creation
  */
 @Slf4j
 public class MainVerticle extends AbstractVerticle {
 
-    protected static final int SERVER_PORT = 13080;
 
     @Override
     public void start(Promise<Void> promise) throws Exception {
-      Future<Void> startupSteps = startHttpServer();
-      // Return startup steps' result
-      startupSteps.setHandler(promise);
+        // Create startup chain by chaining steps
+        //   ==> Start DB, then start HTTP server
+        // if DB fails then the HTTP server will NOT start
+        // (i) Note the usage of "Future.compose(..)" to chain actions
+        Future<Void> startupSteps = initDatabaseConnection().compose(nextStep -> initHttpServer());
+
+        // Return overall startup steps' result
+        startupSteps.setHandler(asyncResult -> {
+            if (asyncResult.succeeded()) {
+                log.info("Application startup complete - ready to work!");
+                promise.complete();
+            } else {
+                log.error("Failed to start application", asyncResult.cause());
+                promise.fail(asyncResult.cause());
+            }
+        });
     }
 
 
-    private Future<Void> startHttpServer() {
+    private Future<Void> initHttpServer() {
+        // Declare promise (= callback object)
+        final Promise<Void> promise = Promise.promise();
+
+        // Create and start HTTP inside current verticle
+        final HttpServerConfiguration httpServer = new HttpServerConfiguration();
+        httpServer.start(promise, vertx);
+
+        // Caller will be notify once server has started or failed to do so (see worker class)
+        return promise.future();
+    }
+
+    private Future<Void> initDatabaseConnection() {
         Promise<Void> promise = Promise.promise();
 
-        // ****** Declare application's routes ******
-        Router router = Router.router(vertx);
-        // TODO add routes
-        //      Routes have their own handlers, and they can be defined by URL and/or by HTTP method.
-        //      It is a good idea to reference private methods for each route
-        //      Note that URLs can be parametric: /wiki/:page will match a request like /wiki/Hello, in which case a "page" parameter will be available with value Hello
+        // Create DB configuration
+        final DbConfigDTO dbConfig = new DbConfigDTO();
+        dbConfig.setDbUrl("jdbc:hsqldb:file:db/wiki");
+        dbConfig.setDbDriver("org.hsqldb.jdbcDriver");
+        dbConfig.setMaxPoolSize(10);
 
-        // *** GETS
-        // Application default's reply (path "/")
-        router.route("/").handler( routingContext -> {
-            HttpServerResponse response = routingContext.response();
-            response
-                    .putHeader("Content-Type", "text/html")
-                    .end("<p>Hello, welcome on VertX training.<br> This wiki is based upon <a href='https://github.com/vert-x3/vertx-guide-for-java-devs'>VertX guide for java developers</a>. Only changes are:</p>" +
-                        "<ul>" +
-                        "   <li><code>Log4j2</code> instead of <code>Logback</code></li>" +
-                        "   <li>Usage of <code>Junit5</code></li>" +
-                        "</ul>");
-        });
+        // Connect to DB
+        final JdbcConfiguration jdbcConnection = new JdbcConfiguration();
+        jdbcConnection.connect(promise, vertx, dbConfig);
 
-        // *** POSTS
-        // First handler for POST requests
-        // (i) This handler has no dedicated route => all HTTP POST requests go through it before reaching the destination
-        // {io.vertx.ext.web.handler.BodyHandler} decodes the body from the HTTP requests (e.g., form submissions), which can then be manipulated as Vert.x buffer objects.
-        router.post().handler(BodyHandler.create());
-        // ********************************************
-
-        // ****** Create HTTP server ******
-        // VertX starts a Netty by default
-        HttpServer server = vertx.createHttpServer();
-        // Configure server
-        server
-            // apply routes
-            .requestHandler(router)
-            // bind server to port in async manner
-            .listen(SERVER_PORT, asyncResult -> {
-                if (asyncResult.succeeded()) {
-                    // All is ok, send success
-                    log.info("HTTP server running on port " + server.actualPort());
-                    promise.complete();
-                } else {
-                    // Something went wrong, forward error
-                    log.error("Could not start HTTP server", asyncResult.cause());
-                    promise.fail(asyncResult.cause());
-                }
-            });
-        // ********************************************
-
-        // Return async promise: caller will be notify once server has started or failed to do so
+        // Caller will be notify once server has started or failed to do so (see worker class)
         return promise.future();
     }
 
