@@ -97,3 +97,14 @@ grant create session to daxiongmao_user identified by secretPassword;
 ## Create tables
 
 To create tables you must use **OWNER** account
+
+
+## Grant rights
+
+As **OWNER** you can grant rights to WORKING user on tables and sequences:
+
+``sql
+-- Grant rights to user
+grant select, insert, update, delete on daxiongmao_owner.parameters to daxiongmao_user; 
+grant select, insert, update, delete on daxiongmao_owner.users to daxiongmao_user;
+``  
