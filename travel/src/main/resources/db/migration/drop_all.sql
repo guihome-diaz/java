@@ -1,6 +1,8 @@
------------------------------------------------------
--- Drops all tables and sequences of the current user
------------------------------------------------------
+--
+-- Script to drop all tables and sequences of the current user
+-- (i) this script must be executed as "daxiongmao_owner"
+-- version 1.0 (2019/12)
+--
 DECLARE
     alter_cmd VARCHAR2(200);
 BEGIN

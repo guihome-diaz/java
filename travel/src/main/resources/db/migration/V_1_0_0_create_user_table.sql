@@ -7,7 +7,7 @@ CREATE TABLE USERS
     LANG_CODE                   VARCHAR2(2 CHAR)     CONSTRAINT "C_NN_USERS_LANG_CODE" NOT NULL,
     USERNAME                    VARCHAR2(50 CHAR)    CONSTRAINT "C_NN_USERS_USERNAME" NOT NULL,
     EMAIL                       VARCHAR2(255 CHAR)   CONSTRAINT "C_NN_USERS_EMAIL" NOT NULL,
-    PHONE_NUMBER                VARCHAR2(255 CHAR),
+    PHONE_NUMBER                VARCHAR2(20 CHAR),
     STATUS                      VARCHAR2(255 CHAR)   CONSTRAINT "C_NN_USERS_STATUS" NOT NULL,
     IS_ACTIVE                   NUMBER(1, 0)         DEFAULT 0 CONSTRAINT "C_NN_USERS_IS_ACTIVE" NOT NULL,
     ACTIVATION_KEY              VARCHAR2(255 CHAR)   CONSTRAINT "C_NN_USERS_ACTIVATION_KEY" NOT NULL,
@@ -18,18 +18,17 @@ CREATE TABLE USERS
     PASSWORD_LAST_CHANGE        TIMESTAMP NULL,
     CREATION_DATE               TIMESTAMP            CONSTRAINT "C_NN_USERS_CREATION_DATE" NOT NULL,
     MODIFICATION_DATE           TIMESTAMP            CONSTRAINT "C_NN_USERS_MODIFICATION_DATE" NOT NULL,
-    CONSTRAINT PK_USERS PRIMARY KEY (USER_ID),
-    CONSTRAINT UNIQUE_USERS_EMAIL UNIQUE (UPPER(EMAIL)),
-    CONSTRAINT UNIQUE_USERS_USERNAME UNIQUE (UPPER(USERNAME))
+    VERSION                     NUMBER(10,0)         CONSTRAINT "C_NN_USERS_VERSION" NOT NULL,
+    CONSTRAINT USERS_PK PRIMARY KEY (USER_ID)
   );
 
 -- Create sequence to manage IDs
 CREATE SEQUENCE SEQ_USERS;
 
 -- Indexes (performances). Use "UPPER" or "LOWER" for items that must be unique no matter the case
-CREATE INDEX USERS_NAME_IDX        ON USERS (FIRST_NAME, SURNAME);
-CREATE INDEX USERS_USERNAME_IDX    ON USERS (UPPER(USERNAME));
-CREATE INDEX USERS_EMAIL_IDX       ON USERS (LOWER(EMAIL));
+CREATE INDEX USERS_NAME_IDX               ON USERS (FIRST_NAME, SURNAME);
+CREATE UNIQUE INDEX USERS_USERNAME_IDX    ON USERS (UPPER(USERNAME));
+CREATE UNIQUE INDEX USERS_EMAIL_IDX       ON USERS (LOWER(EMAIL));
 
 -- Object description
 COMMENT ON COLUMN USERS.USER_ID               IS 'Unique identifier';
@@ -40,12 +39,13 @@ COMMENT ON COLUMN USERS.USERNAME              IS 'User login. MANDATORY. This mu
 COMMENT ON COLUMN USERS.EMAIL                 IS 'User email. MANDATORY. This must be unique both in EMAIL and BACKUP_EMAIL columns. User must validate his email before using the application';
 COMMENT ON COLUMN USERS.PHONE_NUMBER          IS 'User phone number. If provided it must include the country code. ex: +352 for Luxembourg ; +33 for France';
 COMMENT ON COLUMN USERS.STATUS                IS 'User status. MANDATORY. This represents his current status if enabled';
-COMMENT ON COLUMN USERS.IS_ACTIVE             IS 'Boolean flag. MANDATORY. "true" to let the user use the application, "false" to block the user. New users are NOT activated until they validate their email';
 COMMENT ON COLUMN USERS.ACTIVATION_KEY        IS 'Activation key. MANDATORY. This is required to confirm the user registration and activate the account';
 COMMENT ON COLUMN USERS.DATE_EMAIL_CONFIRMED  IS 'To know when the user confirmed his email - if he did so. This is required for anti-phishing reasons';
 COMMENT ON COLUMN USERS.PASSWORD_HASH         IS 'User password. This can be let NULL if user wants to validate his email first. Important: like all modern apps, we do NOT store the user password';
 COMMENT ON COLUMN USERS.PASSWORD_SALT         IS 'Security salt. MANDATORY. (random value) that is required to compute the user password hash. Every user have different salts';
-COMMENT ON COLUMN USERS.PASSWORD_ALGO         IS 'Password hash algorithm. MANDATORY. This is required to compute the password hash. Security can change over time, that is why we must store the algorithm used for each user';
+COMMENT ON COLUMN USERS.PASSWORD_ALGORITHM    IS 'Password hash algorithm. MANDATORY. This is required to compute the password hash. Security can change over time, that is why we must store the algorithm used for each user';
 COMMENT ON COLUMN USERS.PASSWORD_LAST_CHANGE  IS 'Date time of the last password change. This is important to notify user to change his password periodically for security reasons';
+COMMENT ON COLUMN USERS.IS_ACTIVE             IS 'Boolean flag. MANDATORY. "1" to use the object, "0" to block usage';
 COMMENT ON COLUMN USERS.CREATION_DATE         IS 'Object creation date-time';
 COMMENT ON COLUMN USERS.MODIFICATION_DATE     IS 'Object last modification date-time';
+COMMENT ON COLUMN USERS.VERSION               IS 'Object version. This is incremented at each operation';
