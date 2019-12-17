@@ -65,7 +65,7 @@ Link to a [good article from ORACLE blog](https://blogs.oracle.com/sql/how-to-cr
 
 ### Create OWNER user
 In Oracle a schema must be linked to an user. A common practice is to use an "owner" account. 
-* **Owner is responsible of the STRUCTURE**, he can create tables, views, procedures and sequences.
+* **Owner is responsible of the STRUCTURE**, he can create tables, views, procedures, sequences and triggers.
 * **Owner must grant** CRUD (Create, Read, Update, Delete) **rights to working user for *each* table** 
 
 Execute the following commands as SYSADMIN: 
@@ -81,6 +81,8 @@ GRANT CREATE SESSION TO daxiongmao_owner;
 GRANT CREATE TABLE TO daxiongmao_owner;
 -- Allow user to create views, procedures and sequences
 GRANT create view, create procedure, create sequence to daxiongmao_owner;
+-- Allow user to create trigger (Ex: modification date change on each update)
+GRANT create trigger to daxiongmao_owner;
 -- Let user write in tablespace
 ALTER USER daxiongmao_owner QUOTA UNLIMITED ON USERS;
 ```

@@ -11,10 +11,12 @@ declare
     cursor c2 is select sequence_name from all_sequences where sequence_owner='daxiongmao_owner';
     cmd varchar2(200);
 begin
+    /* script for TABLES */
     for c in c1 loop
             cmd := 'CREATE OR REPLACE SYNONYM '||c.table_name||' FOR DAXIONGMAO_OWNER.'||c.table_name;
             execute immediate cmd;
         end loop;
+    /* script for SYNONYMS */
     for c in c2 loop
             cmd := 'CREATE OR REPLACE SYNONYM '||c.sequence_name||' FOR DAXIONGMAO_OWNER.'||c.sequence_name;
             execute immediate cmd;
