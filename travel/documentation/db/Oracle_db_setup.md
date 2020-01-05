@@ -73,10 +73,14 @@ Execute the following commands as SYSADMIN:
 ```sql
 -- Allow SYSTEM user to execute scripts for the current session
 alter session set "_ORACLE_SCRIPT" = true;
+
+-- ******* Initialize schemas ******
 -- Create user and corresponding schema
 CREATE USER daxiongmao_owner IDENTIFIED BY secretPassword;
 -- Allow user login
 GRANT CREATE SESSION TO daxiongmao_owner;
+
+-- ******** Configure owner *******
 -- Allow user to create tables
 GRANT CREATE TABLE TO daxiongmao_owner;
 -- Allow user to create views, procedures and sequences
@@ -91,22 +95,88 @@ ALTER USER daxiongmao_owner QUOTA UNLIMITED ON USERS;
 The **working user is responsible of the DATA**, he can create insert / update / delete / select inside tables he has access to.
 
 ```sql
+-- ********* Configure user *******
 -- Create read user
 grant create session to daxiongmao_user identified by secretPassword;
+
+-- Let "user" create synonyms on "owner" 
+grant create synonym to daxiongma_owner;
+grant create synonym to daxiongma_user;
+grant create any synonym to daxiongmao_user;
 ```
 
 
-## Create tables
+# Create tables
 
 To create tables you must use **OWNER** account
 
 
-## Grant rights
+# Grant rights (as owner)
 
-As **OWNER** you can grant rights to WORKING user on tables and sequences:
+As **OWNER** you can grant rights to WORKING user on tables and sequences. 
 
-``sql
--- Grant rights to user
-grant select, insert, update, delete on daxiongmao_owner.parameters to daxiongmao_user; 
-grant select, insert, update, delete on daxiongmao_owner.users to daxiongmao_user;
-``  
+(i) *This script must be executed after each structure change*
+
+
+```sql
+--
+-- Script to grant data R/W to "daxiongmao_user" on all tables
+--
+-- (i) this script must be executed as "daxiongmao_owner"
+-- version 1.0 (2019/12)
+--
+declare
+    cursor c1 is select table_name from user_tables;
+    cursor c2 is select sequence_name from user_sequences;
+    cmd varchar2(2000);
+begin
+    /* Loop over all tables */
+    for c in c1 loop
+        cmd := 'GRANT SELECT, INSERT, UPDATE, DELETE ON ' || c.table_name || ' TO daxiongmao_user';
+        execute immediate cmd;
+    end loop;
+
+    /* Loop over all sequences */
+    for c in c2 loop
+        cmd := 'GRANT SELECT ON ' || c.sequence_name || ' TO daxiongmao_user';
+        execute immediate cmd;
+    end loop;
+end;
+/
+```
+
+
+# Create synonyms (as user)
+
+As **USER**, to avoid using "owner.tableName" you need to create synonyms.
+
+(i) *This script must be executed after each structure change, AFTER the owner grants*
+
+```sql
+--
+-- Script to create synonyms from "daxiongmao_owner" to "daxiongmao_user"
+-- This avoid to use the syntax "DAXIONGMAO_OWNER"."table"
+--
+-- (i) this script must be executed as "daxiongmao_user"
+--     this script must be executed AFTER the 'grant_rights' script
+-- version 1.0 (2019/12)
+--
+declare
+    cursor c1 is select table_name from all_tables where owner='daxiongmao_owner';
+    cursor c2 is select sequence_name from all_sequences where sequence_owner='daxiongmao_owner';
+    cmd varchar2(200);
+begin
+    /* script for TABLES */
+    for c in c1 loop
+            cmd := 'CREATE OR REPLACE SYNONYM '||c.table_name||' FOR DAXIONGMAO_OWNER.'||c.table_name;
+            execute immediate cmd;
+        end loop;
+    /* script for SYNONYMS */
+    for c in c2 loop
+            cmd := 'CREATE OR REPLACE SYNONYM '||c.sequence_name||' FOR DAXIONGMAO_OWNER.'||c.sequence_name;
+            execute immediate cmd;
+        end loop;
+end;
+```
+
+

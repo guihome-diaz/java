@@ -1,6 +1,5 @@
-package eu.daxiongmao.travel.web.dto;
+package eu.daxiongmao.travel.model.dto;
 
-import eu.daxiongmao.travel.model.GenericEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +15,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@ToString(callSuper = true, of = { "id", "firstName", "lastName", "langCode", "username", "email", "phoneNumber", "status", "isActive", "activationKey", "emailConfirmationDate", "passwordHash", "passwordSalt", "passwordAlgorithm", "passwordLastChangeDate" })
-@EqualsAndHashCode(of = {"username", "email", "passwordSalt", "passwordAlgorithm", "langCode"})
-public class UserDTO extends GenericEntity {
+@ToString(of = { "firstName", "lastName", "langCode", "username", "email", "phoneNumber", "status", "isActive", "emailConfirmationDate", "passwordLastChangeDate" })
+@EqualsAndHashCode(of = {"username", "email", "langCode"})
+public class UserDTO {
 
     private static final long serialVersionUID = 20191205L;
 
@@ -31,11 +30,29 @@ public class UserDTO extends GenericEntity {
     /** Preferred language (ex: EN, FR, DE, etc.) */
     private String langCode;
 
-    /** User login. MANDATORY. This must be unique, even if the user is disabled no one can take his username */
+    /** User login. MANDATORY. This must be unique, even if the user is disabled no one can take his username
+     * It is always in UPPER case */
     private String username;
+    public void setUsername(String username) {
+        if (username != null) {
+            this.username = username.trim().toUpperCase();
+        } else {
+            this.username = null;
+        }
+    }
 
-    /** User email. MANDATORY. This must be unique both in EMAIL and BACKUP_EMAIL columns. User must validate his email before using the application */
+    /** User email. MANDATORY.
+     * This must be unique both in EMAIL and BACKUP_EMAIL columns. User must validate his email before using the application.
+     * It is always in LOWER case
+     */
     private String email;
+    public void setEmail(String email) {
+        if (email != null) {
+            this.email = email.trim().toLowerCase();
+        } else {
+            this.email = null;
+        }
+    }
 
     /** User phone number. If provided it must include the country code. ex: +352 for Luxembourg ; +33 for France */
     private String phoneNumber;

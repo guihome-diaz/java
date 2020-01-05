@@ -20,6 +20,7 @@
 	</properties>
 
 	<dependencies>
+		<!-- # SPRING BOOT framework # -->
 		<!-- Information about application's status -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -43,6 +44,7 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- ##### Utilities ##### -->
 		<!-- To reduce boiler-plate code -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -50,7 +52,15 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Database -->
+		<!-- Commons utilities (open source) -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+
+
+		<!-- ##### Database ##### -->
 		<!-- Runtime, use Oracle. Since this driver is not on the official repositories it has been included in the project -->
 		<dependency>
 			<groupId>oracle</groupId>
@@ -60,6 +70,7 @@
 			<systemPath>${project.basedir}/drivers/ojdbc8.jar</systemPath>
 		</dependency>
 
+		<!-- ##### Testing ##### -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

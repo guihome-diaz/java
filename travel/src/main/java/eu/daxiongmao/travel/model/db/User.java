@@ -1,4 +1,4 @@
-package eu.daxiongmao.travel.model;
+package eu.daxiongmao.travel.model.db;
 
 import lombok.*;
 
@@ -39,13 +39,32 @@ public class User extends GenericEntity {
     @Column(name = "LANG_CODE", nullable = false, length = 2)
     private String langCode;
 
-    /** User login. MANDATORY. This must be unique, even if the user is disabled no one can take his username */
+    /** User login. MANDATORY. This must be unique, even if the user is disabled no one can take his username.
+     *  OWASP principles, username must be unique and not case sensitive.
+     *  Always in UPPER case for this application
+     */
     @Column(name = "USERNAME", nullable = false, length = 50)
     private String username;
+    public void setUsername(String username) {
+        if (username != null) {
+            this.username = username.trim().toUpperCase();
+        } else {
+            this.username = null;
+        }
+    }
 
-    /** User email. MANDATORY. This must be unique both in EMAIL and BACKUP_EMAIL columns. User must validate his email before using the application */
+    /** User email. MANDATORY. This must be unique both in EMAIL and BACKUP_EMAIL columns. User must validate his email before using the application
+     *  OWASP principles, email must be unique and not case sensitive
+     *  Always in LOWER case for this application */
     @Column(name = "EMAIL", nullable = false, length = 255)
     private String email;
+    public void setEmail(String email) {
+        if (email != null) {
+            this.email = email.trim().toLowerCase();
+        } else {
+            this.email = null;
+        }
+    }
 
     /** User phone number. If provided it must include the country code. ex: +352 for Luxembourg ; +33 for France */
     @Column(name = "PHONE_NUMBER", length = 20)

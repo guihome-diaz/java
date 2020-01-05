@@ -1,6 +1,6 @@
 package eu.daxiongmao.travel.dao;
 
-import eu.daxiongmao.travel.model.Parameter;
+import eu.daxiongmao.travel.model.db.Parameter;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

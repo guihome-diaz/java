@@ -6,6 +6,16 @@
 --     this script must be executed AFTER the 'grant_rights' script
 -- version 1.0 (2019/12)
 --
+SET serveroutput ON;
+
+-- tables
+create or replace synonym USERS for daxiongmao_owner.USERS;
+create or replace synonym PARAMETERS for daxiongmao_owner.PARAMETERS;
+-- sequences
+create or replace synonym SEQ_USERS for daxiongmao_owner.SEQ_USERS;
+create or replace synonym SEQ_PARAMETERS for daxiongmao_owner.SEQ_PARAMETERS;
+
+
 declare
     cursor c1 is select table_name from all_tables where owner='daxiongmao_owner';
     cursor c2 is select sequence_name from all_sequences where sequence_owner='daxiongmao_owner';
@@ -22,3 +32,5 @@ begin
             execute immediate cmd;
         end loop;
 end;
+
+

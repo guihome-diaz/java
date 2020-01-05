@@ -1,7 +1,7 @@
 package eu.daxiongmao.travel.web.mapper;
 
-import eu.daxiongmao.travel.model.User;
-import eu.daxiongmao.travel.web.dto.UserDTO;
+import eu.daxiongmao.travel.model.db.User;
+import eu.daxiongmao.travel.model.dto.UserDTO;
 
 /**
  * DB to DTO mapper and vice-versa # USER

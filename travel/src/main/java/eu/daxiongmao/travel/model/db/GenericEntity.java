@@ -1,4 +1,4 @@
-package eu.daxiongmao.travel.model;
+package eu.daxiongmao.travel.model.db;
 
 import lombok.Getter;
 import lombok.Setter;
