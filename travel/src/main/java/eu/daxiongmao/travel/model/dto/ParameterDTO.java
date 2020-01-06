@@ -12,14 +12,15 @@ import lombok.*;
  */
 @Getter
 @Setter
-@ToString(callSuper = true, of = { "paramName", "paramValue", "description" })
-@EqualsAndHashCode(of = {"paramName", "paramValue"})
+@ToString(callSuper = true, of = { "paramName", "paramValue", "paramType", "description" })
+@EqualsAndHashCode(of = {"paramName", "paramValue", "paramType"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParameterDTO {
 
     private static final long serialVersionUID = 20191205L;
 
+    private String paramType;
     private String paramName;
     private String paramValue;
     private String description;

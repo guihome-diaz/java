@@ -97,6 +97,26 @@ public class ParameterUtils {
     }
 
     /**
+     * To convert a String into an object of a particular class
+     * @param valueToConvert value to convert
+     * @param className full qualified class name (ex: java.lang.String, java.lang.Integer)
+     * @return given String input into requested class or NULL
+     * @throws IllegalArgumentException bad input: requested output type is missing
+     * @throws IllegalStateException no converter available for the requested output type
+     * @throws ClassCastException requested class does not exists
+     */
+    private Object convertValue(final String valueToConvert, final String className) {
+        try {
+            // Get class
+            final Class<?> classDefinition = Class.forName(className);
+            // Convert value
+            return convertValue(valueToConvert, classDefinition);
+        } catch (ClassNotFoundException e) {
+            throw new ClassCastException("Failed to convert value '" + valueToConvert + "' as: " + className);
+        }
+    }
+
+    /**
      * To convert a given String value into a particular output type
      * @param valueToConvert input String to convert
      * @param clazz output class to convert the String into
@@ -107,5 +127,18 @@ public class ParameterUtils {
      */
     public static <T> T getValue(final String valueToConvert, final Class<T> clazz) {
         return getInstance().convertValue(valueToConvert, clazz);
+    }
+
+    /**
+     * To convert a String into an object of a particular class
+     * @param valueToConvert value to convert
+     * @param className full qualified class name (ex: java.lang.String, java.lang.Integer)
+     * @return given String input into requested class or NULL
+     * @throws IllegalArgumentException bad input: requested output type is missing
+     * @throws IllegalStateException no converter available for the requested output type
+     * @throws ClassCastException requested class does not exists
+     */
+    public static Object getValue(final String valueToConvert, final String className) {
+        return getInstance().convertValue(valueToConvert, className);
     }
 }
