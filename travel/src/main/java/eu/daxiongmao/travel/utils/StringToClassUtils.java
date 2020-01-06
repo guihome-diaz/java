@@ -6,6 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Utility class to convert a String input into a particular output on runtime.
+ * This is a trick to compensate static language to allow dynamic things during execution.
+ * @author Guillaume Diaz
+ * @version 1.0 (2020/01)
+ */
 public class StringToClassUtils {
 
     // ------------------ Singleton ------------------
