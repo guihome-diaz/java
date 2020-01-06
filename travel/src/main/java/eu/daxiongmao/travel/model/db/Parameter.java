@@ -65,18 +65,6 @@ public class Parameter extends GenericEntity {
     }
 
     /**
-     * To convert a given String value into a particular output type
-     * @param clazz output class to convert the String into
-     * @param <T> String class
-     * @return given String input into requested class or NULL
-     * @throws IllegalArgumentException bad input: requested output type is missing
-     * @throws IllegalStateException no converter available for the requested output type
-     */
-    public <T> T getValue(final Class<T> clazz) {
-        return StringToClassUtils.getValue(this.paramValue, clazz);
-    }
-
-    /**
      * To convert a given String value into a particular output type (according to registered type)
      * @return given String input into requested class or NULL
      * @throws IllegalArgumentException bad input: requested output type is missing
