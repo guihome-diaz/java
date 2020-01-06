@@ -1,6 +1,6 @@
 package eu.daxiongmao.travel.model.db;
 
-import eu.daxiongmao.travel.utils.ParameterUtils;
+import eu.daxiongmao.travel.utils.StringToClassUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -73,7 +73,7 @@ public class Parameter extends GenericEntity {
      * @throws IllegalStateException no converter available for the requested output type
      */
     public <T> T getValue(final Class<T> clazz) {
-        return ParameterUtils.getValue(this.paramValue, clazz);
+        return StringToClassUtils.getValue(this.paramValue, clazz);
     }
 
     /**
@@ -84,6 +84,6 @@ public class Parameter extends GenericEntity {
      * @throws ClassCastException requested class does not exists
      */
     public Object getValue() {
-        return ParameterUtils.getValue(this.paramValue, this.paramType);
+        return StringToClassUtils.getValue(this.paramValue, this.paramType);
     }
 }

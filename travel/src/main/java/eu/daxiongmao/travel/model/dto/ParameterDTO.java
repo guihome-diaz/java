@@ -1,6 +1,6 @@
 package eu.daxiongmao.travel.model.dto;
 
-import eu.daxiongmao.travel.utils.ParameterUtils;
+import eu.daxiongmao.travel.utils.StringToClassUtils;
 import lombok.*;
 
 
@@ -37,6 +37,6 @@ public class ParameterDTO {
      * @throws IllegalStateException no converter available for the requested output type
      */
     public <T> T getValue(final Class<T> clazz) {
-        return ParameterUtils.getValue(this.paramValue, clazz);
+        return StringToClassUtils.getValue(this.paramValue, clazz);
     }
 }

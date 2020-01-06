@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ParameterUtils {
+public class StringToClassUtils {
 
     // ------------------ Singleton ------------------
     /** Create an instance of the class at the time of class loading */
-    private static final ParameterUtils instance = new ParameterUtils();
+    private static final StringToClassUtils instance = new StringToClassUtils();
 
     /** @return Parameter utils class */
-    private static ParameterUtils getInstance() {
+    private static StringToClassUtils getInstance() {
         return instance;
     }
 
@@ -27,7 +27,7 @@ public class ParameterUtils {
      * Default constructor.<br>
      *     This initialize the converters.
      */
-    private ParameterUtils() {
+    private StringToClassUtils() {
         // String (default, no changes)
         addConverter(String.class, Function.identity());
 
