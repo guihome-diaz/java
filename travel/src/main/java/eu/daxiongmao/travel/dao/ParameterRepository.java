@@ -1,7 +1,7 @@
 package eu.daxiongmao.travel.dao;
 
 import eu.daxiongmao.travel.model.db.Parameter;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,5 +11,8 @@ import org.springframework.stereotype.Repository;
  * @since application creation
  */
 @Repository
-public interface ParameterRepository extends CrudRepository<Parameter, Long> {
+public interface ParameterRepository extends JpaRepository<Parameter, Long> {
+
+    Parameter findParameterByParamName(String paramName);
+
 }

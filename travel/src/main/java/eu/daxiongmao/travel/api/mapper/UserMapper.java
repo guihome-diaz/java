@@ -1,10 +1,10 @@
-package eu.daxiongmao.travel.web.mapper;
+package eu.daxiongmao.travel.api.mapper;
 
 import eu.daxiongmao.travel.model.db.User;
 import eu.daxiongmao.travel.model.dto.UserDTO;
 
 /**
- * DB to DTO mapper and vice-versa # USER
+ * DB to DTO mapper and vice-versa
  * @author Guillaume Diaz
  * @version 1.0 2019/12
  * @since application creation

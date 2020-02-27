@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -22,16 +25,22 @@ public class UserDTO {
     private static final long serialVersionUID = 20191205L;
 
     /** First name */
+    @Max(100)
     private String firstName;
 
     /** Last name */
+    @Max(200)
     private String lastName;
 
     /** Preferred language (ex: EN, FR, DE, etc.) */
+    @NotBlank
+    @Max(2)
     private String langCode;
 
     /** User login. MANDATORY. This must be unique, even if the user is disabled no one can take his username
      * It is always in UPPER case */
+    @NotBlank
+    @Max(50)
     private String username;
     public void setUsername(String username) {
         if (username != null) {
@@ -45,6 +54,9 @@ public class UserDTO {
      * This must be unique both in EMAIL and BACKUP_EMAIL columns. User must validate his email before using the application.
      * It is always in LOWER case
      */
+    @NotBlank
+    @Max(255)
+    @Email
     private String email;
     public void setEmail(String email) {
         if (email != null) {
@@ -55,9 +67,13 @@ public class UserDTO {
     }
 
     /** User phone number. If provided it must include the country code. ex: +352 for Luxembourg ; +33 for France */
+    @NotBlank
+    @Max(20)
     private String phoneNumber;
 
     /** User status. MANDATORY. This represents his current status if enabled */
+    @NotBlank
+    @Max(255)
     private String status;
 
     /** To know when the user confirmed his email - if he did so. This is required for anti-phishing reasons */

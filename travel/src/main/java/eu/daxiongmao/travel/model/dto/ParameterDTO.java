@@ -3,6 +3,9 @@ package eu.daxiongmao.travel.model.dto;
 import eu.daxiongmao.travel.utils.StringToClassUtils;
 import lombok.*;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+
 
 /**
  * Application parameter
@@ -20,9 +23,19 @@ public class ParameterDTO {
 
     private static final long serialVersionUID = 20191205L;
 
+    @NotBlank
+    @Max(200)
     private String paramType;
+
+    @NotBlank
+    @Max(100)
     private String paramName;
+
+    @NotBlank
+    @Max(255)
     private String paramValue;
+
+    @Max(1500)
     private String description;
 
     /** Boolean flag. MANDATORY. "1" to use the object, "0" to block usage */

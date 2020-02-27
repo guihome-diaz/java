@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -31,13 +33,19 @@ public class Parameter extends GenericEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqParameters")
     private Long id;
 
+    @NotBlank
+    @Max(100)
     @Column(name = "PARAM_NAME", nullable = false, length = 100)
     private String paramName;
 
+    @NotBlank
+    @Max(255)
     @Column(name = "PARAM_VALUE", nullable = false, length = 255)
     private String paramValue;
 
     /** Parameter type (java class, full qualified name: java.lang.String, java.lang.Integer, custom enum etc.) */
+    @NotBlank
+    @Max(200)
     @Column(name = "PARAM_TYPE", nullable = false, length = 200)
     private String paramType;
 
@@ -45,6 +53,7 @@ public class Parameter extends GenericEntity {
     @Column(name = "IS_SENSITIVE", nullable = false)
     private Boolean isSensitive = false;
 
+    @Max(1500)
     @Column(name = "DESCRIPTION", length = 1500)
     private String description;
 

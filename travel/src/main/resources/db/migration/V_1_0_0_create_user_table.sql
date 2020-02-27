@@ -7,7 +7,7 @@ CREATE TABLE USERS
     LANG_CODE                   VARCHAR2(2 CHAR)     CONSTRAINT "C_NN_USERS_LANG_CODE" NOT NULL,
     USERNAME                    VARCHAR2(50 CHAR)    CONSTRAINT "C_NN_USERS_USERNAME" NOT NULL,
     EMAIL                       VARCHAR2(255 CHAR)   CONSTRAINT "C_NN_USERS_EMAIL" NOT NULL,
-    PHONE_NUMBER                VARCHAR2(20 CHAR),
+    PHONE_NUMBER                VARCHAR2(20 CHAR)    CONSTRAINT "C_NN_USERS_PHONE" NOT NULL,
     STATUS                      VARCHAR2(255 CHAR)   CONSTRAINT "C_NN_USERS_STATUS" NOT NULL,
     IS_ACTIVE                   NUMBER(1, 0)         DEFAULT 0 CONSTRAINT "C_NN_USERS_IS_ACTIVE" NOT NULL,
     ACTIVATION_KEY              VARCHAR2(255 CHAR)   CONSTRAINT "C_NN_USERS_ACTIVATION_KEY" NOT NULL,
@@ -45,7 +45,7 @@ COMMENT ON COLUMN USERS.SURNAME               IS 'Last name (french: nom de fami
 COMMENT ON COLUMN USERS.LANG_CODE             IS 'Preferred language (ex: EN, FR, DE, etc.)';
 COMMENT ON COLUMN USERS.USERNAME              IS 'User login. MANDATORY. This must be unique, even if the user is disabled no one can take his username';
 COMMENT ON COLUMN USERS.EMAIL                 IS 'User email. MANDATORY. This must be unique both in EMAIL and BACKUP_EMAIL columns. User must validate his email before using the application';
-COMMENT ON COLUMN USERS.PHONE_NUMBER          IS 'User phone number. If provided it must include the country code. ex: +352 for Luxembourg ; +33 for France';
+COMMENT ON COLUMN USERS.PHONE_NUMBER          IS 'User phone number, required for 2 factor authentication. It must include the country code. ex: +352 for Luxembourg ; +33 for France';
 COMMENT ON COLUMN USERS.STATUS                IS 'User status. MANDATORY. This represents his current status if enabled';
 COMMENT ON COLUMN USERS.ACTIVATION_KEY        IS 'Activation key. MANDATORY. This is required to confirm the user registration and activate the account';
 COMMENT ON COLUMN USERS.DATE_EMAIL_CONFIRMED  IS 'To know when the user confirmed his email - if he did so. This is required for anti-phishing reasons';
