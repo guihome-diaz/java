@@ -1,4 +1,4 @@
-package eu.daxiongmao.travel.api.mapper;
+package eu.daxiongmao.travel.model.mapper;
 
 import eu.daxiongmao.travel.model.db.User;
 import eu.daxiongmao.travel.model.dto.UserDTO;

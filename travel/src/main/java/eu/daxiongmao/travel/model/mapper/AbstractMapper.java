@@ -1,4 +1,4 @@
-package eu.daxiongmao.travel.api.mapper;
+package eu.daxiongmao.travel.model.mapper;
 
 /**
  * DB to DTO mapper and vice-versa

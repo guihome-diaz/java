@@ -1,6 +1,6 @@
 package eu.daxiongmao.travel.business;
 
-import eu.daxiongmao.travel.api.mapper.ParameterMapper;
+import eu.daxiongmao.travel.model.mapper.ParameterMapper;
 import eu.daxiongmao.travel.dao.ParameterRepository;
 import eu.daxiongmao.travel.model.db.Parameter;
 import eu.daxiongmao.travel.model.dto.ParameterDTO;
