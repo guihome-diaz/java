@@ -59,7 +59,6 @@ public class MonitoringEvent implements Serializable {
 
     /** Execution duration in milliseconds (ms) */
     @Column(name = "EXECUTION_TIME", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private long executionTimeInMs;
 
     /** To track down success and errors. This is useful to compare timing issues on failure (SUCCESS, FAILURE) */
