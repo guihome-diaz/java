@@ -30,7 +30,7 @@ public class ParameterController {
     @GetMapping("/getByName/{paramName}")
     public ParameterDTO getParamByName(@PathVariable String paramName) {
         if (StringUtils.isBlank(paramName)) {
-            throw new BadRequestException(new ApiValidationError(null, null, "paramName", "cannot be blank"));
+            throw new BadRequestException(new ApiValidationError(ParameterDTO.class.getName(), "paramName", paramName, "cannot be blank"));
         }
 
         return parameterService.getByName(paramName, false);
