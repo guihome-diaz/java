@@ -1,17 +1,20 @@
 package eu.daxiongmao.travel.business;
 
-import eu.daxiongmao.travel.model.mapper.ParameterMapper;
+import eu.daxiongmao.travel.business.cache.InnerCache;
 import eu.daxiongmao.travel.dao.ParameterRepository;
 import eu.daxiongmao.travel.model.db.Parameter;
 import eu.daxiongmao.travel.model.dto.ParameterDTO;
 import eu.daxiongmao.travel.model.exception.UnauthorizedException;
+import eu.daxiongmao.travel.model.mapper.ParameterMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * To interact with application's settings.
@@ -22,57 +25,75 @@ import java.util.List;
 @Log4j2
 public class ParameterService {
 
+    /** Delay to respect between 2 cache refresh, in seconds. This prevents multi-threads issues */
+    private final static long DELAY_BETWEEN_REFRESH_IN_SECONDS = 30;
+
     private final ParameterRepository parameterRepository;
     private final ParameterMapper parameterMapper;
+    private final InnerCache<String, Parameter> cache;
 
     @Autowired
     public ParameterService(ParameterRepository parameterRepository, ParameterMapper parameterMapper) {
         this.parameterRepository = parameterRepository;
         this.parameterMapper = parameterMapper;
+
+        // ****** Init cache ******
+        cache = new InnerCache<>(log, DELAY_BETWEEN_REFRESH_IN_SECONDS, () -> {
+            // Get DB values
+            final List<Parameter> dbValues = parameterRepository.findAll();
+            // Update local cache
+            final Map<String, Parameter> valuesToCache = new HashMap<>(dbValues.size());
+            if (dbValues != null && !dbValues.isEmpty()) {
+                dbValues.forEach((dbParam) -> {
+                    valuesToCache.put(dbParam.getParamName(), dbParam);
+                });
+            }
+            return valuesToCache;
+        });
     }
+
 
     /**
      * To retrieve a parameter by its name.
+     * This will use the local cache
      * @param paramName search parameter
-     * @param viewSensitiveParam boolean => "true" to view sensitive parameter ; "false" to hide sensitive parameters such as password. This is highly recommended for controllers
+     * @param viewSensitiveParam boolean => "true" to view sensitive parameters ; "false" to hide sensitive parameters such as password. This is highly recommended for controllers
      * @return corresponding DTO or null
      */
     public ParameterDTO getByName(final String paramName, boolean viewSensitiveParam) {
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
-
-        // **** Get DB value
-        final Parameter dbParam = parameterRepository.findParameterByParamName(paramName);
-        // not found
-        if (dbParam == null) { return null; }
+        // Retrieve value from cache
+        final Parameter param = cache.getCachedValues().get(paramName);
         // security check
-        if (dbParam.getIsSensitive() && !viewSensitiveParam) {
+        if (param != null && param.getIsSensitive() && !viewSensitiveParam) {
             log.warn("Data leak avoidance|Someone asked to view the sensitive parameter {} without authorization: nothing has been returned", paramName);
             throw new UnauthorizedException("This information is restricted, you are not allowed to view '" + paramName + "'. Please contact our support.");
         }
-
-        // **** Conversion to DTO
-        return parameterMapper.dbEntityToDto(dbParam);
+        // Conversion to DTO
+        return parameterMapper.dbEntityToDto(param);
     }
 
+    /**
+     * To retrieve all parameters at once
+     * @param viewSensitiveParams boolean => "true" to view sensitive parameters ; "false" to hide sensitive parameters such as password. This is highly recommended for controllers
+     * @return corresponding DTOs or null
+     */
     public List<ParameterDTO> getAll(boolean viewSensitiveParams) {
-        // **** Get DB value
-        final List<Parameter> dbParameters = parameterRepository.findAll();
-        // not found
-        if (dbParameters == null || dbParameters.isEmpty()) { return new ArrayList<>(); }
+        // Retrieve value from cache
+        final List<Parameter> dbParameters = (ArrayList<Parameter>) cache.getCachedValues().values();
 
-        // ***** Process results (convert to DTO)
-        final List<ParameterDTO> params = new ArrayList<>();
+        // Convert to DTOs
+        final List<ParameterDTO> dtos = new ArrayList<>();
         for (Parameter dbParam : dbParameters) {
             // security check, skip sensitive params if required
             if (dbParam.getIsSensitive() && !viewSensitiveParams) {
                 continue;
             }
-            params.add(parameterMapper.dbEntityToDto(dbParam));
+            dtos.add(parameterMapper.dbEntityToDto(dbParam));
         }
-
-        return params;
+        return dtos;
     }
 
 }

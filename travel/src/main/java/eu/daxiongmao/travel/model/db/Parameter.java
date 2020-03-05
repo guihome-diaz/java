@@ -22,7 +22,11 @@ import javax.validation.constraints.NotBlank;
 @ToString(callSuper = true, of = { "paramName", "paramValue", "paramType", "description", "isSensitive" })
 @EqualsAndHashCode(of = {"paramName", "paramValue", "paramType"})
 @Entity
-@Table(name = "PARAMETERS")
+@Table(name = "PARAMETERS", indexes = {
+        @Index(name = "PARAMS_PARAM_NAME_IDX", unique = true, columnList = "PARAM_NAME"),
+        @Index(name = "PARAMS_ACTIVE_PARAM_IDX", columnList = "PARAM_NAME, IS_ACTIVE"),
+        @Index(name = "PARAMS_ACTIVE_IDX", columnList = "IS_ACTIVE")
+})
 public class Parameter extends GenericEntity {
 
     private static final long serialVersionUID = 20191205L;

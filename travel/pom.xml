@@ -51,7 +51,6 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-
 		<!-- Commons utilities (open source) -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -68,6 +67,13 @@
 			<version>8.3</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/drivers/ojdbc8.jar</systemPath>
+		</dependency>
+		<!-- Test database, use H2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- ##### Web dependencies ###### -->
