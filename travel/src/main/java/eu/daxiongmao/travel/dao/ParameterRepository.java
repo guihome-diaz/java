@@ -4,6 +4,8 @@ import eu.daxiongmao.travel.model.db.Parameter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * To interact with "parameters" table
  * @author Guillaume Diaz
@@ -13,6 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ParameterRepository extends JpaRepository<Parameter, Long> {
 
-    Parameter findParameterByParamName(String paramName);
+    Optional<Parameter> findParameterByParamName(String paramName);
 
 }

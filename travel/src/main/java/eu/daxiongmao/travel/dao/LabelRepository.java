@@ -1,0 +1,19 @@
+package eu.daxiongmao.travel.dao;
+
+import eu.daxiongmao.travel.model.db.Label;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+/**
+ * To interact with "labels" table
+ * @author Guillaume Diaz
+ * @version 1.0 2020/03
+ * @since application creation
+ */
+@Repository
+public interface LabelRepository extends JpaRepository<Label, Long> {
+
+    Optional<Label> findByCode(String code);
+}

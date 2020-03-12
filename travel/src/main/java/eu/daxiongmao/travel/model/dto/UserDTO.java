@@ -4,10 +4,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -20,7 +22,7 @@ import java.util.Date;
 @Setter
 @ToString(of = { "firstName", "lastName", "langCode", "username", "email", "phoneNumber", "status", "isActive", "emailConfirmationDate", "passwordLastChangeDate" })
 @EqualsAndHashCode(of = {"username", "email", "langCode"})
-public class UserDTO {
+public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 20191205L;
 
@@ -43,7 +45,7 @@ public class UserDTO {
     @Max(50)
     private String username;
     public void setUsername(String username) {
-        if (username != null) {
+        if (StringUtils.isNotBlank(username)) {
             this.username = username.trim().toUpperCase();
         } else {
             this.username = null;

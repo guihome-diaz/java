@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/v1/parameters")
@@ -28,7 +29,7 @@ public class ParameterController {
     }
 
     @GetMapping("/getByName/{paramName}")
-    public ParameterDTO getParamByName(@PathVariable String paramName) {
+    public Optional<ParameterDTO> getParamByName(@PathVariable String paramName) {
         if (StringUtils.isBlank(paramName)) {
             throw new BadRequestException(new ApiValidationError(ParameterDTO.class.getName(), "paramName", paramName, "cannot be blank"));
         }

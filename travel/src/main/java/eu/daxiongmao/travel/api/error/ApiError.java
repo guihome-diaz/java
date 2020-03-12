@@ -57,7 +57,6 @@ public class ApiError implements Serializable {
      */
     public ApiError(HttpStatus httpStatus) {
         this.httpStatus = httpStatus;
-        this.errorMessage = ApiErrorCodesEnum.UNEXPECTED_ERROR.getDefaultErrorMessage();
         this.errorCode = ApiErrorCodesEnum.UNEXPECTED_ERROR.name();
     }
 
@@ -69,7 +68,6 @@ public class ApiError implements Serializable {
     public ApiError(HttpStatus httpStatus, ApiErrorCodesEnum error) {
         this(httpStatus);
         if (error != null) {
-            this.errorMessage = error.getDefaultErrorMessage();
             this.errorCode = error.name();
         }
     }
@@ -110,11 +108,9 @@ public class ApiError implements Serializable {
      * @param e stacktrace to return as debug log. This will only be used if provided and allowed by configuration
      */
     public ApiError(HttpStatus httpStatus, ApiErrorCodesEnum error, String errorMessage, Throwable e) {
-        this(httpStatus, error, errorMessage);
-
-        // TODO add check to send stacktrace only if there parameter "web.display-stacktraces" is TRUE
-        if (e != null) {
-            this.debugMessage = ExceptionUtils.getStackTrace(e);
+        this(httpStatus, error, e);
+        if (StringUtils.isNotBlank(errorMessage)) {
+            this.errorMessage = errorMessage;
         }
     }
 

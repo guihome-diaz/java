@@ -9,27 +9,21 @@ package eu.daxiongmao.travel.api.error;
 public enum ApiErrorCodesEnum {
 
     /** Default error */
-    UNEXPECTED_ERROR("Unexpected error"),
+    UNEXPECTED_ERROR,
 
-    BAD_REQUEST_MALFORMED("Malformed JSON request"),
+    /** HTTP 400 error: missing arguments / wrong conditions / malformed request */
+    HTTP_400_BAD_REQUEST,
 
-    FORBIDDEN("You are not allowed to perform the request operation / access to that particular data. Please contact our helpdesk");
+    /** HTTP 403 error: user is NOT allowed to perform requested operation / access to that particular data */
+    HTTP_403_FORBIDDEN,
 
-    /** Default error message to return in plain English */
-    private String defaultErrorMessage;
+    /** HTTP 404 error: resource not found */
+    HTTP_404_NOT_FOUND,
 
-    /**
-     * To declare a new error code with default error message
-     * @param defaultErrorMessage default error message to display, in plain English
-     */
-    ApiErrorCodesEnum(String defaultErrorMessage) {
-        this.defaultErrorMessage = defaultErrorMessage;
-    }
+    HTTP_406_NOT_ACCEPTABLE,
 
-    /**
-     * @return Default error message to return in plain English
-     */
-    public String getDefaultErrorMessage() {
-        return defaultErrorMessage;
-    }
+    /** HTTP 500 error: internal server error (backend side error, failed to perform requested task / operation). */
+    HTTP_500_INTERNAL_SERVER_ERROR
+    ;
+
 }

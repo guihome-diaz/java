@@ -11,10 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * To interact with application's settings.
@@ -53,6 +50,7 @@ public class ParameterService {
     }
 
 
+
     /**
      * To retrieve a parameter by its name.
      * This will use the local cache
@@ -60,19 +58,27 @@ public class ParameterService {
      * @param viewSensitiveParam boolean => "true" to view sensitive parameters ; "false" to hide sensitive parameters such as password. This is highly recommended for controllers
      * @return corresponding DTO or null
      */
-    public ParameterDTO getByName(final String paramName, boolean viewSensitiveParam) {
+    public Optional<ParameterDTO> getByName(final String paramName, boolean viewSensitiveParam) {
         if (StringUtils.isBlank(paramName)) {
-            return null;
+            return Optional.empty();
         }
         // Retrieve value from cache
         final Parameter param = cache.getCachedValues().get(paramName);
+        if (param == null) {
+            return Optional.empty();
+        }
+        // Validity check (must be enabled)
+        if (!param.getIsActive()) {
+            log.warn("Data leak avoidance|Someone tried to access a disabled parameter {}", paramName);
+            return Optional.empty();
+        }
         // security check
-        if (param != null && param.getIsSensitive() && !viewSensitiveParam) {
+        if (param.getIsSensitive() && !viewSensitiveParam) {
             log.warn("Data leak avoidance|Someone asked to view the sensitive parameter {} without authorization: nothing has been returned", paramName);
             throw new UnauthorizedException("This information is restricted, you are not allowed to view '" + paramName + "'. Please contact our support.");
         }
         // Conversion to DTO
-        return parameterMapper.dbEntityToDto(param);
+        return Optional.ofNullable(parameterMapper.dbEntityToDto(param));
     }
 
     /**
@@ -82,11 +88,15 @@ public class ParameterService {
      */
     public List<ParameterDTO> getAll(boolean viewSensitiveParams) {
         // Retrieve value from cache
-        final List<Parameter> dbParameters = (ArrayList<Parameter>) cache.getCachedValues().values();
+        final List<Parameter> dbParameters = new ArrayList<>(cache.getCachedValues().values());
 
         // Convert to DTOs
         final List<ParameterDTO> dtos = new ArrayList<>();
         for (Parameter dbParam : dbParameters) {
+            // Validity check (must be enabled)
+            if (!dbParam.getIsActive()) {
+                continue;
+            }
             // security check, skip sensitive params if required
             if (dbParam.getIsSensitive() && !viewSensitiveParams) {
                 continue;

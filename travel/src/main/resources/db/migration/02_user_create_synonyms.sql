@@ -11,9 +11,13 @@ SET serveroutput ON;
 -- tables
 create or replace synonym USERS for daxiongmao_owner.USERS;
 create or replace synonym PARAMETERS for daxiongmao_owner.PARAMETERS;
+create or replace synonym MONITORING_EVENTS for daxiongmao_owner.MONITORING_EVENTS;
+create or replace synonym LABELS for daxiongmao_owner.LABELS;
 -- sequences
 create or replace synonym SEQ_USERS for daxiongmao_owner.SEQ_USERS;
 create or replace synonym SEQ_PARAMETERS for daxiongmao_owner.SEQ_PARAMETERS;
+create or replace synonym SEQ_MONITORING_EVENTS for daxiongmao_owner.SEQ_MONITORING_EVENTS;
+create or replace synonym SEQ_LABELS for daxiongmao_owner.SEQ_LABELS;
 
 
 declare

@@ -1,10 +1,7 @@
 package eu.daxiongmao.travel.model.db;
 
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -24,7 +21,27 @@ import java.util.Date;
 @ToString(of = { "eventName", "eventType", "thirdParty", "eventTime", "executionTimeInMs", "executionResult", "item1", "item2", "item3"})
 @EqualsAndHashCode(of = {"eventName", "eventType", "thirdParty", "eventTime", "executionTimeInMs" })
 @Entity
-@Table(name = "MONITORING_EVENTS")
+@Table(name = "MONITORING_EVENTS", indexes = {
+        // Filter events by type: performance / functional
+        @Index(name = "MNTR_EVENTS_NATURE_IDX", columnList = "EVENT_NATURE"),
+        // Filter events by nature: web-service, database, email, file access, computation, etc.
+        @Index(name = "MNTR_EVENTS_TYPE_IDX", columnList = "EVENT_TYPE, THIRD_PARTY"),
+        // Filter events by target system (name of the third party: sms provider, google, etc.)
+        @Index(name = "MNTR_EVENTS_THIRD_PARTY_IDX", columnList = "THIRD_PARTY"),
+        // Filter events by creation date
+        @Index(name = "MNTR_EVENTS_CREATION_TIME_IDX", columnList = "EVENT_TIME"),
+        // Count success | errors
+        @Index(name = "MNTR_EVENTS_ERR_COUNT_PARTY_IDX", columnList = "THIRD_PARTY, EXECUTION_RESULT"),
+        @Index(name = "MNTR_EVENTS_ERR_COUNT_TYPE_IDX", columnList = "EVENT_TYPE, EXECUTION_RESULT"),
+        // Filter events by execution time and creation date
+        //  (i) filters below are highly used for scheduled reporting
+        @Index(name = "MNTR_EVENTS_TIME_CRT_EXEC_IDX", columnList = "EVENT_TIME, EXECUTION_TIME"),
+        @Index(name = "MNTR_EVENTS_PARTY_CRT_EXEC_IDX", columnList = "THIRD_PARTY, EVENT_TIME, EXECUTION_TIME"),
+        @Index(name = "MNTR_EVENTS_TYPE_CRT_EXEC_IDX", columnList = "EVENT_TYPE, EVENT_TIME, EXECUTION_TIME"),
+        @Index(name = "MNTR_EVENTS_TYP_PRT_CRT_EXEC_IDX", columnList = "EVENT_TYPE, THIRD_PARTY, EVENT_TIME, EXECUTION_TIME")
+})
+@NoArgsConstructor
+@AllArgsConstructor
 public class MonitoringEvent implements Serializable {
 
     private static final long serialVersionUID = 20200301;

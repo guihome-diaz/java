@@ -17,7 +17,8 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {TravelApplication.class})
 @PropertySources({
-        @PropertySource("config/db-h2.properties")
+        //@PropertySource("config/db-h2.properties")
+        @PropertySource("config/db-oracle.properties")
 })
 @Log4j2
 public class ParameterRepositoryTest {

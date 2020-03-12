@@ -1,5 +1,6 @@
 package eu.daxiongmao.travel.model.db;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString(of = { "isActive", "creationDate", "modificationDate", "version" })
+@EqualsAndHashCode(of = {"creationDate"})
 @MappedSuperclass
 public class GenericEntity implements Serializable {
 
@@ -30,7 +32,7 @@ public class GenericEntity implements Serializable {
     /** Object version. This is incremented at each operation */
     @Version
     @Column(name = "VERSION", nullable = false)
-    private long version = 0L;
+    private long version = 1L;
 
     /** Object last modification date-time */
     @Column(name = "MODIFICATION_DATE", nullable = false)

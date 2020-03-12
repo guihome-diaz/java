@@ -19,10 +19,19 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@ToString(callSuper = true, of = { "id", "firstName", "lastName", "langCode", "username", "email", "phoneNumber", "status", "isActive", "activationKey", "emailConfirmationDate", "passwordHash", "passwordSalt", "passwordAlgorithm", "passwordLastChangeDate" })
-@EqualsAndHashCode(of = {"username", "email", "passwordSalt", "passwordAlgorithm", "langCode"})
+@ToString(callSuper = true, of = { "id", "firstName", "lastName", "langCode", "username", "email", "phoneNumber", "status", "activationKey", "emailConfirmationDate", "passwordHash", "passwordSalt", "passwordAlgorithm", "passwordLastChangeDate" })
+@EqualsAndHashCode(callSuper = true, of = {"username", "email", "passwordSalt", "passwordAlgorithm", "langCode"})
 @Entity
-@Table(name = "USERS")
+@Table(name = "USERS", indexes = {
+        // index by full name
+        @Index(name = "USERS_NAME_IDX", unique = true, columnList = "FIRST_NAME, SURNAME"),
+        // indexes by username
+        @Index(name = "USERS_USERNAME_IDX", unique = true, columnList = "USERNAME"),
+        @Index(name = "USERS_ACTIVE_USERNAME_IDX", columnList = "USERNAME, IS_ACTIVE"),
+        // indexes by email
+        @Index(name = "USERS_EMAIL_IDX", unique = true, columnList = "EMAIL"),
+        @Index(name = "USERS_ACTIVE_EMAIL_IDX", columnList = "EMAIL, IS_ACTIVE")
+})
 public class User extends GenericEntity {
 
     private static final long serialVersionUID = 20191205L;
