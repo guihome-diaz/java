@@ -1,4 +1,4 @@
-package eu.daxiongmao.travel.model.enums;
+package eu.daxiongmao.travel.model.enums.param;
 
 
 /**
@@ -7,7 +7,7 @@ package eu.daxiongmao.travel.model.enums;
  * @version 1.0
  * @since 2020/03
  */
-public enum BusinessParam {
+public enum BusinessParam implements IParameterEnum {
 
     /** Default application language in case translation for requested language does not exists; or that user lang is not available (yet) */
     APP_DEFAULT_LANGUAGE("APP.DEFAULT_LANG", String.class),
@@ -23,14 +23,12 @@ public enum BusinessParam {
         this.clazz = clazz;
     }
 
-    /** @return parameter name as saved in DB */
+    @Override
     public String getParamName() {
         return paramName;
     }
 
-    /**
-     * @return parameter class (type)
-     */
+    @Override
     public Class getClazz() {
         return clazz;
     }

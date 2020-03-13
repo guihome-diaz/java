@@ -1,5 +1,6 @@
 package eu.daxiongmao.travel.utils;
 
+import eu.daxiongmao.travel.model.enums.Environment;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -54,6 +55,12 @@ public class StringToClassUtils {
         addConverter(Double.class, Double::valueOf);
         addConverter(Float.class, Float::valueOf);
         addConverter(Short.class, Short::valueOf);
+
+        // Enum
+        addConverter(Environment.class, (String input) -> {
+            final String upperCaseInput = input.toUpperCase();
+            return Environment.valueOf(upperCaseInput);
+        });
     }
 
     /**

@@ -25,7 +25,7 @@ public class ParameterController {
 
     @GetMapping("/getAll")
     public List<ParameterDTO> getAll() {
-        return parameterService.getAll(false);
+        return parameterService.getAll(false, false);
     }
 
     @GetMapping("/getByName/{paramName}")
@@ -34,7 +34,7 @@ public class ParameterController {
             throw new BadRequestException(new ApiValidationError(ParameterDTO.class.getName(), "paramName", paramName, "cannot be blank"));
         }
 
-        return parameterService.getByName(paramName, false);
+        return parameterService.getParamByName(paramName, false, false);
     }
 
 }

@@ -1,5 +1,6 @@
 package eu.daxiongmao.travel.model.dto;
 
+import eu.daxiongmao.travel.model.enums.Environment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -73,5 +74,33 @@ public class ParameterDTOTest {
         paramValue = param.getValue(Boolean.class);
         Assertions.assertNotNull(paramValue);
         Assertions.assertFalse(paramValue);
+    }
+
+    @Test
+    public void getParamValueAsEnum() {
+        // Nominal cases
+        ParameterDTO param = new ParameterDTO(Environment.class.getName(), "APP.ENVIRONMENT", "DEV", "Application's environment", true);
+        Environment environment = param.getValue(Environment.class);
+        Assertions.assertNotNull(environment);
+        Assertions.assertEquals(Environment.DEV, environment);
+
+        param = new ParameterDTO(Environment.class.getName(), "APP.ENVIRONMENT", "PRE_PROD", "Application's environment", true);
+        environment = param.getValue(Environment.class);
+        Assertions.assertNotNull(environment);
+        Assertions.assertEquals(Environment.PRE_PROD, environment);
+
+        param = new ParameterDTO(Environment.class.getName(), "APP.ENVIRONMENT", "PROD", "Application's environment", true);
+        environment = param.getValue(Environment.class);
+        Assertions.assertNotNull(environment);
+        Assertions.assertEquals(Environment.PROD, environment);
+
+        // error
+        try {
+            param = new ParameterDTO(Environment.class.getName(), "APP.ENVIRONMENT", "SOMETHING_ELSE", "Application's environment", true);
+            environment = param.getValue(Environment.class);
+            Assertions.fail("Failure was expected: this is not a valid value");
+        } catch (Exception e) {
+            Assertions.assertTrue(true, "Exception expected, this is not a valid value");
+        }
     }
 }

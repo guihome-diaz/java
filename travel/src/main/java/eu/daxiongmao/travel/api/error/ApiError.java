@@ -2,16 +2,20 @@ package eu.daxiongmao.travel.api.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import eu.daxiongmao.travel.business.ParameterService;
+import eu.daxiongmao.travel.model.enums.param.TechnicalParam;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.TimeZone;
 
 /**
  * To encapsulate the error into a dedicated "error" JSON object that is better that the default SpringBoot error response.
@@ -21,6 +25,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Slf4j
 @ToString(of = { "httpStatus", "errorCode", "errorMessage", "timestamp" })
 @EqualsAndHashCode(of = {"httpStatus", "errorCode"})
 @JsonRootName("error")
@@ -32,9 +37,9 @@ public class ApiError implements Serializable {
     /** HTTP status of the error (4xx = client errors | 5xx = server errors) */
     private HttpStatus httpStatus;
 
-    /** Date-time of the error in human format */
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss", locale = "fr_FR")
-    private LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Europe/Paris"));
+    /** Date-time of the error in human format. Always send date in UTC format */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", locale = "fr_FR")
+    private LocalDateTime timestamp = LocalDateTime.now(TimeZone.getTimeZone("UTC").toZoneId());
 
     /** Error code to use for UI rendering and translation */
     private String errorCode;
@@ -94,9 +99,17 @@ public class ApiError implements Serializable {
     public ApiError(HttpStatus httpStatus, ApiErrorCodesEnum error, Throwable e) {
         this(httpStatus, error);
 
-        // TODO add check to send stacktrace only if there parameter "web.display-stacktraces" is TRUE
         if (e != null) {
-            this.debugMessage = ExceptionUtils.getStackTrace(e);
+            log.warn("Failure", e);
+            // Only add stacktrace to response if option is enabled
+            if (ParameterService.getInstance().isPresent()) {
+                Optional<Object> sendStacktrace = ParameterService.getInstance().get().getValue(TechnicalParam.WEB_SERVICES_JSON_INCLUDE_STACKTRACE_ON_ERROR);
+                if ((Boolean) sendStacktrace.orElse(false)) {
+                    this.debugMessage = ExceptionUtils.getStackTrace(e);
+                    // replace standard \r\n\t output by " \\n " for javascript JSON.parse() + python clients to work
+                    this.debugMessage = this.debugMessage.replaceAll("\r\n\t", " \\\\n ");
+                }
+            }
         }
     }
 

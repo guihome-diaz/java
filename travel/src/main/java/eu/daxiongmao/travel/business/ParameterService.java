@@ -4,6 +4,7 @@ import eu.daxiongmao.travel.business.cache.InnerCache;
 import eu.daxiongmao.travel.dao.ParameterRepository;
 import eu.daxiongmao.travel.model.db.Parameter;
 import eu.daxiongmao.travel.model.dto.ParameterDTO;
+import eu.daxiongmao.travel.model.enums.param.IParameterEnum;
 import eu.daxiongmao.travel.model.exception.UnauthorizedException;
 import eu.daxiongmao.travel.model.mapper.ParameterMapper;
 import lombok.extern.log4j.Log4j2;
@@ -29,10 +30,20 @@ public class ParameterService {
     private final ParameterMapper parameterMapper;
     private final InnerCache<String, Parameter> cache;
 
+
+    private static ParameterService instance;
+    /**
+     * @return service's instance (singleton pattern)
+     */
+    public static Optional<ParameterService> getInstance() {
+        return Optional.ofNullable(instance);
+    }
+
     @Autowired
     public ParameterService(ParameterRepository parameterRepository, ParameterMapper parameterMapper) {
         this.parameterRepository = parameterRepository;
         this.parameterMapper = parameterMapper;
+        instance = this;
 
         // ****** Init cache ******
         cache = new InnerCache<>(log, DELAY_BETWEEN_REFRESH_IN_SECONDS, () -> {
@@ -40,25 +51,61 @@ public class ParameterService {
             final List<Parameter> dbValues = parameterRepository.findAll();
             // Update local cache
             final Map<String, Parameter> valuesToCache = new HashMap<>(dbValues.size());
-            if (dbValues != null && !dbValues.isEmpty()) {
+            if (!dbValues.isEmpty()) {
                 dbValues.forEach((dbParam) -> {
                     valuesToCache.put(dbParam.getParamName(), dbParam);
                 });
             }
+            log.info("Initialization complete | {} Parameters have been cached in memory", dbValues.size());
             return valuesToCache;
         });
     }
 
+    /**
+     * To retrieve a parameter VALUE by its name.
+     * This will use the local cache
+     * @param param search parameter
+     * @return corresponding value or null
+     */
+    public Optional<Object> getValue(final IParameterEnum param) {
+        return getValueByName(param.getParamName(), false, false);
+    }
 
+    /**
+     * To retrieve a parameter VALUE by its name.
+     * This will use the local cache
+     * @param paramName search parameter
+     * @param viewSensitiveParam boolean => "true" to view sensitive parameters ; "false" to hide sensitive parameters such as password. This is highly recommended for controllers
+     * @param viewDisabledParam boolean => "true" to view disable parameters ; "false" to only show ACTIVE parameters
+     * @return corresponding value or null
+     */
+    public Optional<Object> getValueByName(final String paramName, boolean viewSensitiveParam, boolean viewDisabledParam) {
+        Optional<ParameterDTO> param = getParamByName(paramName, viewSensitiveParam, viewDisabledParam);
+        if (param.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(param.get().getValue());
+    }
+
+    /**
+     * To retrieve a parameter by its name.
+     * This will use the local cache
+     * @param param search parameter
+     * @return corresponding DTO or null
+     */
+    public Optional<ParameterDTO> getParam(final IParameterEnum param) {
+        return getParamByName(param.getParamName(), false, false);
+    }
 
     /**
      * To retrieve a parameter by its name.
      * This will use the local cache
      * @param paramName search parameter
      * @param viewSensitiveParam boolean => "true" to view sensitive parameters ; "false" to hide sensitive parameters such as password. This is highly recommended for controllers
+     * @param viewDisabledParam boolean => "true" to view disable parameters ; "false" to only show ACTIVE parameters
      * @return corresponding DTO or null
      */
-    public Optional<ParameterDTO> getByName(final String paramName, boolean viewSensitiveParam) {
+    public Optional<ParameterDTO> getParamByName(final String paramName, boolean viewSensitiveParam, boolean viewDisabledParam) {
         if (StringUtils.isBlank(paramName)) {
             return Optional.empty();
         }
@@ -68,7 +115,7 @@ public class ParameterService {
             return Optional.empty();
         }
         // Validity check (must be enabled)
-        if (!param.getIsActive()) {
+        if (!param.getIsActive() && !viewDisabledParam) {
             log.warn("Data leak avoidance|Someone tried to access a disabled parameter {}", paramName);
             return Optional.empty();
         }
@@ -84,9 +131,10 @@ public class ParameterService {
     /**
      * To retrieve all parameters at once
      * @param viewSensitiveParams boolean => "true" to view sensitive parameters ; "false" to hide sensitive parameters such as password. This is highly recommended for controllers
+     * @param viewDisabledParam boolean => "true" to view disable parameters ; "false" to only show ACTIVE parameters
      * @return corresponding DTOs or null
      */
-    public List<ParameterDTO> getAll(boolean viewSensitiveParams) {
+    public List<ParameterDTO> getAll(boolean viewSensitiveParams, boolean viewDisabledParam) {
         // Retrieve value from cache
         final List<Parameter> dbParameters = new ArrayList<>(cache.getCachedValues().values());
 
@@ -94,7 +142,7 @@ public class ParameterService {
         final List<ParameterDTO> dtos = new ArrayList<>();
         for (Parameter dbParam : dbParameters) {
             // Validity check (must be enabled)
-            if (!dbParam.getIsActive()) {
+            if (!dbParam.getIsActive() && !viewDisabledParam) {
                 continue;
             }
             // security check, skip sensitive params if required

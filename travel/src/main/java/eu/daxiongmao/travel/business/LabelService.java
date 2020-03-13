@@ -4,9 +4,9 @@ import eu.daxiongmao.travel.business.cache.InnerCache;
 import eu.daxiongmao.travel.dao.LabelRepository;
 import eu.daxiongmao.travel.model.db.Label;
 import eu.daxiongmao.travel.model.dto.LabelDTO;
-import eu.daxiongmao.travel.model.dto.ParameterDTO;
 import eu.daxiongmao.travel.model.enums.AppLang;
-import eu.daxiongmao.travel.model.enums.BusinessParam;
+import eu.daxiongmao.travel.model.enums.param.BusinessParam;
+import eu.daxiongmao.travel.model.enums.param.TechnicalParam;
 import eu.daxiongmao.travel.model.mapper.LabelMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -24,9 +24,6 @@ import java.util.*;
 @Log4j2
 public class LabelService {
 
-    /** Delay to respect between 2 cache refresh, in seconds. This prevents multi-threads issues */
-    private final static long DELAY_BETWEEN_REFRESH_IN_SECONDS = 30;
-
     /** Hard-coded fallback value in case of DB failure or bad configuration */
     private final AppLang FAILOVER_DEFAULT_APP_LANGUAGE = AppLang.ENGLISH;
 
@@ -42,16 +39,18 @@ public class LabelService {
         this.labelMapper = labelMapper;
 
         // ****** Init cache ******
-        cache = new InnerCache<>(log, DELAY_BETWEEN_REFRESH_IN_SECONDS, () -> {
+        final Optional<Object> delayBetweenRefreshInSeconds = parameterService.getValue(TechnicalParam.MIN_TIME_IN_SECONDS_BETWEEN_CACHE_REFRESH);
+        cache = new InnerCache<>(log, (Integer) delayBetweenRefreshInSeconds.orElseThrow(), () -> {
             // Get DB values
             final List<Label> dbValues = labelRepository.findAll();
             // Update local cache
             final Map<String, Label> valuesToCache = new HashMap<>(dbValues.size());
-            if (dbValues != null && !dbValues.isEmpty()) {
+            if (!dbValues.isEmpty()) {
                 dbValues.forEach((dbLabel) -> {
                     valuesToCache.put(dbLabel.getCode(), dbLabel);
                 });
             }
+            log.info("Initialization complete | {} Labels have been cached in memory", dbValues.size());
             return valuesToCache;
         });
     }
@@ -114,21 +113,18 @@ public class LabelService {
      */
     public AppLang getDefaultLanguage() {
         final AppLang defaultLanguage = FAILOVER_DEFAULT_APP_LANGUAGE;
+
         // Get DB setting
-        final Optional<ParameterDTO> defaultLangParam = parameterService.getByName(BusinessParam.APP_DEFAULT_LANGUAGE.getParamName(), false);
+        final Optional<Object> defaultLangParam = parameterService.getValue(BusinessParam.APP_DEFAULT_LANGUAGE);
         if (defaultLangParam.isEmpty()) {
             // No DB settings have been found => use hard-coded value as default
             return defaultLanguage;
         } else {
             // DB value has been retrieved
-            final String langCode = (String) defaultLangParam.get().getValue();
+            final String langCode = (String) defaultLangParam.get();
             Optional<AppLang> langCodeEnum = AppLang.getLanguageForCode(langCode);
-            if (langCodeEnum.isEmpty()) {
-                // DB code is either not valid or not registered inside the current application => use hard-coded value as default
-                return defaultLanguage;
-            }
-            // Valid lang code has been found in DB => use that one
-            return langCodeEnum.get();
+            // return DB code || or use hard-coded value as default
+            return langCodeEnum.orElse(defaultLanguage);
         }
     }
 
@@ -145,13 +141,8 @@ public class LabelService {
 
         // Process given locale
         Optional<AppLang> langCodeEnum = AppLang.getLanguageForCode(locale.getLanguage());
-        if (langCodeEnum.isEmpty()) {
-            // Requested language is not available in the current app => use default language instead
-            return getDefaultLanguage();
-        } else {
-            // Requested language is supported
-            return langCodeEnum.get();
-        }
+        // Return locale if supported || or default language as fallback
+        return langCodeEnum.orElse(getDefaultLanguage());
     }
 
 }
