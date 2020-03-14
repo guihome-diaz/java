@@ -2,14 +2,11 @@ package eu.daxiongmao.travel;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = {TravelApplication.class})
-@PropertySources({
-		@PropertySource("config/db-h2.properties")
-})
-class TravelApplicationTests {
+@ActiveProfiles({"test"})
+public class TravelApplicationTests {
 
 	@Test
 	void contextLoads() {

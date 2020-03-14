@@ -15,6 +15,11 @@ import java.util.Optional;
 @Repository
 public interface ParameterRepository extends JpaRepository<Parameter, Long> {
 
+    /**
+     * To find a parameter by its name
+     * @param paramName search parameter name
+     * @return corresponding parameter
+     */
     Optional<Parameter> findParameterByParamName(String paramName);
 
 }

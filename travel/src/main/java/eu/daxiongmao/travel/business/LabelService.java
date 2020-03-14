@@ -8,11 +8,12 @@ import eu.daxiongmao.travel.model.enums.AppLang;
 import eu.daxiongmao.travel.model.enums.param.BusinessParam;
 import eu.daxiongmao.travel.model.enums.param.TechnicalParam;
 import eu.daxiongmao.travel.model.mapper.LabelMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -22,6 +23,7 @@ import java.util.*;
  */
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class LabelService {
 
     /** Hard-coded fallback value in case of DB failure or bad configuration */
@@ -30,16 +32,13 @@ public class LabelService {
     private final ParameterService parameterService;
     private final LabelRepository labelRepository;
     private final LabelMapper labelMapper;
-    private final InnerCache<String, Label> cache;
+    private InnerCache<String, Label> cache;
 
-    @Autowired
-    public LabelService(ParameterService parameterService, LabelRepository labelRepository, LabelMapper labelMapper) {
-        this.parameterService = parameterService;
-        this.labelRepository = labelRepository;
-        this.labelMapper = labelMapper;
-
-        // ****** Init cache ******
+    @PostConstruct
+    public void setup() {
+        // max refresh delay
         final Optional<Object> delayBetweenRefreshInSeconds = parameterService.getValue(TechnicalParam.MIN_TIME_IN_SECONDS_BETWEEN_CACHE_REFRESH);
+        // Function to load cache
         cache = new InnerCache<>(log, (Integer) delayBetweenRefreshInSeconds.orElseThrow(), () -> {
             // Get DB values
             final List<Label> dbValues = labelRepository.findAll();
@@ -53,6 +52,8 @@ public class LabelService {
             log.info("Initialization complete | {} Labels have been cached in memory", dbValues.size());
             return valuesToCache;
         });
+        // Populate cache on startup
+        cache.updateCache(true);
     }
 
 

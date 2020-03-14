@@ -1,10 +1,12 @@
 package eu.daxiongmao.travel.business.cache;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version 1.0
  * @since 2020/03
  */
+@RequiredArgsConstructor
 public class InnerCache<T, K> {
 
     /** Maximum time to wait to get lock in seconds */
@@ -49,18 +52,6 @@ public class InnerCache<T, K> {
     private LocalDateTime lastUpdateCacheTime;
 
     /**
-     * To create an inner cache
-     * @param log Logger to use to track exceptions
-     * @param delayBetweenRefreshInSeconds Delay to respect between 2 cache refresh, in seconds. This prevents multi-threads issues
-     * @param cachingFunction Way to retrieve values to cache periodically
-     */
-    public InnerCache(Logger log, long delayBetweenRefreshInSeconds, CacheValueFunction<T, K> cachingFunction) {
-        this.log = log;
-        this.delayBetweenRefreshInSeconds = delayBetweenRefreshInSeconds;
-        this.cachingFunction = cachingFunction;
-    }
-
-    /**
      * To retrieve the current cached values
      * @return cached values
      */
@@ -68,7 +59,7 @@ public class InnerCache<T, K> {
         if (cachedValues.isEmpty()) {
             updateCache(false);
         }
-        return cachedValues;
+        return Collections.unmodifiableMap(cachedValues);
     }
 
     /**
@@ -80,19 +71,7 @@ public class InnerCache<T, K> {
         try {
             if (lock.tryLock(MAX_TIME_TO_WAIT_TO_GET_LOCK_IN_SECONDS, TimeUnit.SECONDS)) {
                 try {
-                    // Only refresh at periodic interval or user-request
-                    final LocalDateTime updateTriggerTime = LocalDateTime.now(ZoneOffset.UTC).minus(Duration.ofSeconds(delayBetweenRefreshInSeconds));
-                    if (forceRefresh
-                            || lastUpdateCacheTime == null
-                            || lastUpdateCacheTime.isBefore(updateTriggerTime)) {
-                        // Get values to cache
-                        Map<T, K> valuesToCache = cachingFunction.getValuesToCache();
-
-                        // Update general cache and register refresh time
-                        cachedValues.clear();
-                        cachedValues.putAll(valuesToCache);
-                        lastUpdateCacheTime = LocalDateTime.now(ZoneOffset.UTC);
-                    }
+                    doCacheRefresh(forceRefresh);
                 } catch (Exception e) {
                     log.error("Failed to refresh cache: inner algorithm failure", e);
                 } finally {
@@ -105,4 +84,25 @@ public class InnerCache<T, K> {
         }
     }
 
+    /**
+     * To perform a cache refresh if required
+     * @param forceRefresh flag - "true" to force cache refresh no matter the previous refresh time ; else cache can only be refresh after seconds
+     * @throws Exception something went wrong
+     */
+    private void doCacheRefresh(boolean forceRefresh) throws Exception {
+        // Only refresh at periodic interval or user-request
+        final LocalDateTime updateTriggerTime = LocalDateTime.now(ZoneOffset.UTC).minus(Duration.ofSeconds(delayBetweenRefreshInSeconds));
+        if (forceRefresh
+                || cachedValues.isEmpty()
+                || lastUpdateCacheTime == null
+                || lastUpdateCacheTime.isBefore(updateTriggerTime)) {
+            // Get values to cache
+            Map<T, K> valuesToCache = cachingFunction.getValuesToCache();
+
+            // Update general cache and register refresh time
+            cachedValues.clear();
+            cachedValues.putAll(valuesToCache);
+            lastUpdateCacheTime = LocalDateTime.now(ZoneOffset.UTC);
+        }
+    }
 }

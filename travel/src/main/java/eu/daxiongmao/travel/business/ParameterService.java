@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -28,7 +29,7 @@ public class ParameterService {
 
     private final ParameterRepository parameterRepository;
     private final ParameterMapper parameterMapper;
-    private final InnerCache<String, Parameter> cache;
+    private InnerCache<String, Parameter> cache;
 
 
     private static ParameterService instance;
@@ -44,8 +45,11 @@ public class ParameterService {
         this.parameterRepository = parameterRepository;
         this.parameterMapper = parameterMapper;
         instance = this;
+    }
 
-        // ****** Init cache ******
+    @PostConstruct
+    public void setup() {
+        // function to populate cache
         cache = new InnerCache<>(log, DELAY_BETWEEN_REFRESH_IN_SECONDS, () -> {
             // Get DB values
             final List<Parameter> dbValues = parameterRepository.findAll();
@@ -59,7 +63,10 @@ public class ParameterService {
             log.info("Initialization complete | {} Parameters have been cached in memory", dbValues.size());
             return valuesToCache;
         });
+        // cache DB values on startup
+        cache.updateCache(true);
     }
+
 
     /**
      * To retrieve a parameter VALUE by its name.

@@ -60,6 +60,11 @@
 
 
 		<!-- ##### Database ##### -->
+		<!-- To generate DB schema and core data -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 		<!-- Runtime, use Oracle. Since this driver is not on the official repositories it has been included in the project -->
 		<dependency>
 			<groupId>oracle</groupId>

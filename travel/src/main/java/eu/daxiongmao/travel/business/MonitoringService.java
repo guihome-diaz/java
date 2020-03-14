@@ -5,8 +5,8 @@ import eu.daxiongmao.travel.dao.MonitoringEventRepository;
 import eu.daxiongmao.travel.model.db.MonitoringEvent;
 import eu.daxiongmao.travel.model.dto.MonitoringEventDTO;
 import eu.daxiongmao.travel.model.mapper.MonitoringEventMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class MonitoringService {
 
     private final MonitoringEventMapper monitoringEventMapper;
@@ -28,12 +29,6 @@ public class MonitoringService {
 
     /** To avoid concurrent DB operations */
     private final Lock lock = new ReentrantLock();
-
-    @Autowired
-    public MonitoringService(MonitoringEventMapper monitoringEventMapper, MonitoringEventRepository monitoringEventRepository) {
-        this.monitoringEventMapper = monitoringEventMapper;
-        this.monitoringEventRepository = monitoringEventRepository;
-    }
 
     /**
      * Events that occurred since last persistence in DB.

@@ -5,6 +5,7 @@ import eu.daxiongmao.travel.api.error.ApiErrorCodesEnum;
 import eu.daxiongmao.travel.business.LabelService;
 import eu.daxiongmao.travel.model.enums.AppLang;
 import eu.daxiongmao.travel.model.exception.UnauthorizedException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -31,13 +32,10 @@ import java.util.Optional;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
 
     private final LabelService labelService;
-
-    public ExceptionHandlingController(LabelService labelService) {
-        this.labelService = labelService;
-    }
 
     @ExceptionHandler(value = { Exception.class })
     public ResponseEntity<Object> handleAnyException(Exception ex, WebRequest request) {

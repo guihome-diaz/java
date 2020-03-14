@@ -15,5 +15,10 @@ import java.util.Optional;
 @Repository
 public interface LabelRepository extends JpaRepository<Label, Long> {
 
+    /**
+     * To retrieve a label by its code
+     * @param code search code
+     * @return corresponding label
+     */
     Optional<Label> findByCode(String code);
 }
