@@ -25,21 +25,8 @@ CREATE TABLE USERS
 -- Create sequence to manage IDs
 CREATE SEQUENCE SEQ_USERS;
 
--- Trigger for modification date
-CREATE OR REPLACE TRIGGER USERS_TRIGGER_UPDATE BEFORE UPDATE ON USERS
-for each row
-    begin
-        :new.MODIFICATION_DATE := sysdate;
-        :new.VERSION := :old.VERSION + 1;
-    end;
-/
-
--- Indexes (performances). Use "UPPER" or "LOWER" for items that must be unique no matter the case
+-- Indexes (performances)
 CREATE INDEX USERS_NAME_IDX                     ON USERS (FIRST_NAME, SURNAME);
-CREATE UNIQUE INDEX USERS_USERNAME_IDX          ON USERS (UPPER(USERNAME));
-CREATE UNIQUE INDEX USERS_ACTIVE_USERNAME_IDX   ON USERS (UPPER(USERNAME), IS_ACTIVE);
-CREATE UNIQUE INDEX USERS_EMAIL_IDX             ON USERS (LOWER(EMAIL));
-CREATE UNIQUE INDEX USERS_ACTIVE_EMAIL_IDX      ON USERS (LOWER(EMAIL), IS_ACTIVE);
 
 -- Object description
 COMMENT ON COLUMN USERS.USER_ID               IS 'Unique identifier';

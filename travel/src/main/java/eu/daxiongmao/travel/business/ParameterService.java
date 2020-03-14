@@ -57,7 +57,8 @@ public class ParameterService {
             final Map<String, Parameter> valuesToCache = new HashMap<>(dbValues.size());
             if (!dbValues.isEmpty()) {
                 dbValues.forEach((dbParam) -> {
-                    valuesToCache.put(dbParam.getParamName(), dbParam);
+                    // Each param has an unique name, make it toUpperCase() for case insensitive search
+                    valuesToCache.put(dbParam.getParamName().toUpperCase(), dbParam);
                 });
             }
             log.info("Initialization complete | {} Parameters have been cached in memory", dbValues.size());
@@ -117,7 +118,7 @@ public class ParameterService {
             return Optional.empty();
         }
         // Retrieve value from cache
-        final Parameter param = cache.getCachedValues().get(paramName);
+        final Parameter param = cache.getCachedValues().get(paramName.toUpperCase());
         if (param == null) {
             return Optional.empty();
         }

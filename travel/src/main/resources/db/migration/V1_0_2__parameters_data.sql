@@ -31,4 +31,8 @@ INSERT INTO PARAMETERS(PARAM_ID, PARAM_NAME, PARAM_VALUE, PARAM_TYPE, DESCRIPTIO
 
 
 
+
+-- ***********************
+-- Test settings
+-- ***********************
 INSERT INTO PARAMETERS(PARAM_ID, PARAM_NAME, PARAM_VALUE, PARAM_TYPE, DESCRIPTION, VERSION, IS_SENSITIVE) VALUES (SEQ_PARAMETERS.nextval, 'APP.DB.PASSWORD', 'fakePassword', 'java.lang.String', 'Current DB password', 1, 1);

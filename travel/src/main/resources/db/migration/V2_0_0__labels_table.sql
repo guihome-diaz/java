@@ -20,18 +20,7 @@ CREATE TABLE LABELS
 -- Create sequence to manage IDs
 CREATE SEQUENCE SEQ_LABELS;
 
--- Trigger for modification date
-CREATE OR REPLACE TRIGGER LABELS_TRIGGER_UPDATE BEFORE UPDATE ON LABELS
-    for each row
-begin
-    :new.MODIFICATION_DATE := sysdate;
-    :new.VERSION := :old.VERSION + 1;
-end;
-/
-
--- Indexes (performances). Use "UPPER" or "LOWER" for items that must be unique no matter the case
-CREATE INDEX LABELS_CODE_IDX               ON LABELS (UPPER(CODE));
-CREATE INDEX LABELS_ACTIVE_CODE_IDX        ON LABELS (UPPER(CODE), IS_ACTIVE);
+-- Indexes (performances)
 CREATE INDEX LABELS_ACTIVE_IDX             ON LABELS (IS_ACTIVE);
 
 -- Object description

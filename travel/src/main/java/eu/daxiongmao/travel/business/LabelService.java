@@ -46,7 +46,8 @@ public class LabelService {
             final Map<String, Label> valuesToCache = new HashMap<>(dbValues.size());
             if (!dbValues.isEmpty()) {
                 dbValues.forEach((dbLabel) -> {
-                    valuesToCache.put(dbLabel.getCode(), dbLabel);
+                    // Each label has an unique code, make it toUpperCase() for case insensitive search
+                    valuesToCache.put(dbLabel.getCode().toUpperCase(), dbLabel);
                 });
             }
             log.info("Initialization complete | {} Labels have been cached in memory", dbValues.size());
@@ -68,7 +69,7 @@ public class LabelService {
             return Optional.empty();
         }
         // Retrieve value from cache
-        final Label label = cache.getCachedValues().get(labelCode);
+        final Label label = cache.getCachedValues().get(labelCode.toUpperCase());
         if (label == null) {
             return Optional.empty();
         }
