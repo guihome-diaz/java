@@ -1,14 +1,13 @@
 package eu.daxiongmao.prv.fx;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import eu.daxiongmao.prv.fx.controller.RootPaneController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is based on Rusan Molchanov (https://github.com/ruslanys/fish-springboot-javafx) code.<br>
