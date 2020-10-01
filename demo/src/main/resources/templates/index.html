@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="lang=${#locale.language}" th:lang="${lang}">
+
+<head>
+    <meta charset="utf-8">
+    <title>Add User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<!-- default page -->
+
+<body>
+<div class="container">
+    <div th:switch="${users}">
+
+        <h2 th:case="null">No users yet!</h2>
+
+        <div th:case="*">
+            <h2 th:text="#{user.users_list_title}">_Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <td th:text="#{user.first_name}">user first name</td>
+                        <td th:text="#{user.surname}">user last name</td>
+                        <td th:text="#{user.email}">user email</td>
+                        <td th:text="#{user.edit_user}">_Edit</td>
+                        <td th:text="#{user.delete_user}">_Delete</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.firstName}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td><a th:href="@{/edit/{id}(id=${user.userId})}">Edit</a></td>
+                        <td><a th:href="@{/delete/{id}(id=${user.userId})}">Delete</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p><a href="/signup">Add a new user</a></p>
+    </div>
+</div>
+</body>
+</html>
