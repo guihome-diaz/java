@@ -3,22 +3,29 @@ package eu.daxiongmao.blog.pictures.model;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-
 /**
- * Representation of a Wordpress NGG image.
- * Each image is linked to a particular gallery.
- * @param gallery Wordpress NGG gallery. The current image belongs to this gallery only.
+ * Representation of a Wordpress NGG image and corresponding gallery.
+ * @param galleryId gallery database ID
+ * @param galleryName gallery name (as it appears on the website)
+ * @param galleryPathOnServer gallery path on server
+ * @param galleryPathOneDrive gallery path on OneDrive backup
  * @param imageName search image filename
  */
 public record Image(
-        Gallery gallery,
+        int galleryId,
+        String galleryName,
+        String galleryPathOnServer,
+        String galleryPathOneDrive,
         String imageName) {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", "[", "]")
-                .add("gallery=" + gallery)
-                .add("imageName='" + imageName + "'")
+        return new StringJoiner(", ", "{", "}")
+                .add("galleryId=" + galleryId)
+                .add("galleryName=" + galleryName)
+                .add("galleryPathOnServer=" + galleryPathOnServer)
+                .add("galleryPathOneDrive=" + galleryPathOneDrive)
+                .add("imageName=" + imageName)
                 .toString();
     }
 
@@ -26,11 +33,11 @@ public record Image(
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Image image)) return false;
-        return Objects.equals(gallery, image.gallery) && Objects.equals(imageName, image.imageName);
+        return galleryId == image.galleryId && Objects.equals(imageName, image.imageName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gallery, imageName);
+        return Objects.hash(galleryId, imageName);
     }
 }
