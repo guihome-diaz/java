@@ -6,23 +6,21 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 
-public class ExcelParserTest {
+public class FileManagerTest {
 
     @Test
-    void readExcelFile() {
+    void lookForMissingFiles() {
         // Given
         Path excelFile = Paths.get("src", "test", "resources", "family_blog_ngg_gallery.xlsx");
         ExcelParser excelParser = new ExcelParser();
+        FileManager fileManager = new FileManager();
         // Do
         Set<Image> images = excelParser.readExcelFile(excelFile.toString());
-        // Checks
-        Assertions.assertNotNull(images);
-        Assertions.assertFalse(images.isEmpty());
-        Assertions.assertEquals(1957, images.size());
-        for (Image image : images) {
-            System.out.println(image);
-        }
+        List<Image> missingImages = fileManager.ensureImagesExists(images);
+        Assertions.assertNotNull(missingImages);
+        Assertions.assertTrue(missingImages.isEmpty());
     }
 }

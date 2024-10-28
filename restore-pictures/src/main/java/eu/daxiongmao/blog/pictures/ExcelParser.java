@@ -57,12 +57,12 @@ public class ExcelParser {
         for (Row row : sheet) {
             // Skip headers
             if (row.getRowNum() == 0) { continue; }
-            String galleryId = row.getCell(0).getStringCellValue();
+            double galleryId = row.getCell(0).getNumericCellValue();
             String galleryName = row.getCell(1).getStringCellValue();
             String galleryPathServer = row.getCell(2).getStringCellValue();
             String fileName = row.getCell(3).getStringCellValue();
             String galleryPathOneDrive = row.getCell(4).getStringCellValue();
-            images.add(new Image(Integer.parseInt(galleryId), galleryName, galleryPathServer, galleryPathOneDrive, fileName));
+            images.add(new Image(Double.valueOf(galleryId).intValue(), galleryName, galleryPathServer, galleryPathOneDrive, fileName));
         }
 
         return images;

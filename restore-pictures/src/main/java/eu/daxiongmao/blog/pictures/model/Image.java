@@ -16,7 +16,15 @@ public record Image(
         String galleryName,
         String galleryPathOnServer,
         String galleryPathOneDrive,
-        String imageName) {
+        String imageName) implements Comparable<Image> {
+
+    @Override
+    public int compareTo(Image other) {
+        int result = this.galleryPathOneDrive.compareTo(other.galleryPathOneDrive);
+        if (result != 0) { return result; }
+
+        return this.imageName.compareTo(other.imageName);
+    }
 
     @Override
     public String toString() {

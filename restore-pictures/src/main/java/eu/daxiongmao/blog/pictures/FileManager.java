@@ -7,7 +7,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,15 +28,17 @@ public class FileManager {
      * @param images images to check
      * @return images that do not exist on hard drive.
      */
-    public Set<Image> ensureImagesExists(Set<Image> images) {
-        Set<Image> missingImages = new HashSet<>();
+    public List<Image> ensureImagesExists(Set<Image> images) {
+        List<Image> missingImages = new ArrayList<>();
         for (Image image : images) {
-            String imagePath = image.galleryPathOneDrive() + File.pathSeparator + image.imageName();
+            String imagePath = image.galleryPathOneDrive() + File.separator + image.imageName();
             if (Files.notExists(Paths.get(imagePath))) {
-                logger.warn(() -> "Image does not exist. imagePath=" + imagePath);
+                System.err.println("Image does not exist. imagePath=" + imagePath);
                 missingImages.add(image);
             }
         }
+        // Sort results
+        Collections.sort(missingImages);
         return missingImages;
     }
 
