@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Set;
+import java.util.List;
 
-public class ExcelParserTest {
+class ExcelParserTest {
 
     @Test
     void readExcelFile() {
@@ -16,7 +16,7 @@ public class ExcelParserTest {
         Path excelFile = Paths.get("src", "test", "resources", "family_blog_ngg_gallery.xlsx");
         ExcelParser excelParser = new ExcelParser();
         // Do
-        Set<Image> images = excelParser.readExcelFile(excelFile.toString());
+        List<Image> images = excelParser.readExcelFile(excelFile.toString());
         // Checks
         Assertions.assertNotNull(images);
         Assertions.assertFalse(images.isEmpty());

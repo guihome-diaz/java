@@ -20,7 +20,7 @@ public record Image(
 
     @Override
     public int compareTo(Image other) {
-        int result = this.galleryPathOneDrive.compareTo(other.galleryPathOneDrive);
+        int result = Integer.compare(this.galleryId, other.galleryId);
         if (result != 0) { return result; }
 
         return this.imageName.compareTo(other.imageName);
@@ -47,5 +47,13 @@ public record Image(
     @Override
     public int hashCode() {
         return Objects.hash(galleryId, imageName);
+    }
+
+    public String getServerGalleryName() {
+        String galleryName = galleryPathOnServer;
+        if (galleryName.endsWith("/")) {
+            galleryName = galleryName.substring(0, galleryName.length() - 1);
+        }
+        return galleryName.substring(galleryName.lastIndexOf('/') + 1);
     }
 }

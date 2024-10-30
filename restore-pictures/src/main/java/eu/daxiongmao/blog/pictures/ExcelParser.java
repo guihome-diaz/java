@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * To read an Excel file and extract data.
@@ -28,7 +27,7 @@ public class ExcelParser {
      * @param filePath Excel file to read
      * @return excel file content
      */
-    public Set<Image> readExcelFile(String filePath) {
+    public List<Image> readExcelFile(String filePath) {
         final Path excelFile = Paths.get(filePath);
         if (Files.notExists(excelFile)) {
             throw new IllegalArgumentException("File not found. filePath=" + filePath);
@@ -47,8 +46,8 @@ public class ExcelParser {
         }
     }
 
-    private Set<Image> doReadExcelFile(FileInputStream excelFis) throws IOException {
-        Set<Image> images = new HashSet<>();
+    private List<Image> doReadExcelFile(FileInputStream excelFis) throws IOException {
+        List<Image> images = new ArrayList<>();
         // Open Excel file
         XSSFWorkbook workbook = new XSSFWorkbook(excelFis);
         // Get first sheet
@@ -65,6 +64,7 @@ public class ExcelParser {
             images.add(new Image(Double.valueOf(galleryId).intValue(), galleryName, galleryPathServer, galleryPathOneDrive, fileName));
         }
 
+        Collections.sort(images);
         return images;
     }
 }
